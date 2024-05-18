@@ -3,8 +3,11 @@ title: Fluid Rendering Components
 permalink: /docs/fluid_rendering_components/
 ---
 
+### Table of contents
+{:.no_toc}
 * this unordered seed list will be replaced by toc as unordered list
 {:toc}
+---
 
 The **FluidRenderer** component is responsible for rendering the Fluid Simulation. This component is in charge of creating and rendering the necessary meshes and materials needed for displaying the assigned Fluid Simulation. Users can customize the **FluidRenderer** component to create their own rendering effects, similar to **WaterSurface** and **LavaSurface** renderers.
 

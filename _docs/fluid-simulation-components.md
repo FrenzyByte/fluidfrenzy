@@ -3,8 +3,11 @@ title: Fluid Simulation Components
 permalink: /docs/fluid_simulation_components/
 ---
 
+### Table of contents
+{:.no_toc}
 * this unordered seed list will be replaced by toc as unordered list
 {:toc}
+---
 
 These are all the components that control and extend the simulation.
 

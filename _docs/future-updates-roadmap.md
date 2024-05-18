@@ -3,8 +3,6 @@ title: Future Updates & Roadmap
 permalink: /docs/future_updates_roadmap/
 ---
 
-* this unordered seed list will be replaced by toc as unordered list
-{:toc}
 
 These are some future features that are planned to be supported in Fluid Frenzy.
 

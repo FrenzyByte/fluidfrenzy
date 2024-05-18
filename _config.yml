@@ -62,4 +62,4 @@ collections:
     output: true
 
 kramdown:
-    toc_levels: "1,2,3"
+    toc_levels: "1,2,3,4"

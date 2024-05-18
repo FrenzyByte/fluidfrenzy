@@ -3,8 +3,11 @@ title: Setup
 permalink: /docs/setup/
 ---
 
+### Table of contents
+{:.no_toc}
 * this unordered seed list will be replaced by toc as unordered list
 {:toc}
+---
 
 Fluid Frenzy is easy and quick to set up ready for use with just a few clicks. To set up a scene to use Fluid Frenzy follow the steps below:
 

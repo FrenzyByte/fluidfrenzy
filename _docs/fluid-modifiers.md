@@ -3,8 +3,11 @@ title: Fluid Modifiers
 permalink: /docs/fluid_modifiers/
 ---
 
+### Table of contents
+{:.no_toc}
 * this unordered seed list will be replaced by toc as unordered list
 {:toc}
+---
 
 **Fluid Modifiers** are *Components* that can be attached to a *GameObject*. They are used to interact with the simulation in multiple ways, ranging from adding/removing fluids and applying forces. There are several **Fluid Modifier** types each with specific behaviors.
 

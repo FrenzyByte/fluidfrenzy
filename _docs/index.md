@@ -4,8 +4,11 @@ permalink: /docs/index/
 redirect_from: /docs/index.html
 ---
 
+### Table of contents
+{:.no_toc}
 * this unordered seed list will be replaced by toc as unordered list
 {:toc}
+---
 
 Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer designed specifically for use with Unity Terrain and Custom terrains. This project aims to provide developers with a powerful toolset to create realistic, fun, interactive and immersive fluid dynamics in their Unity projects.
 
