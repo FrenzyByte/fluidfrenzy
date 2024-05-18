@@ -60,6 +60,3 @@ collections:
   posts:
     permalink: /blog/:year/:month/:day/:title/
     output: true
-
-kramdown:
-  parse_block_html: true
