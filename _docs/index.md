@@ -4,46 +4,18 @@ permalink: /docs/home/
 redirect_from: /docs/index.html
 ---
 
-## Table of contents
-
-1. [About](#about)
-    1. [Key Features](#key-features)
-    2. [Contents](#contents)
-    3. [Installation](#installation)
-    4. [Requirements](#requirements)
-    5. [Limitations](#limitations)
-    6. [Samples](#samples)
-2. [Setup](#setup)
-    1. [Water Simulation](#setup-water-simulation)
-    2. [Terraform Simulation](#setup-terraform-simulation)
-3. [Fluid Simulation Components](#fluid-simulation-components)
-    1. [Fluid Simulation](#fluid-simulation)
-    2. [Fluid Simulation Settings](#fluid-simulation-settings)
-    3. [Foam Layer](#foam-layer)
-    4. [Foam Layer Settings](#foam-settings)
-    5. [Flow Mapping](#flowmapping)
-    6. [Flow Mapping Settings](#flowmap-settings)
-    7. [Erosion Layer](#erosion-layer)
-    8. [Terraform Layer](#terraform-layer)
-    9. [Fluid Rigidbody](#fluid-rigidbody)
-    10. [Fluid Simulation Obstacle](#fluid-simulation-obstacle)
-4. [Fluid Rendering Components](#fluid-rendering-components)
-    1. [Water](#water)
-    2. [Lava](#lava)
-    3. [Terrain](#terrain)
-5. [Fluid Modifiers](#fluid-modifiers)
-    1. [Fluid Modifier Volume](#fluid-modifier-volume)
-    2. [Fluid Modifier Waves](#fluid-modifier-waves)
-    3. [Fluid Modifier Pressure](#fluid-modifier-pressure)
-6. [Future Updates & Roadmap](#future-updates-roadmap)
+* this unordered seed list will be replaced by toc as unordered list
+{:toc}
 
 <div style="page-break-after: always;"></div>
 
-## <a name="about">1. About Fluid Frenzy</a>
+<a name="about"></a>
+## About Fluid Frenzy
 
 Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer designed specifically for use with Unity Terrain and Custom terrains. This project aims to provide developers with a powerful toolset to create realistic, fun, interactive and immersive fluid dynamics in their Unity projects.
 
-### <a name="key-features">Key Features</a>
+<a name="key-features"></a>
+### Key Features
 
 - Real-time fluid simulation: Utilizing GPU acceleration for fast and interactive fluids.
 - Seamless integration with Unity Terrain: Easily add fluid elements to your Unity Terrain for a more immersive environment.
@@ -54,7 +26,8 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 - Dynamic object interaction: Objects in the fluid can interact realistically, with buoyancy effects and advection as they move through the fluid simulation.
 - Fluid modifiers: Customize the behavior of the fluid simulation with modifiers like waves, pressure fields, and whirlpools to create dynamic and visually interesting effects in your project.
 
-### <a name="contents">Contents</a>
+<a name="contents"></a>
+### Contents
 
 1. Fluid Simulation Scripts & Resources
     ```Runtime\Simulation```
@@ -71,12 +44,14 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
     ```DOCUMENTATION.html```
     ```Documentation~\DOCUMENTATION.md```
 
-### <a name="installation">Installation</a>
+<a name="installation"></a>
+### Installation
 
 - Add the package through *Assets > Import Package > Custom Package*.
 - Select the *.unitypackage* file for Fluid Frenzy. This will add the package to the *Package Manager*
 
-### <a name="requirements">Requirements</a>
+<a name="requirements"></a>
+### Requirements
 
 | Hardware/Software | Version |
 | ---- | ---- |
@@ -86,13 +61,15 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 | Graphics API | DirectX 11. DirectX 12. Vulkan |
 | Shader Model | Recommended: 5.0. Minimum: 3.0 |
 
-### <a name="limitations">Limitations</a>
+<a name="limitations"></a>
+### Limitations
 
 - Fluid Frenzy is a [2.5D/*Shallow Water Equation*](https://en.wikipedia.org/wiki/Shallow_water_equations) fluid simulation that is achieved by storing the height of the fluid in a 2D texture (X, Z). This method restricts the simulation to having only one height per pixel, thereby preventing the fluid from flowing both under and over objects simultaneously.
 - The fluid simulation has a maximum speed limit determined by the 2.5D implementation used. In this simulation, the fluid is represented in a 2D texture where each pixel corresponds to a specific size in the world. The fluid can only move one pixel per step, resulting in a maximum speed limit based on the pixel's world units per frame. The simulation attempts to adjust automatically when the dimensions are scaled, but there is a limit to how fast or slow the fluid can move.
 - Multiplayer is not supported in Fluid Frenzy since syncing the data over the network takes too much bandwidth and there is no guarantee simulations run in sync and stay in sync due to latency.
 
-### <a name="samples">Samples</a>
+<a name="samples"></a>
+### Samples
 
 Fluid Frenzy contains five sample scenes to showcase the functionality and help with understanding how to work with the fluid simulation. You can import the samples using the *Package Manager*. To run the samples, open any of the scenes in the [Samples~](#keyfeatures-samples) folder and click play. Scenes can be loaded at run-time in the **Scenes** tab in the UI. There are several options in the UI *Input Tab* to select from. Control the fluid input type, fluid rigid body spawning, boat driving and "FlyCam". 
 
@@ -150,11 +127,13 @@ The Terraform scene showcases God Game simulation with two types of fluid intera
 
 <div style="page-break-after: always;"></div>
 
-## <a name="setup">2. Setup</a>
+<a name="setup"></a>
+## Setup
 
 Fluid Frenzy is easy and quick to set up ready for use with just a few clicks. To set up a scene to use Fluid Frenzy follow the steps below:
 
-### <a name="setup-water-simulation">Water Simulation</a>
+<a name="setup-water-simulation"></a>
+### Water Simulation
 
 These steps will describe how to set up a fluid simulation that will simulate and render water.
 
@@ -177,7 +156,9 @@ These steps will describe how to set up a fluid simulation that will simulate an
 
 You now have a functional Fluid Simulation using Fluid Frenzy. Hit Play and see your Terrain being flooded by water!
 
-### <a name="setup-terraform-simulation">Terraform Simulation</a>
+
+<a name="setup-terraform-simulation"></a>
+### Terraform Simulation
 
 ![Terraform Simulation Setup](../../docs/images/gameobject_fluidfrenzy_terraform.png)
 
@@ -196,11 +177,13 @@ You now have a functional Terraform Simulation using Fluid Frenzy. Hit Play and 
 
 <div style="page-break-after: always;"></div>
 
-## <a name="fluid-simulation-components">3. Fluid Simulation Components</a>
+<a name="fluid-simulation-components"></a>
+## Fluid Simulation Components
 
 These are all the components that control and extend the simulation.
 
-### <a name="fluid-simulation">Fluid Simulation</a>
+<a name="fluid-simulation"></a>
+### Fluid Simulation
 
 **Fluid Simulation** is the core component of Fluid Frenzy. It handles the full simulation and the components attached to it.
 
@@ -219,7 +202,8 @@ These are all the components that control and extend the simulation.
 
 <div style="page-break-after: always;"></div>
 
-### <a name="fluid-simulation-settings">Fluid Simulation Settings</a>
+<a name="fluid-simulation-settings"></a>
+### Fluid Simulation Settings
 [Fluid Simulation Settings](#fluid-simulation-settings) are *Scriptable Object* assets that are assigned to a [Fluid Simulation](#fluid-simulation). It is an asset to make it easier to reuse and modify settings on multiple [Fluid Simulations](#fluid-simulation). To create a [Fluid Simulation Settings](#fluid-simulation-settings) asset click *`Assets > Create > Fluid Frenzy > Simulation Settings`*.
 
 #### Update Mode
@@ -287,14 +271,16 @@ A fluid second layer can be enabled within the [Fluid Simulation](#fluid-simulat
 
 ___
 
-### <a name="foam-layer">Foam Layer</a>
+<a name="foam-layer"></a>
+### Foam Layer
 
 **Foam Layer** is an extension layer that can be attached to the Fluid Simulation. It generates a foam map based on the current state of the simulation. There are several inputs from the [Fluid Simulation](#fluid-simulation) that are used to generate this map (Pressure, Y Velocity, and Slope). The influence of each of these inputs can be controlled by the [Foam Layer Settings](#foam-settings).
 *Note: This component lives on a GameObject but also needs to be added to the **Layers** list of the [Fluid Simulation](#fluid-simulation).*  
 
 - **Settings** - a [Foam Layer Settings](#foams-ettings) asset which holds the settings to be used for this Foam Layer
 
-### <a name="foam-settings">Foam Layer Settings</a>
+<a name="foam-settings"></a>
+### Foam Layer Settings
 
 **Foam Layer Settings** are *Scriptable Object* assets that are assigned to a [Foam Layer](#foam-layer). It is an asset to make it easier to reuse and modify settings on multiple [Foam Layers](#foam-layer). To create a **Foam Layer Settings** asset click *`Assets > Create > Fluid Frenzy > Foam Layer Settings`*.
 
@@ -321,13 +307,15 @@ ___
 
 ___
 
-### <a name="flowmapping">Fluid Flow Mapping</a>
+<a name="flowmapping"></a>
+### Fluid Flow Mapping
 
 **Fluid Flow Mapping** is an extension layer that enables and controls [*flow mapping*](https://catlikecoding.com/unity/tutorials/flow/directional-flow/) functionality in the simulation and rendering side of Fluid Frenzy. The layer generates the *flow map* procedurally using the flow of the fluid simulation. The rendering data is automatically passed to the material assigned to the [Fluid Renderer](#fluid-rendering-components). There are several settings to control the visuals of the flow mapping in the layer which can be set in the [Fluid Flow Mapping Settings](#flowmap-settings) asset assigned to this layer.
 
 - **Settings** - a [Fluid Flow Mapping Settings](#flowmap-settings) asset which holds the settings to be used for this Flow Mapping Layer
 
-### <a name="flowmap-settings">Fluid Flow Mapping Settings</a>
+<a name="flowmap-settings"></a>
+### Fluid Flow Mapping Settings
 
 **Fluid Flow Mapping Settings** are *Scriptable Object* assets that are assigned to a [Fluid Flow Mapping](#fluid-flow-mapping). It is an asset to make it easier to reuse and modify settings on multiple [Fluid Flow Mappings](#fluid-flow-mapping). To create a **Flow Mapping Settings** asset click *`Assets > Create > Fluid Frenzy > Flow Mapping Settings`*.
 
@@ -343,7 +331,8 @@ Options:
 
 ___
 
-### <a name="erosion-layer">Erosion Layer</a>
+<a name="erosion-layer"></a>
+### Erosion Layer
 
 **Erosion Layer** is an extension layer that can be attached to the Fluid Simulation. It makes modifications to the terrain based on the current state of the simulation. Erosion strength depends on the settings, fluid height, and fluid velocity. The modifications made by this layer automatically get applied back to the **SimpleTerrain/TerraformTerrain** and [Fluid Simulation](#fluid-simulation). 
 
@@ -362,7 +351,8 @@ The erosion of terrains is simulated by using 2D textures. The higher the veloci
 - **Sediment Advection Speed** - the advection speed of the sediment in the eroded sediment map. Higher values transport the sediment farther through the world before depositing. 
 *Note: higher values transport sediment further, but this may cause sediment to be lost as the erosion simulation is not mass conserving. Sediment may reach areas where there is no fluid, or leave the simulation*
 
-### <a name="terraform-layer">Terraform Layer</a>
+<a name="terraform-layer"></a>
+### Terraform Layer
 
 The **Terraform Layer** is an extension of the [Erosion Layer](#erosion-layer) which allows 'god game-like' features to mix fluids into terrain rock, emit particles when fluids mix, and change terrain types using the **Terrain Modifier** by modifying the terrain heightmap and splatmap. The current support of this layer is the mixing of water and lava to create terrain, adding different terrain types by writing to the terrain heightmap and splatmap, and based on user input and the spawning of particles when fluids mix. 
 
@@ -377,7 +367,8 @@ Terraforming is done using 2D textures for modifications. When two fluids occupy
 - **Fluid Particles** - the behavior and visual control of the particles that spawn when fluids mix. This is used to spawn steam particles when lava and water touch. You can tweak the color, lifetime, and movement in these settings.
 - **Emission Rate** - is the spawn rate of particles when fluids mix. A higher emission rate means more particles will be spawned.
 
-### <a name="fluid-rigidbody">Fluid RigidBody</a>
+<a name="fluid-rigidbody"></a>
+### Fluid RigidBody
 
 **Fluid RigidBody** is a component that can be applied to a GameObject to interact with the fluid simulation. It supports physics features like buoyancy, advection and creating waves. To simulate these effects **CPU Height Read** needs to be enabled.
 
@@ -401,14 +392,16 @@ Terraforming is done using 2D textures for modifications. When two fluids occupy
 - **Angular Drag** - the amount of angular/rotational drag that is applied when the object is in contact with the fluid.
 - **Buoyancy** - scales the buoyancy of the object. Higher values will make the object pushed up by the fluid more, causing it to float. Lower values will make objects float less, or even sink.
 
-### <a name="fluid-simulation-obstacle">Fluid Simulation Obstacle</a>
+<a name="fluid-simulation-obstacle"></a>
+### Fluid Simulation Obstacle
 **Fluid Simulation Obstacle** is a component that can be added to any object with a renderer component attached. When this component is attached it will be written into the fluid simulation's heightmap so that the fluid can interact with it. The fluid will flow around or over this obstacle but cannot flow under it so it is advised to use this on those that are mainly round and do not create a convex shape with the terrain.
 
 ---
 
 <div style="page-break-after: always;"></div>
 
-## <a name="fluid-rendering-components">4. Fluid Rendering Components</a>
+<a name="fluid-rendering-components"></a>
+## Fluid Rendering Components
 
 The **FluidRenderer** component is responsible for rendering the Fluid Simulation. This component is in charge of creating and rendering the necessary meshes and materials needed for displaying the assigned Fluid Simulation. Users can customize the **FluidRenderer** component to create their own rendering effects, similar to **WaterSurface** and **LavaSurface** renderers.
 
@@ -420,9 +413,11 @@ The **FluidRenderer** component is responsible for rendering the Fluid Simulatio
 
 ___
 
-### <a name="water">Water</a>
+<a name="water"></a>
+### Water
 
-#### <a name="water-surface">Water Surface</a>
+#<a name="water-surface"></a>
+### Water Surface
 
 ![Water Surface](../../docs/images/watersurface.png)
 
@@ -432,7 +427,8 @@ ___
 
 <div style="page-break-after: always;"></div>
 
-#### <a name="water-shader">Water Shader</a>
+#<a name="water-shader"></a>
+### Water Shader
 
 **FluidFrenzy/Water** is the shader that is applied to the materials on the [Water Surface](#water-surface) **Fluid Material** field.
 There are a lot of material properties available for tweaking to create beautiful-looking water.
@@ -520,9 +516,11 @@ General rendering settings.
 ___
 <div style="page-break-after: always;"></div>
 
-### <a name="lava">Lava</a>
+<a name="lava"></a>
+### Lava
 
-#### <a name="lava-surface">Lava Surface</a>
+#<a name="lava-surface"></a>
+### Lava Surface
 **LavaSurface** is an extension of the [FluidRenderer](#fluid-rendering-components) component. It is modified to allow the generation of a custom heat LUT through its gradient field. This LUT is assigned to the Lava material to determine the emissive color of lava based on factors like the velocity of the lava.
 
 ![Lava Surface](../../docs/images/lavasurface.png)
@@ -530,7 +528,8 @@ ___
 - **Generate Heat LUT** - when enabled the **Heat Gradient** configured will override the *Heat LUT* applied to the **Fluid Material** with a *procedurally generated texture*.
 - **Heat Gradient** - The gradient turns into a procedurally generated texture to override the **Fluid Material**.
 
-#### <a name="lava-shader">Lava Shader</a>
+#<a name="lava-shader"></a>
+### Lava Shader
 
 **FluidFrenzy/Lava** is the shader that is applied to the materials on the [Lava Surface](#lava-surface) **Fluid Material** field. The *heat* of the lava is the length of the velocity vector in the velocity field.
 
@@ -547,9 +546,11 @@ ___
 
 ___
 
-### <a name="terrain">Terrain</a>
+<a name="terrain"></a>
+### Terrain
 
-#### <a name="simple-terrain">Simple Terrain</a>
+#<a name="simple-terrain"></a>
+### Simple Terrain
 
 **Simple Terrain** is a terrain rendering component for fluid simulations that makes use of the [Erosion Layer](#erosion-layer). When the [Erosion Layer](#erosion-layer) makes modifications to the terrain height it is applied directly to the **Simple Terrain** in realtime.
 
@@ -561,7 +562,8 @@ ___
 - **Source Heightmap** - specifies the heightmap applied to the terrain with the red channel representing base height and the green channel showing erodible layers above it. Using a 16-bit per channel texture is recommended to avoid artifacts like stepping or terracing.
 - **Height Scale** - adjusts the overall height of the terrain by applying a multiplier to both the red and green channels of the Source Heightmap.
 
-#### <a name="terraform-terrain">Terraform Terrain</a>
+#<a name="terraform-terrain"></a>
+### Terraform Terrain
 The **Terraform Terrain** component is an extension of the **Simple Terrain** component. It adds an extra [splat map](https://en.wikipedia.org/wiki/Texture_splatting) that the [Terraform Layer](#terraform-layer) makes modifications to. This splat map is used to represent different terrain layers on the base layer of the terrain. It is rendered by the **FluidFrenzy/TerraformTerrain** shader.
 
 ![Terraform Terrain](../../docs/images/terraformterrain.png)
@@ -572,17 +574,20 @@ The **Terraform Terrain** component is an extension of the **Simple Terrain** co
 
 <div style="page-break-after: always;"></div>
 
-## <a name="fluid-modifiers">5. Fluid Modifiers</a>
+<a name="fluid-modifiers"></a>
+## Fluid Modifiers
 
 **Fluid Modifiers** are *Components* that can be attached to a *GameObject*. They are used to interact with the simulation in multiple ways, ranging from adding/removing fluids and applying forces. There are several **Fluid Modifier** types each with specific behaviors.
 
-### <a name="fluid-modifier-volume">Fluid Modifier Volume</a>
+<a name="fluid-modifier-volume"></a>
+### Fluid Modifier Volume
 
 **Fluid Modifier Volume** has multiple types that can be used simultaneously. The types are:
 
 ![Fluid Modifier Volume](../../docs/images/fluidsource.png)
 
-#### <a name="fluid-volume-source">Source</a>
+#<a name="fluid-volume-source"></a>
+### Source
 
 Is used to add/remove fluid from the simulation.
 - **Mode** - is the input mode of the modifier.
@@ -596,7 +601,8 @@ Is used to add/remove fluid from the simulation.
 - **Falloff** - changes the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create large but more focused fluid sources. A higher value means the source strength falls off faster.
 - **Texture** - the texture to use as an input. Only the red channel is used. 
 
-#### <a name="fluid-volume-flow">Flow</a>
+#<a name="fluid-volume-flow"></a>
+### Flow
 
 is used to add a force to the velocity field of the simulation. An example of this would be a boat's motor pushing away foam or a whirlpool.
 
@@ -613,7 +619,8 @@ is used to add a force to the velocity field of the simulation. An example of th
 - **Additive** - *enabled:* adds the flow to the current flow in the velocity field. *disabled:* replaces the current flow of the velocity field.
 - **Texture** - a flow map texture that writes its red & green channels into the velocity field. 
 
-#### <a name="fluid-volume-force">Force</a>
+#<a name="fluid-volume-force"></a>
+### Force
 
 Is used to add a displacement force to the simulation. There are several types of forces ranging from waves, splashes and whirlpools.
 
@@ -629,7 +636,8 @@ Is used to add a displacement force to the simulation. There are several types o
 - **Strength** - the height of the wave/splash, the depth of the vortex, or the strength to apply the supplied texture.
 - **Falloff** - changes the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create sharper/flatter wave/vortex shapes. Higher values mean a faster falloff.
 
-### <a name="fluid-modifier-waves">Fluid Modifier Waves</a>
+<a name="fluid-modifier-waves"></a>
+### Fluid Modifier Waves
 
 **Fluid Modifier Waves** applies a displacement force to the simulation to replicate waves generated by external forces like wind. 
 
@@ -645,7 +653,8 @@ Each of these Waves has the following settings
     - *Speed* - the wave travels at. Higher values will move the wave faster in the specified direction.
     - *Direction* - the direction the wave travels in.
 
-### <a name="fluid-modifier-pressure">Fluid Modifier Pressure</a>
+<a name="fluid-modifier-pressure"></a>
+### Fluid Modifier Pressure
 
 **Fluid Modifier Pressure** applies a displacement force to the simulation based on the pressure generated by the velocity field. Areas of high pressure where fluid pushes against an obstacle like terrain or object will become elevated making the fluid field appear like it is accumulating before spreading around the obstacle. 
 *Note: for this modifier to function the simulation needs to use additive velocity mode in the [Fluid Simulation Settings](#fluid-simulation-settings)*.
@@ -659,7 +668,8 @@ Each of these Waves has the following settings
 
 <div style="page-break-after: always;"></div>
 
-## <a name="future-updates-roadmap">6. Future Updates & Roadmap</a>
+<a name="future-updates-roadmap"></a>
+## Future Updates & Roadmap
 
 These are some future features that are planned to be supported in Fluid Frenzy.
 

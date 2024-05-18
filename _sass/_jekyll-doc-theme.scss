@@ -50,13 +50,7 @@ html {
       font-weight: bold;
     }
   }
-  *[id]:before {
-    display: block;
-    content: " ";
-    margin-top: -75px;
-    height: 75px;
-    visibility: hidden;
-  }
+
   .navbar-form .has-feedback .form-control-feedback{
     top:10px
   }
