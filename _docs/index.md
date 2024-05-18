@@ -1,6 +1,6 @@
 ---
-title: Fluid Frenzy Documentation
-permalink: /docs/:path
+title: Welcome
+permalink: /docs/home/
 redirect_from: /docs/index.html
 ---
 
@@ -96,7 +96,7 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 
 Fluid Frenzy contains five sample scenes to showcase the functionality and help with understanding how to work with the fluid simulation. You can import the samples using the *Package Manager*. To run the samples, open any of the scenes in the [Samples~](#keyfeatures-samples) folder and click play. Scenes can be loaded at run-time in the **Scenes** tab in the UI. There are several options in the UI *Input Tab* to select from. Control the fluid input type, fluid rigid body spawning, boat driving and "FlyCam". 
 
-![Samples UI](images/samples_ui.png)
+![Samples UI](../../docs/images/samples_ui.png)
 
 *Note: The samples optionally use the [Unity Post-Processing package](#https://docs.unity3d.com/Packages/com.unity.postprocessing@3.4/manual/Installation.html) for higher-quality visuals. It will be automatically enabled if the Post-Processing package is imported into the project.*  
 
@@ -116,7 +116,7 @@ Fluid Frenzy contains five sample scenes to showcase the functionality and help 
 
 #### River
 
-![River Sample](images/sample_river.png)
+![River Sample](../../docs/images/sample_river.png)
 
 The River sample shows the use of [Fluid Modifier Volume](#fluid-modifier-volume) adding water from multiple sources to create three river branches. The camera starts at the end of one of these branches with a boat that can be driven across the scene. Water flows out of the scene due to the *Open Borders* functionality of the fluid simulation to prevent flooding of the scene. This scene makes use of the Unity Terrain so modifying the terrain in realtime- is not possible.
 
@@ -124,25 +124,25 @@ The River sample shows the use of [Fluid Modifier Volume](#fluid-modifier-volume
 
 #### Grand Canyon
 
-![Grand Canyon Sample](images/sample_grandcanyon.png)
+![Grand Canyon Sample](../../docs/images/sample_grandcanyon.png)
 
 The Grand Canyon sample shows the use of [Fluid Modifier Volume](#fluid-modifier-volume) adding water from multiple sources on top of the canyon filling the canyon below. The camera starts a boat that can be driven across the scene. Water stays in the scene due to the *Open Borders* functionality of the fluid simulation being disabled causing the scene to eventually flood. This scene makes use of the Unity Terrain so modifying the terrain in real-time is not possible.
 
 #### Water Modifiers
 
-![Water Modifiers Sample](images/sample_watermodifiers.png)
+![Water Modifiers Sample](../../docs/images/sample_watermodifiers.png)
 
 The Water Modifiers sample shows the use of [Fluid Modifier Waves](#fluid-modifier-waves) to create different types of waves, [Fluid Modifier Volume](#fluid-modifier-volume) to create a vortex, and [Fluid Rigidbody](#fluid-rigidbody) showcasing buoyancy and advection of objects. The camera starts overlooking the vortex, you can add water and spawn [Fluid Rigid Bodies](#fluid-rigidbody) using the mouse. 
 
 #### Volcano
 
-![Volcano Sample](images/sample_volcano.png)
+![Volcano Sample](../../docs/images/sample_volcano.png)
 
 The Volcano scene showcases that different fluids can be rendered like lava. This scene uses the [Lava Surface](#lava) [Fluid Renderer](#fluid-rendering-components) to create an erupting volcano. This scene makes use of the Unity Terrain so modifying the terrain in real-time is not possible.
 
 #### Terraform
 
-![Terraform Sample](images/sample_terraform.png)
+![Terraform Sample](../../docs/images/sample_terraform.png)
 
 The Terraform scene showcases God Game simulation with two types of fluid interacting with each other and erosion of the top sand layer. Water and Lava are automatically added to the scene from different locations and when they touch they turn into rocky terrain and steam. Fluid and Terrain can be added using the mouse input as described in the controls section. This scene makes use of a custom terrain allowing modifications to be made to it in real-time by adding erodible sand, or non-erodible rock and vegetation.
 
@@ -158,7 +158,7 @@ Fluid Frenzy is easy and quick to set up ready for use with just a few clicks. T
 
 These steps will describe how to set up a fluid simulation that will simulate and render water.
 
-![Water Simulation Setup](images/gameobject_fluidfrenzy_watersimulation.png)
+![Water Simulation Setup](../../docs/images/gameobject_fluidfrenzy_watersimulation.png)
 
 1. *(Optional)* Select the Terrain you want to fluid simulation to interact with.
 2. Add a [Fluid Simulation](#fluid-simulation) by clicking the GameObject menu and selecting *`Fluid Frenzy > Create Water Simulation`*.
@@ -179,7 +179,7 @@ You now have a functional Fluid Simulation using Fluid Frenzy. Hit Play and see 
 
 ### <a name="setup-terraform-simulation">Terraform Simulation</a>
 
-![Terraform Simulation Setup](images/gameobject_fluidfrenzy_terraform.png)
+![Terraform Simulation Setup](../../docs/images/gameobject_fluidfrenzy_terraform.png)
 
 These steps will describe how to set up a fluid simulation that will simulate god game-like terraforming. The simulation supports fluids of water and lava, erosion and fluid mixing to turn water and lava into rock. In the current version of **Fluid Frenzy** terraforming only works the [Terraform Terrain](#terraform-terrain).
 1. Add a [Terraform Terrain](#terraform-terrain) to your scene by clicking the GameObject menu and selecting *`Fluid Frenzy > Create TerraformTerrain`*.
@@ -204,7 +204,7 @@ These are all the components that control and extend the simulation.
 
 **Fluid Simulation** is the core component of Fluid Frenzy. It handles the full simulation and the components attached to it.
 
-![Fluid Simulation](images/fluidsimulation.png)
+![Fluid Simulation](../../docs/images/fluidsimulation.png)
 
 - **Settings** - a [Fluid Simulation Settings](#fluid-simulation-settings) asset that holds the settings to be used for this Fluid Simulation. 
 - **Dimension** - is the size simulation in *world space*. `dimension.x is width(x)` `dimension.y is depth(z)`. 
@@ -224,13 +224,13 @@ These are all the components that control and extend the simulation.
 
 #### Update Mode
 
-![Fluid Simulation Settings](images/fluidsimulationsettings_slice_0_0.png)
+![Fluid Simulation Settings](../../docs/images/fluidsimulationsettings_slice_0_0.png)
 
 - **Run in Fixed Update** - allows the user to choose between simulating in *Update* or *Fixed Update*. It is recommended to run in *Fixed Update* for better stability, as the delta time will not fluctuate and the simulation will be in sync with Unity's physics. If your game is using a very high or low 'Time.fixedDeltaTime' value, it is advised to simulate in Update. The simulation will always run at a fixed timestep of 60hz to maintain stability, even if your framerate is higher or lower. This means that if you have a higher framerate, eventually there will be a frame where the simulation does not have to run. Conversely, with a lower framerate, the simulation will need to run multiple times per frame to catch up. This is because 2.5D Fluid simulations tend to become unstable with high timesteps.
 
 #### Wave Simulation Settings
 
-![Fluid Simulation Settings](images/fluidsimulationsettings_slice_1_0.png)
+![Fluid Simulation Settings](../../docs/images/fluidsimulationsettings_slice_1_0.png)
 
 These settings control the main part of the simulation, how fast fluids move down the terrain and around obstacles, how fast they dissolve and how high they get in certain regions.
 
@@ -244,13 +244,13 @@ These settings control the main part of the simulation, how fast fluids move dow
 
 #### Rendering Settings
 
-![Fluid Simulation Settings](images/fluidsimulationsettings_slice_2_0.png)
+![Fluid Simulation Settings](../../docs/images/fluidsimulationsettings_slice_2_0.png)
 
 - **Clip Height** - any fluid height below this value will be treated as no fluid. This is to help clipping issues due to floating point impression.
 
 #### CPU>GPU Readback
 
-![Fluid Simulation Settings](images/fluidsimulationsettings_slice_3_0.png)
+![Fluid Simulation Settings](../../docs/images/fluidsimulationsettings_slice_3_0.png)
 
 - **CPU Height Read** - the simulation fully runs on the GPU but in some cases, interaction with objects that live in the CPU is desired like floating objects. When enabling this the height and velocity will be read back to the CPU asynchronously. The reason it is readback asynchronously is to prevent stalls and improve performance, this does mean that the CPU data is a few frames behind the GPU simulation.
 - **Time Slicing** - to improve the performance further time slicing of the *readback* can be enabled. The selected value means how many *readbacks* will need to be done to get the full simulation back to the CPU. The higher this number, the less expensive the *readback* becomes but the longer it takes before the simulation is fully read back. Time slicing happens from top to bottom of the simulation, meaning the 100/N% in the height will be read back. Only one *readback* per simulation is performed at the same time so the next timeslice section will not start until the previous one is finished.
@@ -259,7 +259,7 @@ These settings control the main part of the simulation, how fast fluids move dow
 
 These settings control the behavior of the Velocity Field. The Velocity Field is a 2D texture used for effects like flow mapping, foam advection, erosion, and sediment advection of eroded materials. It is generated from inputs from outputs generated by the Wave Simulation.
 
-![Fluid Simulation Settings](images/fluidsimulationsettings_slice_4_0.png)
+![Fluid Simulation Settings](../../docs/images/fluidsimulationsettings_slice_4_0.png)
 
 - **Velocity Texture Size** - is the size of the Velocity Field
 - **Padding Percentage** - the amount of padding borders the velocity flow map. This is used for tiled simulations which are currently disabled. It is recommended to keep this at 0 for now.
@@ -274,7 +274,7 @@ These settings control the behavior of the Velocity Field. The Velocity Field is
 
 A fluid second layer can be enabled within the [Fluid Simulation](#fluid-simulation) to simulate an extra type of fluid. There is a slight decrease in performance and an increase in VRAM usage but it is more performant than adding a separate [Fluid Simulation](#fluid-simulation). By default, this is disabled except for the Terraform Simulation option where the second layer is used for lava. The settings for this are overrides for the settings of the main layer.
 
-![Fluid Simulation Settings](images/fluidsimulationsettings_slice_5_0.png)
+![Fluid Simulation Settings](../../docs/images/fluidsimulationsettings_slice_5_0.png)
 
 - **Second Layer** - enables/disables the second layer.
 - **Cell Size** - scales the size of each cell to control how fast the fluid flows, a smaller **Cell Size** means less fluid can exist in the cell resulting in faster flowing fluid.
@@ -298,7 +298,7 @@ ___
 
 **Foam Layer Settings** are *Scriptable Object* assets that are assigned to a [Foam Layer](#foam-layer). It is an asset to make it easier to reuse and modify settings on multiple [Foam Layers](#foam-layer). To create a **Foam Layer Settings** asset click *`Assets > Create > Fluid Frenzy > Foam Layer Settings`*.
 
-![Foam settings](images/foamsettings.png)
+![Foam settings](../../docs/images/foamsettings.png)
 
 #### Foam Render Settings
 
@@ -331,7 +331,7 @@ ___
 
 **Fluid Flow Mapping Settings** are *Scriptable Object* assets that are assigned to a [Fluid Flow Mapping](#fluid-flow-mapping). It is an asset to make it easier to reuse and modify settings on multiple [Fluid Flow Mappings](#fluid-flow-mapping). To create a **Flow Mapping Settings** asset click *`Assets > Create > Fluid Frenzy > Flow Mapping Settings`*.
 
-![Flow mapping settings](images/flowmappingsettings.png)
+![Flow mapping settings](../../docs/images/flowmappingsettings.png)
 
 - **Flow Mapping Mode** - selects which mode of flow mapping to use  
 Options:
@@ -349,7 +349,7 @@ ___
 
 The erosion of terrains is simulated by using 2D textures. The higher the velocity in the velocity field, the more of the terrain is removed/eroded from the heightmap into a sediment map. This sediment map gets updated every frame by adding/removing terrain sediment and then advecting it through the map based on the velocity. The sediment in the sediment map will get deposited back to the terrain heightmap in slower-moving fluids.
 
-![Erosion Layer](images/erosionlayer.png)
+![Erosion Layer](../../docs/images/erosionlayer.png)
 
 - **Slippage** - enables/disables erosion caused by slippage of materials. When enabled the top layer of the terrain smooths over time due to erosion.
 - **Slope Angle** - the angle at which the slippage should happen. Any terrain angle higher than this value will smooth due to slippage.
@@ -368,7 +368,7 @@ The **Terraform Layer** is an extension of the [Erosion Layer](#erosion-layer) w
 
 Terraforming is done using 2D textures for modifications. When two fluids occupy the same sell they remove a certain amount from the fluid heightmap and place it into the *Modify textures*. The *Modify texture* then deposits the mixed fluids as terrain into the terrain heightmap and splatmap.
 
-![Terraform Layer](images/terraformlayer.png)
+![Terraform Layer](../../docs/images/terraformlayer.png)
 
 - **Fluid Mixing** - enables/disables fluid mixing of multi-layered fluid simulations. When enabled two fluids occupying the same cell will start mixing together. In the case of this simulation mixing of water and lava occurs by turning the fluids into rocky terrain.
 - **Mix Rate** - the rate at which the fluids mix. Higher values mean faster mixing.
@@ -381,7 +381,7 @@ Terraforming is done using 2D textures for modifications. When two fluids occupy
 
 **Fluid RigidBody** is a component that can be applied to a GameObject to interact with the fluid simulation. It supports physics features like buoyancy, advection and creating waves. To simulate these effects **CPU Height Read** needs to be enabled.
 
-![Fluid Rigidbody](images/fluidrigidbody.png)
+![Fluid Rigidbody](../../docs/images/fluidrigidbody.png)
 
 #### Waves
 
@@ -424,7 +424,7 @@ ___
 
 #### <a name="water-surface">Water Surface</a>
 
-![Water Surface](images/watersurface.png)
+![Water Surface](../../docs/images/watersurface.png)
 
 [Water Surface](#water-surface) is an extension of the [FluidRenderer](#fluid-rendering-components) component that specifically deals with rendering water-related elements of the fluid simulation, such as foam. It accomplishes this by assigning the currently active rendering layers to its assigned material.
 
@@ -441,7 +441,7 @@ There are a lot of material properties available for tweaking to create beautifu
 
 Lighting effect rendering properties
 
-![Water Shader](images/watershader_slice_0_0.png)
+![Water Shader](../../docs/images/watershader_slice_0_0.png)
 
 - **Specular Intensity** - increase/decrease the specular light brightness of the main directional light.
 - **Shadows** - enables/disables if the water receives shadows.
@@ -450,7 +450,7 @@ Lighting effect rendering properties
 
 Water's reflection rendering properties.
 
-![Water Shader](images/watershader_slice_1_0.png)
+![Water Shader](../../docs/images/watershader_slice_1_0.png)
 
 - **Planar Reflection** - enables/disables if the water should use planar reflections or just reflection probes.
 - **Distortion** - scales the distortion applied to the planar reflections.
@@ -459,7 +459,7 @@ Water's reflection rendering properties.
 
 Depth-based control of the water's color and refraction rendering properties. 
 
-![Water Shader](images/watershader_slice_2_0.png)
+![Water Shader](../../docs/images/watershader_slice_2_0.png)
 
 - **Color** 
     - *RGB* - is the color of the water at the maximum depth.
@@ -472,7 +472,7 @@ Depth-based control of the water's color and refraction rendering properties.
 
 Subsurface scattering rendering effect properties
 
-![Water Shader](images/watershader_slice_3_0.png)
+![Water Shader](../../docs/images/watershader_slice_3_0.png)
 
 - **Color** - the color the water will become when a condition for subsurface scattering is met.
 - **Intensity** - scales the base intensity of the subsurface scattering.
@@ -485,7 +485,7 @@ Subsurface scattering rendering effect properties
 
 Render quality improvements by applying detail waves using normal mapping and displacement mapping.
 
-![Water Shader](images/watershader_slice_4_0.png)
+![Water Shader](../../docs/images/watershader_slice_4_0.png)
 
 - **Normal map** - texture, strength, and tiling options to apply extra detail normals to the water surface. 
 - **Vertex Displacement** - applies small displacement waves to the vertices based on the velocity within the velocity field of the fluid simulation.
@@ -500,7 +500,7 @@ Render quality improvements by applying detail waves using normal mapping and di
 
 Foam rendering effect properties.
 
-![Water Shader](images/watershader_slice_5_0.png)
+![Water Shader](../../docs/images/watershader_slice_5_0.png)
 
 - **Foam Albedo** - a texture(RGB) multiplied by the color picker(RGB) is used as the diffuse color of the foam. The texture(A)  multiplied by the color picker(A) is used as a mask on where to apply the foam.
 - **Foam Normal Map** - a texture used to add detail to the PBR lighting of the foam.
@@ -512,7 +512,7 @@ Foam rendering effect properties.
 
 General rendering settings.
 
-![Water Shader](images/watershader_slice_6_0.png)
+![Water Shader](../../docs/images/watershader_slice_6_0.png)
 
 - **Layer** - which layer from the Fluid Simulation to use.
 - **Render Queue** - the rendering order of the material.
@@ -525,7 +525,7 @@ ___
 #### <a name="lava-surface">Lava Surface</a>
 **LavaSurface** is an extension of the [FluidRenderer](#fluid-rendering-components) component. It is modified to allow the generation of a custom heat LUT through its gradient field. This LUT is assigned to the Lava material to determine the emissive color of lava based on factors like the velocity of the lava.
 
-![Lava Surface](images/lavasurface.png)
+![Lava Surface](../../docs/images/lavasurface.png)
 
 - **Generate Heat LUT** - when enabled the **Heat Gradient** configured will override the *Heat LUT* applied to the **Fluid Material** with a *procedurally generated texture*.
 - **Heat Gradient** - The gradient turns into a procedurally generated texture to override the **Fluid Material**.
@@ -534,7 +534,7 @@ ___
 
 **FluidFrenzy/Lava** is the shader that is applied to the materials on the [Lava Surface](#lava-surface) **Fluid Material** field. The *heat* of the lava is the length of the velocity vector in the velocity field.
 
-![Lava Shader](images/lavashader.png)
+![Lava Shader](../../docs/images/lavashader.png)
 
 - **Heat LUT** - is a gradient texture used to determine the color of the lava emission based on the *heat* of the lava.
 - **Heat LUT Scale** - is a scale applied to the *heat* when sampling the **Heat LUT** gradient.
@@ -553,7 +553,7 @@ ___
 
 **Simple Terrain** is a terrain rendering component for fluid simulations that makes use of the [Erosion Layer](#erosion-layer). When the [Erosion Layer](#erosion-layer) makes modifications to the terrain height it is applied directly to the **Simple Terrain** in realtime.
 
-![Simple Terrain](images/simpleterrain.png)
+![Simple Terrain](../../docs/images/simpleterrain.png)
 
 - **Terrain Material** - is the material the terrain will be rendered with. Currently, only the **Simple Terrain** and **Terraform Terrain** shaders are supported. Custom shaders can be written.
 - **Dimension** - determines the width and height of the terrain.
@@ -564,7 +564,7 @@ ___
 #### <a name="terraform-terrain">Terraform Terrain</a>
 The **Terraform Terrain** component is an extension of the **Simple Terrain** component. It adds an extra [splat map](https://en.wikipedia.org/wiki/Texture_splatting) that the [Terraform Layer](#terraform-layer) makes modifications to. This splat map is used to represent different terrain layers on the base layer of the terrain. It is rendered by the **FluidFrenzy/TerraformTerrain** shader.
 
-![Terraform Terrain](images/terraformterrain.png)
+![Terraform Terrain](../../docs/images/terraformterrain.png)
 
 - **Splatmap** - is applied to the Terraformed terrain as a mask to determine which layer of textures and material properties of the assigned **Terrain Material** to use. The splat map is only applied to the base layer since there is only 1 erodible material.
 
@@ -580,7 +580,7 @@ The **Terraform Terrain** component is an extension of the **Simple Terrain** co
 
 **Fluid Modifier Volume** has multiple types that can be used simultaneously. The types are:
 
-![Fluid Modifier Volume](images/fluidsource.png)
+![Fluid Modifier Volume](../../docs/images/fluidsource.png)
 
 #### <a name="fluid-volume-source">Source</a>
 
@@ -633,7 +633,7 @@ Is used to add a displacement force to the simulation. There are several types o
 
 **Fluid Modifier Waves** applies a displacement force to the simulation to replicate waves generated by external forces like wind. 
 
-![Fluid Modifier Waves](images/fluidmodifier_waves.png)
+![Fluid Modifier Waves](../../docs/images/fluidmodifier_waves.png)
 
 - **Strength** - the amount of force to be applied in regions where waves are being generated.
 - **Octave 1** - are settings to generate random waves
@@ -650,7 +650,7 @@ Each of these Waves has the following settings
 **Fluid Modifier Pressure** applies a displacement force to the simulation based on the pressure generated by the velocity field. Areas of high pressure where fluid pushes against an obstacle like terrain or object will become elevated making the fluid field appear like it is accumulating before spreading around the obstacle. 
 *Note: for this modifier to function the simulation needs to use additive velocity mode in the [Fluid Simulation Settings](#fluid-simulation-settings)*.
 
-![Fluid Modifier Pressure](images/fluidmodifier_pressure.png)
+![Fluid Modifier Pressure](../../docs/images/fluidmodifier_pressure.png)
 
 - **Pressure Range** - is the range at which the pressure is high enough to start applying forces to the fluid simulation. Any pressure below the minimum value will apply no forces, and anything above the maximum will apply the full strength. Anything in between is interpolated using [smoothstep](https://en.wikipedia.org/wiki/Smoothstep).
 - **Strength** - is the amount of force to be applied when there is enough pressure built up in the fluid simulation.
