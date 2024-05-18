@@ -2,6 +2,7 @@
 html {
     position: relative;
     min-height: 100%;
+    scroll-padding-top: 70px; /* height of sticky header */    
   }
   body {
     padding-top: $navbar-height + $navbar-margin-bottom;

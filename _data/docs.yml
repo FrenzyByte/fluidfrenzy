@@ -1,11 +1,8 @@
 - title: Getting Started
   docs:
-  - home
-  - themes
-  - customization
-
-- title: Examples
-  docs:
-  - cheatsheet
-  - font-awesome
-  - bootstrap
+  - index
+  - setup
+  - fluid_simulation_components
+  - fluid_rendering_components
+  - fluid_modifiers
+  - future_updates_roadmap

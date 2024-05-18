@@ -60,3 +60,6 @@ collections:
   posts:
     permalink: /blog/:year/:month/:day/:title/
     output: true
+
+kramdown:
+    toc_levels: "1,2,3"
