@@ -8,11 +8,13 @@ lang: en-US
 baseurl: "/fluidfrenzy" # the subpath of your site, e.g. /blog/
 url: https://frenzybyte.github.io/fluidfrenzy # the base hostname & protocol for your site
 git_address: https://github.com/frenzybyte/fluidfrenzy
-git_edit_address: https://github.com/frenzybyte/fluidfrenzy/blob/gh-pages
+git_edit_address: https://github.com/FrenzyByte/fluidfrenzy/issues
+git_issue_address: https://github.com/FrenzyByte/fluidfrenzy/issues
 twitter_address: https://twitter.com/FluidFrenzy
 unityasset_address: https://assetstore.unity.com/packages/slug/273366
 youtube_address: https://www.youtube.com/@Fluid-Frenzy
 reddit_address: https://www.reddit.com/u/FrenzyTheHedgehog/
+
 
 # theme options from https://bootswatch.com/3/
 # comment out this to use default Bootstrap

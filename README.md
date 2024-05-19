@@ -1,6 +1,6 @@
 ## Fluid Frenzy Documentation
 
-Welcome to the project page for my fluid simulation [**Fluid Frenzy**](https://frenzybyte.github.io/fluidfrenzy/)! This repository used to manage the **Fluid Frenzy** page and project.
+Welcome to the project page for my fluid simulation [**Fluid Frenzy**](https://frenzybyte.github.io/fluidfrenzy/)! This repository is used to manage the **Fluid Frenzy** page and project.
 
 For more in-depth explanations, please refer to the [documentation](https://frenzybyte.github.io/fluidfrenzy/docs/index/).
 
