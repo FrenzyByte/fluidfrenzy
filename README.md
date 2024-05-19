@@ -1,9 +1,9 @@
 ## Fluid Frenzy Documentation
 
-Welcome to the documentation for my fluid simulation **Fluid Frenzy**! This repository contains detailed information on how to use and customize the fluid simulation asset in your Unity projects.
+Welcome to the project page for my fluid simulation [**Fluid Frenzy**](https://frenzybyte.github.io/fluidfrenzy/)! This repository used to manage the **Fluid Frenzy** page and project.
 
-For more in-depth explanations, please refer to the [documentation](DOCUMENTATION.md).
+For more in-depth explanations, please refer to the [documentation](https://frenzybyte.github.io/fluidfrenzy/docs/index/).
 
-If you encounter any issues or have any questions, please feel free to open an issue in this repository.
+If you encounter any issues or have any questions, please feel free to [open an issue](https://github.com/FrenzyByte/fluidfrenzy/issues) in this repository.
 
 Happy simulating! 🌊🌋🎮
