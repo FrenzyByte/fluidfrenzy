@@ -8,7 +8,7 @@ lang: en-US
 baseurl: "/fluidfrenzy" # the subpath of your site, e.g. /blog/
 url: https://frenzybyte.github.io/fluidfrenzy # the base hostname & protocol for your site
 git_address: https://github.com/frenzybyte/fluidfrenzy
-git_edit_address: https://github.com/FrenzyByte/fluidfrenzy/issues
+git_edit_address: https://github.com/FrenzyByte/fluidfrenzy/blob/main
 git_issue_address: https://github.com/FrenzyByte/fluidfrenzy/issues
 twitter_address: https://twitter.com/FluidFrenzy
 unityasset_address: https://assetstore.unity.com/packages/slug/273366
