@@ -22,9 +22,12 @@ html {
     background-color: black;
     background: url('../img/banner.png') no-repeat 50% 0;
     color: #fff;
-  
+    text-shadow: 2px 0 #000000, -2px 0 #000000, 0 2px #000000, 0 -2px #000000,
+                  1px 1px #000000, -1px -1px #000000, 1px -1px #000000, -1px 1px #000000;  
     h1 {
       color: #fff;
+      text-shadow: 2px 0 #000000, -2px 0 #000000, 0 2px #000000, 0 -2px #000000,
+                  1px 1px #000000, -1px -1px #000000, 1px -1px #000000, -1px 1px #000000;  
     }
     // background-attachment: fixed;
     background-size: cover;
