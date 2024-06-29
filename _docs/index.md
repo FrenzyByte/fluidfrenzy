@@ -42,12 +42,6 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
     ```DOCUMENTATION.html```
     ```Documentation~\DOCUMENTATION.md```
 
-<a name="installation"></a>
-### Installation
-
-- Add the package through *Assets > Import Package > Custom Package*.
-- Select the *.unitypackage* file for Fluid Frenzy. This will add the package to the *Package Manager*
-
 <a name="requirements"></a>
 ### Requirements
 
@@ -58,6 +52,7 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 | GPU | Nvidia GTX 1050 equivalent or higher |
 | Graphics API | DirectX 11. DirectX 12. Vulkan |
 | Shader Model | Recommended: 5.0. Minimum: 3.0 |
+| Renderpipeline | Built-in |
 
 <a name="limitations"></a>
 ### Limitations
@@ -66,4 +61,4 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 - The fluid simulation has a maximum speed limit determined by the 2.5D implementation used. In this simulation, the fluid is represented in a 2D texture where each pixel corresponds to a specific size in the world. The fluid can only move one pixel per step, resulting in a maximum speed limit based on the pixel's world units per frame. The simulation attempts to adjust automatically when the dimensions are scaled, but there is a limit to how fast or slow the fluid can move.
 - Multiplayer is not supported in Fluid Frenzy since syncing the data over the network takes too much bandwidth and there is no guarantee simulations run in sync and stay in sync due to latency.
 
-<a name="samples"></a>
+<a name="installation"></a>

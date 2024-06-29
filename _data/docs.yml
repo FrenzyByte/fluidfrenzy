@@ -1,6 +1,7 @@
 - title: Getting Started
   docs:
   - index
+  - installation
   - samples
   - setup
   - fluid_simulation_components
