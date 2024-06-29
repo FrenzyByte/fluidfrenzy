@@ -13,6 +13,9 @@ permalink: /docs/samples/
 
 Fluid Frenzy contains five sample scenes to showcase the functionality and help with understanding how to work with the fluid simulation. You can import the samples using the *Package Manager*. 
 
+<a name="samples-import"></a>
+### Importing Samples
+
 1. Open the ```Package Manager```.
 <br>![Package Manager Open](../../assets/images/packagemanager_open.png)<br>
 2. Select ```In Project```.
@@ -20,6 +23,10 @@ Fluid Frenzy contains five sample scenes to showcase the functionality and help 
 4. Go to the ```Samples``` tab.
 5. Click the ```Import``` button.
 <br>![Package Manager Import Scenes](../../assets/images/packagemanager_importscenes.png)<br>
+
+<a name="samples-running"></a>
+### Running Samples
+
 To run the samples, open any of the scenes in the ```Assets/Samples/Fluid Frenzy/1.0.0/Samples``` folder and click play. Scenes can be loaded at run-time in the **Scenes** tab in the UI. There are several options in the UI *Input Tab* to select from. Control the fluid input type, fluid rigid body spawning, boat driving and "FlyCam". 
 
 ![Samples UI](../../assets/images/samples_ui.png)
