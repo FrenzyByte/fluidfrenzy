@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improved default values for Fluid Foam Settings.
 - Improved default values of the Water Shader. Defaults to no planar reflections and no vertex displacement.
-- Use the material assigned to the Fluid Surface instead of cloning it. This allows for easier tweaking and updating the material.
+- Copy material parameters assigned to the Fluid Surface to cloned material for rendering. This allows for easier tweaking and updating the material.
 - Documentation improvements on how to install the package and sample scenes.
 
 ### Fixed
