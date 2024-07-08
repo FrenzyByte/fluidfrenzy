@@ -55,10 +55,22 @@ defaults:
     seo:
       type: "WebPage"
 
+- scope:
+    path: _changelog
+    type: changelog
+  values:
+    layout: changelog
+    sectionid: changelog
+    seo:
+      type: "WebPage"      
+
 collections:
   docs:
     permalink: /:collection/:path/
     output: true
+  changelog:
+    permalink: /:collection/:path/
+    output: true    
   posts:
     permalink: /blog/:year/:month/:day/:title/
     output: true
