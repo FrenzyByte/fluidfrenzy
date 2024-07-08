@@ -22,7 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved default values for Fluid Foam Settings.
 - Improved default values of the Water Shader. Defaults to no planar reflections and no vertex displacement.
 - Use the material assigned to the Fluid Surface instead of cloning it. This allows for easier tweaking and updating the material.
-- Documetation improvements on how to install the package and sample scenes.
+- Documentation improvements on how to install the package and sample scenes.
+- Unity 6 preview warnings. RigidBody.velocity is deprecated and should now be RigidBody.linearVelocity in Unity 6.
 
 ### Fixed
 
