@@ -42,7 +42,7 @@ You now have a functional Fluid Simulation using Fluid Frenzy. Hit Play and see 
 ![Terraform Simulation Setup](../../assets/images/gameobject_fluidfrenzy_terraform.png)
 
 These steps will describe how to set up a fluid simulation that will simulate god game-like terraforming. The simulation supports fluids of water and lava, erosion and fluid mixing to turn water and lava into rock. In the current version of **Fluid Frenzy** terraforming only works the [Terraform Terrain](#terraform-terrain).
-1. Add a [Terraform Terrain](#terraform-terrain) to your scene by clicking the GameObject menu and selecting *`Fluid Frenzy > Create TerraformTerrain`*.
+1. Add a [Terraform Terrain](#terraform-terrain) to your scene by clicking the GameObject menu and selecting *`Fluid Frenzy > Terraform Terrain`*.
 2. Set up your [Terraform Terrain](#terraform-terrain) by assigning all required settings.
 2. Set up the newly created [Terraform Terrain](#terraform-terrain) to your liking.
 3. Select your [Terraform Terrain](#terraform-terrain) and add a Terraform Simulation by clicking *`Fluid Frenzy > Terraform Simulation`*.
