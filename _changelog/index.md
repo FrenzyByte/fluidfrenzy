@@ -4,6 +4,23 @@ permalink: /changelog/index/
 redirect_from: /changelog/index.html
 ---
 
+## [1.0.2] - 2024-07-09
+
+### Added
+
+- Custom TerraformTerrain Inspector with tooltips.
+- Custom TerraformTerrain ShaderGUI for TerraformTerrain shaders.
+
+### Changed
+
+- Improved default values for second fluid layer settings. Matches lava better.
+- Menu item values so that Fluid Frenzy appears with the rest of the GameObjects in the list.
+
+### Fixed
+
+- ComputeShader enableRandomWrite not set error when using second layer and modifying a parameter in settings at runtime.
+- Runtime Generated HeatLUT now gets applied again after breaking in version 1.0.1.
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
