@@ -25,7 +25,7 @@ These are all the components that control and extend the simulation.
 - **Terrain type** - specifies which type of terrain to use as the base ground to flow the fluid simulation over.
     Options:
     - *Unity Terrain* - the simulation uses the **Terrain** assigned to the **Unity Terrain** field.
-    - *Simple Terrain* - the simulation uses the [Simple Terrain](#simple-terrain) or a [Terraform Terrain](#terraform-terrain) assigned to the **Simple Terrain** field.
+    - *Simple Terrain* - the simulation uses the [Simple Terrain](../fluid_rendering_components#simple-terrain) or a [Terraform Terrain](../fluid_rendering_components#terraform-terrain) assigned to the **Simple Terrain** field.
     - *Heightmap* - the simulation will be initialized from and using a height map. This feature can be used if you are using a custom terrain system.  
 - **Extension Layers** - fluid simulation extension layers like foam, flow mapping, and terraforming so they are executed within this fluid simulation. Assign any extension fluid layer components that should run with this fluid simulation. 
 

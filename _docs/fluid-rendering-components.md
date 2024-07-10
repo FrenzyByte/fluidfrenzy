@@ -27,9 +27,9 @@ ___
 
 ![Water Surface](../../assets/images/watersurface.png)
 
-[Water Surface](#water-surface) is an extension of the [FluidRenderer](#fluid-rendering-components) component that specifically deals with rendering water-related elements of the fluid simulation, such as foam. It accomplishes this by assigning the currently active rendering layers to its assigned material.
+[Water Surface](#water-surface) is an extension of the [FluidRenderer](../fluid_simulation_components#fluid-rendering-components) component that specifically deals with rendering water-related elements of the fluid simulation, such as foam. It accomplishes this by assigning the currently active rendering layers to its assigned material.
 
-- **Foam Layer** - assign a [Foam Layer](#foam-layer) component whose foam mask gets applied for foam rendering effects on the water material.
+- **Foam Layer** - assign a [Foam Layer](../fluid_simulation_components#foam-layer) component whose foam mask gets applied for foam rendering effects on the water material.
 
 <div style="page-break-after: always;"></div>
 
@@ -127,7 +127,7 @@ ___
 
 <a name="lava-surface"></a>
 #### Lava Surface
-**LavaSurface** is an extension of the [FluidRenderer](#fluid-rendering-components) component. It is modified to allow the generation of a custom heat LUT through its gradient field. This LUT is assigned to the Lava material to determine the emissive color of lava based on factors like the velocity of the lava.
+**LavaSurface** is an extension of the [FluidRenderer](../fluid_simulation_components#fluid-rendering-components) component. It is modified to allow the generation of a custom heat LUT through its gradient field. This LUT is assigned to the Lava material to determine the emissive color of lava based on factors like the velocity of the lava.
 
 ![Lava Surface](../../assets/images/lavasurface.png)
 
@@ -158,7 +158,7 @@ ___
 <a name="simple-terrain"></a>
 #### Simple Terrain
 
-**Simple Terrain** is a terrain rendering component for fluid simulations that makes use of the [Erosion Layer](#erosion-layer). When the [Erosion Layer](#erosion-layer) makes modifications to the terrain height it is applied directly to the **Simple Terrain** in realtime.
+**Simple Terrain** is a terrain rendering component for fluid simulations that makes use of the [Erosion Layer](../fluid_simulation_components#erosion-layer). When the [Erosion Layer](../fluid_simulation_components#erosion-layer) makes modifications to the terrain height it is applied directly to the **Simple Terrain** in realtime.
 
 ![Simple Terrain](../../assets/images/simpleterrain.png)
 
@@ -170,7 +170,7 @@ ___
 
 <a name="terraform-terrain"></a>
 #### Terraform Terrain
-The **Terraform Terrain** component is an extension of the **Simple Terrain** component. It adds an extra [splat map](https://en.wikipedia.org/wiki/Texture_splatting) that the [Terraform Layer](#terraform-layer) makes modifications to. This splat map is used to represent different terrain layers on the base layer of the terrain. It is rendered by the **FluidFrenzy/TerraformTerrain** shader.
+The **Terraform Terrain** component is an extension of the **Simple Terrain** component. It adds an extra [splat map](https://en.wikipedia.org/wiki/Texture_splatting) that the [Terraform Layer](../fluid_simulation_components#terraform-layer) makes modifications to. This splat map is used to represent different terrain layers on the base layer of the terrain. It is rendered by the **FluidFrenzy/TerraformTerrain** shader.
 
 ![Terraform Terrain](../../assets/images/terraformterrain.png)
 

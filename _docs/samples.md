@@ -53,7 +53,7 @@ To run the samples, open any of the scenes in the ```Assets/Samples/Fluid Frenzy
 
 ![River Sample](../../assets/images/sample_river.png)
 
-The River sample shows the use of [Fluid Modifier Volume](#fluid-modifier-volume) adding water from multiple sources to create three river branches. The camera starts at the end of one of these branches with a boat that can be driven across the scene. Water flows out of the scene due to the *Open Borders* functionality of the fluid simulation to prevent flooding of the scene. This scene makes use of the Unity Terrain so modifying the terrain in realtime- is not possible.
+The River sample shows the use of [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) adding water from multiple sources to create three river branches. The camera starts at the end of one of these branches with a boat that can be driven across the scene. Water flows out of the scene due to the *Open Borders* functionality of the fluid simulation to prevent flooding of the scene. This scene makes use of the Unity Terrain so modifying the terrain in realtime- is not possible.
 
 <div style="page-break-after: always;"></div>
 
@@ -62,21 +62,21 @@ The River sample shows the use of [Fluid Modifier Volume](#fluid-modifier-volume
 
 ![Grand Canyon Sample](../../assets/images/sample_grandcanyon.png)
 
-The Grand Canyon sample shows the use of [Fluid Modifier Volume](#fluid-modifier-volume) adding water from multiple sources on top of the canyon filling the canyon below. The camera starts a boat that can be driven across the scene. Water stays in the scene due to the *Open Borders* functionality of the fluid simulation being disabled causing the scene to eventually flood. This scene makes use of the Unity Terrain so modifying the terrain in real-time is not possible.
+The Grand Canyon sample shows the use of [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) adding water from multiple sources on top of the canyon filling the canyon below. The camera starts a boat that can be driven across the scene. Water stays in the scene due to the *Open Borders* functionality of the fluid simulation being disabled causing the scene to eventually flood. This scene makes use of the Unity Terrain so modifying the terrain in real-time is not possible.
 
 <a name="samples-watermodifers"></a>
 ### Water Modifiers
 
 ![Water Modifiers Sample](../../assets/images/sample_watermodifiers.png)
 
-The Water Modifiers sample shows the use of [Fluid Modifier Waves](#fluid-modifier-waves) to create different types of waves, [Fluid Modifier Volume](#fluid-modifier-volume) to create a vortex, and [Fluid Rigidbody](#fluid-rigidbody) showcasing buoyancy and advection of objects. The camera starts overlooking the vortex, you can add water and spawn [Fluid Rigid Bodies](#fluid-rigidbody) using the mouse. 
+The Water Modifiers sample shows the use of [Fluid Modifier Waves](../fluid_modifiers#fluid-modifier-waves) to create different types of waves, [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) to create a vortex, and [Fluid Rigidbody](../fluid_simulation_components#fluid-rigidbody) showcasing buoyancy and advection of objects. The camera starts overlooking the vortex, you can add water and spawn [Fluid Rigid Bodies](../fluid_simulation_components#fluid-rigidbody) using the mouse. 
 
 <a name="samples-volcano"></a>
 ### Volcano
 
 ![Volcano Sample](../../assets/images/sample_volcano.png)
 
-The Volcano scene showcases that different fluids can be rendered like lava. This scene uses the [Lava Surface](#lava) [Fluid Renderer](#fluid-rendering-components) to create an erupting volcano. This scene makes use of the Unity Terrain so modifying the terrain in real-time is not possible.
+The Volcano scene showcases that different fluids can be rendered like lava. This scene uses the [Lava Surface](../fluid_rendering_components#lava) [Fluid Renderer](../fluid_simulation_components#fluid-rendering-components) to create an erupting volcano. This scene makes use of the Unity Terrain so modifying the terrain in real-time is not possible.
 
 <a name="samples-terraform"></a>
 ### Terraform
