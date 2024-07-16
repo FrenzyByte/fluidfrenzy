@@ -31,7 +31,7 @@ To run the samples, open any of the scenes in the ```Assets/Samples/Fluid Frenzy
 
 ![Samples UI](../../assets/images/samples_ui.png)
 
-*Note: The samples optionally use the [Unity Post-Processing package](#https://docs.unity3d.com/Packages/com.unity.postprocessing@3.4/manual/Installation.html) for higher-quality visuals. It will be automatically enabled if the Post-Processing package is imported into the project.*  
+*Note: The samples optionally use the [Unity Post-Processing package](https://docs.unity3d.com/Packages/com.unity.postprocessing@3.4/manual/Installation.html) for higher-quality visuals. It will be automatically enabled if the Post-Processing package is imported into the project.*  
 
 <a name="samples-controls"></a>
 ### Controls
