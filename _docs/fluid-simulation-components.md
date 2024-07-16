@@ -106,7 +106,7 @@ ___
 **Foam Layer** is an extension layer that can be attached to the Fluid Simulation. It generates a foam map based on the current state of the simulation. There are several inputs from the [Fluid Simulation](#fluid-simulation) that are used to generate this map (Pressure, Y Velocity, and Slope). The influence of each of these inputs can be controlled by the [Foam Layer Settings](#foam-settings).
 *Note: This component lives on a GameObject but also needs to be added to the **Layers** list of the [Fluid Simulation](#fluid-simulation).*  
 
-- **Settings** - a [Foam Layer Settings](#foams-ettings) asset which holds the settings to be used for this Foam Layer
+- **Settings** - a [Foam Layer Settings](#foam-settings) asset which holds the settings to be used for this Foam Layer
 
 <a name="foam-settings"></a>
 ### Foam Layer Settings
