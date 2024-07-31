@@ -50,7 +50,7 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 | Unity | 2021.3 or newer |
 | OS | Windows 10 or newer |
 | GPU | Nvidia GTX 1050 equivalent or higher |
-| Graphics API | DirectX 11. DirectX 12. Vulkan |
+| Graphics API | DirectX 11. DirectX 12. Vulkan. WebGL 2(Beta). |
 | Shader Model | Recommended: 5.0. Minimum: 3.0 |
 | Renderpipeline | Built-in |
 
@@ -60,5 +60,7 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 - Fluid Frenzy is a [2.5D/*Shallow Water Equation*](https://en.wikipedia.org/wiki/Shallow_water_equations) fluid simulation that is achieved by storing the height of the fluid in a 2D texture (X, Z). This method restricts the simulation to having only one height per pixel, thereby preventing the fluid from flowing both under and over objects simultaneously.
 - The fluid simulation has a maximum speed limit determined by the 2.5D implementation used. In this simulation, the fluid is represented in a 2D texture where each pixel corresponds to a specific size in the world. The fluid can only move one pixel per step, resulting in a maximum speed limit based on the pixel's world units per frame. The simulation attempts to adjust automatically when the dimensions are scaled, but there is a limit to how fast or slow the fluid can move.
 - Multiplayer is not supported in Fluid Frenzy since syncing the data over the network takes too much bandwidth and there is no guarantee simulations run in sync and stay in sync due to latency.
+- Fluid Frenzy's WebGL 2 support is currently in beta. There is the possibility of bugs when running in WebGL 2. Please report them if you encounter them.
+- WebGL 2 does not support Compute Shaders, for this reason, the GPU particle system used for steam when water/lava interact does not work on WebGL 2. In the future, WebGPU should support this but there are still some bugs within Unity that cause instability with Fluid Frenzy.
 
 <a name="installation"></a>
