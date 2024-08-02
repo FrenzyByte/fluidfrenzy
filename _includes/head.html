@@ -21,4 +21,21 @@
     {% seo %}
 
     <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | absolute_url }}" />
+    <style>
+        /* Hide the video element by default */
+        .mobile-video {
+            display: none;
+        }
+
+        /* Use media query for mobile devices */
+        @media (max-width: 768px) {
+            .desktop-iframe {
+                display: none;
+            }
+            .mobile-video {
+                display: block;
+            }
+        }
+    </style>
+
 </head>
