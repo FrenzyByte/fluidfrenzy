@@ -15,6 +15,7 @@
             <ul class="nav navbar-nav">
                 <li {% if page.sectionid=='docs' %} class="active" {% endif %}><a href="{{ "/docs/index/" | relative_url }} " data-no-hoverflow>Docs</a></li>
                 <li {% if page.sectionid=='changelog' %} class="active" {% endif %}><a href="{{ "/changelog/index/" | relative_url }}" data-no-hoverflow>Changelog</a></li>
+                <li {% if page.sectionid=='demo' %} class="active" {% endif %}><a href="{{ "/demo/index/" | relative_url }}" data-no-hoverflow>Demo</a></li>
                 <!--<li {% if page.sectionid=='blog' %} class="active" {% endif %}><a href="{{ site.posts.first.url | relative_url }}">Blog</a></li>-->
             </ul>
             <div class="navbar-right">
@@ -26,8 +27,9 @@
                 </form>
                 <ul class="nav navbar-nav">
                     <li><a href="{{ site.unityasset_address }}"><i class="fa-brands fa-unity" aria-hidden="true"></i></a></li>
-                    <li><a href="{{ site.twitter_address }}"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a></li>
+                    <li><a href="{{ site.discord_address }}"><i class="fa-brands fa-discord" aria-hidden="true"></i></a></li>
                     <li><a href="{{ site.youtube_address }}"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a></li>
+                    <li><a href="{{ site.twitter_address }}"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a></li>
                     <li><a href="{{ site.reddit_address }}"><i class="fa-brands fa-reddit" aria-hidden="true"></i></a></li>
                     <li><a href="{{ site.git_address }}"><i class="fa-brands fa-github" aria-hidden="true"></i></a></li>
                 </ul>
