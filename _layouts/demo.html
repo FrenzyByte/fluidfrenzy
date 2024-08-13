@@ -14,8 +14,21 @@ layout: default-nosearch
 
 <script>
     // Function to detect mobile devices
+    function iOS() {
+        return [
+            'iPad Simulator',
+            'iPhone Simulator',
+            'iPod Simulator',
+            'iPad',
+            'iPhone',
+            'iPod'
+        ].includes(navigator.platform)
+        // iPad on iOS 13 detection
+        || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+        }
+
     function isMobileDevice() {
-        return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || iOS();
     }
 
     // Load content based on device type
