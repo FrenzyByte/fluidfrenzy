@@ -4,6 +4,32 @@ permalink: /changelog/index/
 redirect_from: /changelog/index.html
 ---
 
+## [1.0.4] - 2024-08-15
+
+### Added
+
+- Terraform Terrain: Allow not setting splatmap/heightmap.
+- WebGL: Added fallback mode to replace blend mode sources on iOS 16+ as fp32 blendmodes are bugged/not supported.
+- Samples: Add Sandbox sample scene.
+- Samples: Placing sources in samples.
+- Samples: Mobile controls.
+
+### Changed
+
+- Simulation: Replace all shader half vectors with float
+- Samples: Toolbar improvements and cleanup.
+- Samples: General quality improvements.
+
+### Fixed
+
+- Simulation: Make simulation framerate indepedent again.
+- Simulation: Reset static input when resetting the simulation.
+- Foam: Make wave height foam generation consistent and indepedent of timestep size.
+- Foam: If foam runs in RGHalf instead of UNorm on mobile platforms make sure it is clamped the same as desktop.
+- WebGL: Fix fluid stretching up against walls on android devices.
+- WebGL: Fix terrain source Max Blend (e.g. Terraform Volcano) on iOS 17.
+- Samples: Fix black artefacts on volcano terrain in OpenGL.
+
 ## [1.0.3] - 2024-07-31
 
 ### Added
