@@ -4,6 +4,29 @@ permalink: /changelog/index/
 redirect_from: /changelog/index.html
 ---
 
+## [1.0.5] - 2024-08-28
+
+### Added
+
+- Editor: Create Lava Simulation context menu.
+- Terraform Terrain: Allow not setting splatmap/heightmap.
+- Simulation: Added optimization for shadermodel 4.0 targets (DirectX) or when using custom terrains by using Gather when creating renderdata.
+
+### Changed
+
+- Simulation: Changed Normal Map to 16bit floating point to improve quality of normals (reduce banding).
+- Simulation: Removed rotation from normal map, all heights are now sampled anyway. Reduces cost and makes normals more accurate.
+- Simulation: Clipping mask is now stored in normal.w.
+- Samples: Set lava renderqueue to 2510.
+
+### Fixed
+
+- Simulation: Fixed clipping issue when using high terrains. High terrains would clip due to floating point imprecision, at higher values steps would get bigger and sometimes end up under the terrain. Resolved by storing water delta in renderdata and sampling both terrain and waterheight in water/lava shaders.  
+- Simulation: Unity terrain is now stored in R16_Unorm (R8G8_Unorm in WebGL) so that the water and source unity terrain match.
+- Simulation: Wave Foam is now generated from correct wave delta instead of low range/clamped value of normal.w.
+- Simulation: Fixed Second Layer only "Addtive velocity". Previously when Additive velocity was only enabled on the second layer it would not be properly integrated.
+- Samples: Move orbit camera framerate independent.
+
 ## [1.0.4] - 2024-08-15
 
 ### Added
