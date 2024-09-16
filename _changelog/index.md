@@ -29,7 +29,7 @@ redirect_from: /changelog/index.html
 
 ### Fixed
 
-- Rendering: Close Fit Shadows mode on FluidFrenzy/Water shader.[Issue-3](https://github.com/FrenzyByte/fluidfrenzy/issues/3)
+- Rendering: Close Fit Shadows mode on FluidFrenzy/Water shader. [Issue-3](https://github.com/FrenzyByte/fluidfrenzy/issues/3)
 - Rendering: normal map generation. Normals were angled too far down on slopes.
 - Simulation: WebGL warnings.
 - Simulation: GetHeight function to include the transform height. [Issue-8](https://github.com/FrenzyByte/fluidfrenzy/issues/8)
