@@ -20,6 +20,7 @@ These are all the components that control and extend the simulation.
 
 - **Settings** - a [Fluid Simulation Settings](#fluid-simulation-settings) asset that holds the settings to be used for this Fluid Simulation. 
 - **Dimension** - is the size simulation in *world space*. `dimension.x is width(x)` `dimension.y is depth(z)`. 
+- **Fluid Base Height** - is a float value that can be used to apply a height offset to the fluid. This can be used to reduce/remove clipping with tessellated terrains.
 - **Initial Fluid Height** - is a float value of the fluid height when the simulation starts. This is a *world space* height, meaning that any terrain lower than this height will have fluid up to this height and any terrain higher will have no fluid.
 - **Initial Fluid Height Texture** - is a texture mask of the fluid height when the simulation starts. This is This is a *world space* height, meaning that any terrain lower than this height will have fluid up to this height and any terrain higher will have no fluid. When combining this with the **Initial Fluid Height** value the maximum for that pixel is taken.
 - **Terrain type** - specifies which type of terrain to use as the base ground to flow the fluid simulation over.

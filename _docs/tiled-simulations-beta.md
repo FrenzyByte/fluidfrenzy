@@ -5,6 +5,9 @@ permalink: /docs/tiled_simulations_beta/
 
 
 Tiled Simulations have been made available in Fluid Frenzy in version v1.0.6 as a beta feature if there any bugs, issues or suggestions please report them [here](https://github.com/FrenzyByte/fluidfrenzy/issues). 
+To enable this feature add the following symbol to your **Scripting Define Symbols** in the project settings: `FLUIDFRENZY_NEIGHBOURS_ENABLED`
+
+![Tiled Simulation Gizmos](../../assets/images/tiled_simulation_playersettings.png)
 
 When requiring multiple terrains to make up a bigger world, Fluid Frenzy can add a simulation to each of these terrains and connect the simulations together. This feature allows neighbouring simulations to interact with each other, Fluid can flow between simulations freely.
 
