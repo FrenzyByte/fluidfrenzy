@@ -36,6 +36,7 @@ redirect_from: /changelog/index.html
 - Simulation: Bounds height calculation. Bounds are now twice the size of the supplied terrain in order to make GetHeight return more accurately. [Issue-9](https://github.com/FrenzyByte/fluidfrenzy/issues/9)
 - Simulation: Update bounds when assigning a different terrain to the Fluid Simulation. [Issue-5](https://github.com/FrenzyByte/fluidfrenzy/issues/5)
 - Simulation: Fixed Garbage allocation when using CPU Readback.
+- Simulation: Vulkan errors when using FluidObstacles and FluidModifierWaves.
 - Editor: Fixed the location of the Fluid Simulation when created through the Fluid Frenzy > Create Water Simulation option.
 - Samples: Touch input improvements in samples, fixes poor performance on some low-end devices.
 
