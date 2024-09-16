@@ -4,6 +4,41 @@ permalink: /changelog/index/
 redirect_from: /changelog/index.html
 ---
 
+## [1.0.6] - 2024-09-16
+
+### Added
+
+- Rendering: Clipping offset controls to Lava and Water shader. This allows the user to reduce clipping with the Unity Terrain on lower LODs.
+- Rendering: Albedo texture support to lava shader for when the lava is cold.
+- Rendering: Slider to control the light intensity of Lava lighting.
+- Rendering: Fade Height slider to control to the lava shader transparency. This allows the user to soften the lava's edges. 
+- Simulation: [Beta]Added support for neighbouring simulation interaction. See [documentation](https://frenzybyte.github.io/fluidfrenzy/docs/tiled_simulations_beta/) for more information. [Issue-10](https://github.com/FrenzyByte/fluidfrenzy/issues/10)
+- Simulation: Fluid Base Height option. This allows offsetting the height of the fluid in the Y direction in order to fix clipping issues with tessellated Unity Terrains.[Issue-12](https://github.com/FrenzyByte/fluidfrenzy/issues/12) 
+- Simulation: Support for adding simulation's at runtime. [Issue-6](https://github.com/FrenzyByte/fluidfrenzy/issues/6)
+- Simulation: Functions to set and update the Fluid Simulation's terrain.
+- Simulation: Support for dxc compiler. Automatically enabled when using XBOX. Can be overwritten by uncommenting the #define FORCE_DXC line in the common.hlsl headers. [Issue-11](https://github.com/FrenzyByte/fluidfrenzy/issues/11)
+- Simulation: Improve visual feedback on Fluid Sources. Draw a grid matching the underlying terrain. [Issue-7](https://github.com/FrenzyByte/fluidfrenzy/issues/7)
+- Editor: About window that popsup on first load or can be opened using Window > Fluid Frenzy > About.
+
+### Changed
+
+- Rendering: Lava Fade height is now performed from the Fluid Simulations Settings Clip Height as a start position instead of 0.
+- Rendering: Moved Lava and Water textures to Runtime folder to improve workflow. When creating a Water/Lava simulation the materials will automatically have default textures assigned. This should prevent confusing when the simulation look worse/different than the samples. [Issue](https://github.com/FrenzyByte/fluidfrenzy/issues/4)
+- Simulation: Linear filter the velocity field when creating rendering data, makes the velocity smoother.
+- Simulation: Removed rotation from normal map, all heights are now sampled anyway. Reduces cost and makes normals more accurate.
+
+### Fixed
+
+- Rendering: Close Fit Shadows mode on FluidFrenzy/Water shader.[Issue-3](https://github.com/FrenzyByte/fluidfrenzy/issues/3)
+- Rendering: normal map generation. Normals were angled too far down on slopes.
+- Simulation: WebGL warnings.
+- Simulation: GetHeight function to include the transform height. [Issue-8](https://github.com/FrenzyByte/fluidfrenzy/issues/8)
+- Simulation: Bounds height calculation. Bounds are now twice the size of the supplied terrain in order to make GetHeight return more accurately. [Issue-9](https://github.com/FrenzyByte/fluidfrenzy/issues/9)
+- Simulation: Update bounds when assigning a different terrain to the Fluid Simulation. [Issue-5](https://github.com/FrenzyByte/fluidfrenzy/issues/5)
+- Simulation: Fixed Garbage allocation when using CPU Readback.
+- Editor: Fixed the location of the Fluid Simulation when created through the Fluid Frenzy > Create Water Simulation option.
+- Samples: Touch input improvements in samples, fixes poor performance on some low-end devices.
+
 ## [1.0.5] - 2024-08-28
 
 ### Added
