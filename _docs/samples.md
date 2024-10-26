@@ -85,7 +85,19 @@ The Volcano scene showcases that different fluids can be rendered like lava. Thi
 
 The Terraform scene showcases God Game simulation with two types of fluid interacting with each other and erosion of the top sand layer. Water and Lava are automatically added to the scene from different locations and when they touch they turn into rocky terrain and steam. Fluid and Terrain can be added using the mouse input as described in the controls section. This scene makes use of a custom terrain allowing modifications to be made to it in real-time by adding erodible sand, or non-erodible rock and vegetation.
 
----
+<a name="samples-simpleterraform"></a>
+### Simple Terraform
+
+![Terraform Sample](../../assets/images/sample_terraform.png)
+
+The Simple Terraform scene a minimal version of the terraform simulation, it has a simpler UI so that it's scripts be be easily copied to other scenes.
+*Note: The scripts, scene and UI components in this sample are setup with specific type of terrain layers and fluids. If you wish to reuse the scripts make sure your scene is setup the same or modify your layers accordingly
+
+<a name="samples-tiledsimulation"></a>
+### Tiled Simulation
+
+Demonstrates multiple simulations that neighbour each other on different **Terrain** tiles interacting with each other. In this sample fluid from each tile can flow into it's neighbouring tile. Allowing the creation of larger and non-square scenes.
+More information can be found [here](#8-tiled-simulations-beta) 
 
 <div style="page-break-after: always;"></div>
 

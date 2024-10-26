@@ -11,12 +11,21 @@ permalink: /docs/fluid_rendering_components/
 
 The **FluidRenderer** component is responsible for rendering the Fluid Simulation. This component is in charge of creating and rendering the necessary meshes and materials needed for displaying the assigned Fluid Simulation. Users can customize the **FluidRenderer** component to create their own rendering effects, similar to **WaterSurface** and **LavaSurface** renderers.
 
+- **Render Mode** - The method used for rendering the surface.
+
+    - **MeshRenderer**: Uses GameObjects with [MeshRenderer](https://docs.unity3d.com/ScriptReference/MeshRenderer.html) components to draw the surface. The surface is a evenly distributed fixed size grid. The grid can be split up into multiple blocks/objects for better culling. GPU instancing is supported when enabled on the assigned material. 
+
+    - **DrawMesh**: Uses [Graphics.RenderMesh](https://docs.unity3d.com/ScriptReference/Graphics.RenderMesh.html) or [Graphics.RenderMeshInstanced](https://docs.unity3d.com/ScriptReference/Graphics.RenderMeshInstanced.html) to render a height field to each camera, it has the same functionality as the MeshRenderer method except it doesn't create any GameObjects and it is rendered manually and can therefore support GPU Instancing on the water shader.
+
+    - **GPULOD**: Draws the surface using a fully [GPU-Accelerated distance based LOD system](https://www.researchgate.net/publication/331761994_Quadtrees_on_the_GPU) for maximum performance. The surfaces will be drawn with higher detail up close, and lower detail in the distance.
+- **Mesh Resolution** - the amount of vertices the mesh is in each axis. It is best to match **Fluid Simulation Settings -** **Number of Cells**.
+- **Mesh Blocks** - the amount of blocks the rendering mesh is to be subdivided in to improve GPU performance by culling parts of the renderer.
+- **LOD Resolution** - The resolution of each LOD mesh in the terrain.
+- **Traverse Iterations** - The number of iterations the GPULOD Quadtree will run when traversing the Quadtree. Higher iterations resolve the quality of the surface faster, but reduces performance.
+- **LOD Levels** - The minimum and maximum LOD levels that can be selected.
 - **Fluid Material** - is the material the fluid simulation will be rendered with.
 - **Simulation** - is the simulation to be rendered.
 - **Flow Mapping** - the **Flow Mapping Layer** component whose rendering data will be used to apply flow mapping to the material.
-- **Mesh Resolution** - the amount of vertices the mesh is in each axis. It is best to match **Fluid Simulation Settings -** **Number of Cells**.
-- **Mesh Blocks** - the amount of blocks the rendering mesh is to be subdivided in to improve GPU performance by culling parts of the renderer.
-
 ___
 
 <a name="water"></a>
@@ -29,7 +38,7 @@ ___
 
 [Water Surface](#water-surface) is an extension of the [FluidRenderer](../fluid_simulation_components#fluid-rendering-components) component that specifically deals with rendering water-related elements of the fluid simulation, such as foam. It accomplishes this by assigning the currently active rendering layers to its assigned material.
 
-- **Foam Layer** - assign a [Foam Layer](../fluid_simulation_components#foam-layer) component whose foam mask gets applied for foam rendering effects on the water material.
+- **Foam Layer** - assign a [Foam Layer](../fluid_simulation_components#foam-layer) component whose foam mask to apply for foam rendering effects on the water material.
 
 <div style="page-break-after: always;"></div>
 
@@ -132,7 +141,7 @@ ___
 ![Lava Surface](../../assets/images/lavasurface.png)
 
 - **Generate Heat LUT** - when enabled the **Heat Gradient** configured will override the *Heat LUT* applied to the **Fluid Material** with a *procedurally generated texture*.
-- **Heat Gradient** - The gradient turns into a procedurally generated texture to override the **Fluid Material**.
+- **Heat Gradient** - The gradient that will be used to generate a LUT for sampling the heat of the lava. Cold Lava(Left), Hot Lava(Right).
 
 <a name="lava-shader"></a>
 #### Lava Shader

@@ -22,15 +22,15 @@ permalink: /docs/fluid_modifiers/
 #### Source
 
 Is used to add/remove fluid from the simulation.
-- **Mode** - is the input mode of the modifier.
+- **Mode** - sets the input mode of the modifier.
     Options:
     - *Circle* - the modifier inputs the fluid in a circular shape.
     - *Box* - the modifier inputs fluid in a rectangular shape.
     - *Texture* - the modifier inputs the fluid from a source texture.
 - **Dynamic** - enables/disables if the modifier can be moved. When disabled the modifier will write to a static texture at the start of the simulation. This is useful if you have many fluid sources and want to improve your performance.
-- **Size** - the size of the volume.
-- **Strength** - the amount of fluids input by the volume
-- **Falloff** - changes the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create large but more focused fluid sources. A higher value means the source strength falls off faster.
+- **Size** - adjusts the size of the volume in world space.
+- **Strength** - adjusts the amount of fluids input by the volume
+- **Falloff** - Adjusts the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create large but more focused fluid sources. A higher value means the source strength falls off faster.
 - **Texture** - the texture to use as an input. Only the red channel is used. 
 
 <a name="fluid-volume-flow"></a>
@@ -44,10 +44,10 @@ is used to add a force to the velocity field of the simulation. An example of th
     - *Vortex* - the modifier inputs the flow of a vortex. The flow shape will be circular but has control over the radial flow and the inward flow
     - *Texture* - the modifier inputs the flow direction from a flow map texture.
 - **Direction** - is the 2D direction that the flow force will be applied in. On a flat surface `direction.x` is in X world space and `direction.y` is Z in world space. If the surface is sloped either component will appear to go more in the world space Y since the velocity field is in 2D. 
-- **Size** - is the size of the flow volume.
-- **Strength** is the amount of flow applied to the velocity field. For Vortex mode, this is the inward flow to the center.
-- **Falloff** - changes the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create sharper/flatter wave/vortex shapes. Higher values mean a faster falloff.
-- **Radial Flow Strength** - the amount of radial flow applied to the velocity field for vortex mode. Higher values make vortices flow faster.
+- **Size** - adjusts the size of the flow volume in world space.
+- **Strength** adjusts the amount of flow applied to the velocity field. For Vortex mode, this is the inward flow to the center.
+- **Falloff** - adjusts the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create sharper/flatter wave/vortex shapes. Higher values mean a faster falloff.
+- **Radial Flow Strength** - adjusts the amount of radial flow applied to the velocity field for vortex mode. Higher values make vortices flow faster.
 - **Additive** - *enabled:* adds the flow to the current flow in the velocity field. *disabled:* replaces the current flow of the velocity field.
 - **Texture** - a flow map texture that writes its red & green channels into the velocity field. 
 
@@ -56,17 +56,17 @@ is used to add a force to the velocity field of the simulation. An example of th
 
 Is used to add a displacement force to the simulation. There are several types of forces ranging from waves, splashes and whirlpools.
 
-- **mode** is the input mode of the modifier.
+- **mode** sets the input mode of the modifier.
     Options:
     - *Circle* - creates a force in a direction within a circular shape. This is useful for creating waves and pushing fluids around.
     - *Vortex* - create a force that moves fluids down with a distance-based falloff, creating a vortex/whirlpool-like shape.
     - *Splash* - creates a splash effect on the fluid surface. Pushes fluids in an outward direction from the center so that the simulation can move it back in, causing a splash effect.
-    - *Texture* - the red channel of this texture will be used as a height displacement. This can be used to create multiple fluid effects in one drawcall.
-- **Size** - the size of the modifier.
-
-- **Direction** - The direction the applied force causes the waves to move in. `direction.x` is X in world space and `direction.y` is Z in world space.
+    - *Texture* - creates forces from a texture input. The red channel of this texture will be used as a height displacement. This can be used to create multiple fluid effects in one drawcall.
+- **Size** - adjusts the size of the modifier in world space.
+- **Direction** - is the direction the applied force causes the waves to move in. `direction.x` is X in world space and `direction.y` is Z in world space.
 - **Strength** - the height of the wave/splash, the depth of the vortex, or the strength to apply the supplied texture.
-- **Falloff** - changes the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create sharper/flatter wave/vortex shapes. Higher values mean a faster falloff.
+- **Falloff** - adjusts the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create sharper/flatter wave/vortex shapes. Higher values mean a faster falloff.
+- **Texture** - the texture to use as an input into the outflow texture. Only the red channel is as a height used. 
 
 <a name="fluid-modifier-waves"></a>
 ### Fluid Modifier Waves
@@ -76,9 +76,9 @@ Is used to add a displacement force to the simulation. There are several types o
 ![Fluid Modifier Waves](../../assets/images/fluidmodifier_waves.png)
 
 - **Strength** - the amount of force to be applied in regions where waves are being generated.
-- **Octave 1** - are settings to generate random waves
-- **Octave 2** - are settings to generate a second set of random waves.
-- **Noise Octave** is used to create small up-and-down river-like waves. This uses the input of Perlin noise to break up repetition. Hence the name, **Noise Waves**.
+- **Octave 1** - defines the settings to generate random waves.
+- **Octave 2** - defines the settings to generate a second set of random waves.
+- **Noise Octave** defines settings to create small up-and-down river-like waves. This uses the input of Perlin noise to break up repetition. Hence the name, **Noise Waves**.
 Each of these Waves has the following settings
     - *Frequency* - of waves. Higher values mean more waves.
     - *Amplitude* - of the waves. Higher values create higher waves
@@ -95,6 +95,16 @@ Each of these Waves has the following settings
 
 - **Pressure Range** - is the range at which the pressure is high enough to start applying forces to the fluid simulation. Any pressure below the minimum value will apply no forces, and anything above the maximum will apply the full strength. Anything in between is interpolated using [smoothstep](https://en.wikipedia.org/wiki/Smoothstep).
 - **Strength** - is the amount of force to be applied when there is enough pressure built up in the fluid simulation.
+
+<a name="foam-modifier"></a>
+### Foam Modifier
+
+The **Foam Modifier** component adds and removes foam to the **Foam Layer** based on settings and transform of the object. 
+![foammodifier](../../assets/images/foammodifier.png)
+
+- **Strength** - adjusts the amount of foam to add or remove.
+- **exponent** - the falloff/shape of the foam added.
+- **size** - adjusts the size/area that is covered by the modifier to add foam in that region.
 
 ---
 
