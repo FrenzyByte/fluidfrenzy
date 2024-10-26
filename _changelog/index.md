@@ -4,6 +4,48 @@ permalink: /changelog/index/
 redirect_from: /changelog/index.html
 ---
 
+## [1.0.7] - 2024-10-26
+
+### Added
+
+- Rendering: A new GPULOD terrain/fluid renderer rendering system based on the Quadtrees on the GPU paper. This is a fully GPU accelerated LOD system which will help improve the rendering performance of the fluid and terrain rendering.
+- Rendering: Added support for rendering SimpleTerrain and TerraformTerrain in the scene view without going into play mode.
+- Rendering: Deferred shading support in the TerraformTerrain shader.
+- Rendering: Shadow support on the Lava shader.
+- Rendering: Hard shadows on the Water and Lava shader.
+- Rendering: Instancing support for the Lava and Water Shader.
+- Rendering: Chunk/Block splitting support to the SimpleTerrain and TerraformTerrain component to improve terrain culling.
+- Rendering: Shader API headers to easily write custom or add new shaders that interact with the FluidSimulation. Users that wish to write their own fluid surfaces for example stylized water can now do so by including the following headers: FluidRenderingCommon.hlsl
+- Simulation: Exposed many scripting API functions to make it easier to create and interact with the FluidSimulation and it's many components.
+	- Add/Get/Set/Gather Neighbour functions to setup and interact with neighbours.
+	- FluidSimulationManager.Step to manually progress all FluidSimulation components available
+- Samples: Added a RuntimeSetup example to demonstrate how to setup a FluidSimulation at runtime through C# scripting.
+- Samples: Added a Tiled Simulation example to demonstrate how to use the neighbouring tile functionality.
+- Samples: Added a Simple Terraform example to demonstrate terra-forming with more reusable scripts in users own games/scenes.
+- Editor: Added Tooltips to many of the rendering, simulation and shader GUIs.
+- Documentation: Added comments to all FluidFrenzy public classes, functions and properties to help users interact with FluidFrenzy's many compnents.
+
+### Changed
+
+- Rendering: Rendering method for FluidRenderer, SimpleTerrain, and TerraformTerrain. It is now possible to select different rendering modes (MeshRenderer, DrawMesh, GPULOD). Scenes will be automatically upgraded to the new method.
+- Rendering: Optimized Lava shader by reducing texture reads when using texture tiling reduction.
+- Simulation: Step function to allow more steps to be ran in a single Step call for users who wish to progress the simulation manually.
+- Simulation: Refactored and moved code into partial classes for better organization and readability.
+- Simulation: Hidden fluid simulation shaders from the shader selection menu in the material inspector.
+- Simulation: Reduce maximum allowed padding to 50%.
+- Samples: Make River & Terraform scene use new GPULOD system as an example.
+- Documentation: Updates across various components to enhance clarity.
+
+### Fixed
+
+- Rendering: Garbage collection when using CPU Readback.
+- Rendering: Normal calculation in TerraformTerrain shader.
+- Rendering: Seams between FluidSimulation tiles due to incorrect UV sampling.
+- Simulation: Improved parameter naming consistency across multiple components.
+- Simulation: Incorrect UV sampling of dynamic flow mapping on edges with simulation neighbours.
+- Simulation: Warning in Unity 6.
+- Samples: Garbage collection issues in various scripts and components (UIController and Mouse3D).
+
 ## [1.0.6] - 2024-09-16
 
 ### Added
