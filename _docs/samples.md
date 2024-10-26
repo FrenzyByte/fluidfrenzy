@@ -27,7 +27,7 @@ Fluid Frenzy contains five sample scenes to showcase the functionality and help 
 <a name="samples-running"></a>
 ### Running Samples
 
-To run the samples, open any of the scenes in the ```Assets/Samples/Fluid Frenzy/1.0.0/Samples``` folder and click play. Scenes can be loaded at run-time in the **Scenes** tab in the UI. There are several options in the UI *Input Tab* to select from. Control the fluid input type, fluid rigid body spawning, boat driving and "FlyCam". 
+To run the samples, open any of the scenes in the ```Assets/Samples/Fluid Frenzy/1.0.7/Samples``` folder and click play. Scenes can be loaded at run-time in the **Scenes** tab in the UI. There are several options in the UI *Input Tab* to select from. Control the fluid input type, fluid rigid body spawning, boat driving and "FlyCam". 
 
 ![Samples UI](../../assets/images/samples_ui.png)
 
@@ -98,6 +98,11 @@ The Simple Terraform scene a minimal version of the terraform simulation, it has
 
 Demonstrates multiple simulations that neighbour each other on different **Terrain** tiles interacting with each other. In this sample fluid from each tile can flow into it's neighbouring tile. Allowing the creation of larger and non-square scenes.
 More information can be found [here](#8-tiled-simulations-beta) 
+
+<a name="samples-runtimesetup"></a>
+### Runtime Setup
+
+Demonstrates how to setup a fluid simulation at runtime. This can be useful for when a game makes use of procedurally generated terrain that does not exist before entering playmode.
 
 <div style="page-break-after: always;"></div>
 
