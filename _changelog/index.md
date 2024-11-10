@@ -10,6 +10,7 @@ redirect_from: /changelog/index.html
 
 - Rendering: Support for [Enviro3 Sky and Weather](https://assetstore.unity.com/packages/tools/particles-effects/enviro-3-sky-and-weather-236601) in lava and water shader.
 - Simulation: Splash particles to FluidRigidBody for spawning particles when the object hits the fluid surface.
+- Samples: Added falling objects to WaterModifiers scene to demonstrate Splash particles.
 
 ### Fixed
 
