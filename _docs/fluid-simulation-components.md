@@ -216,8 +216,15 @@ Terraforming is done using 2D textures for modifications. When two fluids occupy
 - **Wave Falloff** - adjusts the falloff curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create sharper/flatter wave/vortex shapes. Higher values mean a faster falloff.
 
 #### Splashes
-
+- **Create Splashes** - enables the object to interact with the fluid simulation by creating splashes when falling into the fluid.
 - **Splash Force** - adjusts the force applied to the fluid simulation when the object lands in the fluid. Faster falling objects create bigger splashes.
+- **Splash Radius** - adjusts the size of the splash.
+- **Splash Time** - adjusts the time of the splash force being applied while surface contact is being made.
+- **Splash Particles** - a list of ParticleSystems and overrides that will be spawned when the rigid body makes contacts with the fluid.
+    - **System** - [ParticleSystem](https://docs.unity3d.com/ScriptReference/ParticleSystem.html) to be emitted when the [Rigidbody](https://docs.unity3d.com/6000.1/Documentation/Manual/class-Rigidbody.html) hits the fluid.
+    - **Override Splash Particles** - Determines if the particle system's start velocity and emission are to be overwritten based on the Rigidbody's impact speed with the fluid.
+    - **Splash Emission Rate** - Particle system emission rate when the rigidbody hits the fluid.
+    - **Splash Particle Speed Scale** - Adjusts the start speed of the particles.
 
 #### Physics
 

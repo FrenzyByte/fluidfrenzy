@@ -25,10 +25,8 @@ When neighbouring tiles use features like flow/foam mapping they require extra p
 
 The amount of padding required depends on the resolution of the texture and defaults to 0%. The padding can be increased by multiple of two increments.
 
-
-
 ---
 
 <div style="page-break-after: always;"></div>
 
-<a name="future-updates-roadmap"></a>
+<a name="third-party-support"></a>
