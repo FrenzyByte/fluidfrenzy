@@ -4,6 +4,21 @@ permalink: /changelog/index/
 redirect_from: /changelog/index.html
 ---
 
+## [1.0.8] - 2024-11-10
+
+### Added
+
+- Rendering: Support for [Enviro3 Sky and Weather](https://assetstore.unity.com/packages/tools/particles-effects/enviro-3-sky-and-weather-236601) in lava and water shader.
+- Simulation: Splash particles to FluidRigidBody for spawning particles when the object hits the fluid surface.
+
+### Fixed
+
+- Rendering: GPULOD Shadow culling. Objects no longer get culled too early when facing away from light direction.
+- Rendering: Error when creating a Terraform terrain.
+- Rendering: Error when no Shadow Light is assigned to SimpleTerrain.
+- Rendering: Match Simple/Terraform terrain texture to the spplied heightmap when using GPULOD mode.
+- Simulation: Tiled rendering seams removed. Neighbouring simulation's texture sampling is now seamless.
+
 ## [1.0.7] - 2024-10-26
 
 ### Added
