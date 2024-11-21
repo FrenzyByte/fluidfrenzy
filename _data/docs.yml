@@ -8,4 +8,6 @@
   - fluid_rendering_components
   - fluid_modifiers
   - tiled_simulations_beta
+  - physics_colliders
+  - third_party_support
   - future_updates_roadmap
