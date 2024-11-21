@@ -4,6 +4,17 @@ permalink: /changelog/index/
 redirect_from: /changelog/index.html
 ---
 
+## [1.0.9] - 2024-11-21
+
+### Added
+- Simulation: Physics Collider and raycasting support by optionally generating a TerrainCollider for the TerraformTerrain/SimpleTerrain and FluidSimulation.
+- Rendering: Water shader fade slider to allow height based fading similar to the lava shader to soften edges.
+
+### Fixed
+- Rendering: Incorrect dimensions being assigned the FluidRenderer components.
+- Rendering: Debug shader rendering when using vulkan.
+- Simulation: OpenGL triangle spikes due to render data creation not sampling neighbors correctly.
+
 ## [1.0.8] - 2024-11-10
 
 ### Added
