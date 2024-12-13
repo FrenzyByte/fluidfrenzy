@@ -76,7 +76,8 @@ Depth-based control of the water's color and refraction rendering properties.
     - *RGB* - is the color of the water at the maximum depth.
     - *Alpha* - is the base transparency of the water. Any value below 255 will make your water always transparent regardless of depth.
 - **Depth Transparency** - scales how transparent the water is based on the depth. Lower values make the water more transparent.
-- **Screenspace Refraction** - *enabled:* uses screenspace refraction by using GrabPass to sample what is behind the water, using this allows you to use distortion. *Disabled:* uses alpha blending to simulate water transparency.
+- **Screenspace Refraction** - *enabled:* uses screenspace refraction by using GrabPass to sample what is behind the water, using this allows you to use distortion. *Disabled:* uses alpha blending to simulate water transparency. 
+*URP*: Requires rendering features to be enabled as described [here](../setup#setup-urp).
 - **Distortion** - scales the distortion of the screenspace refraction when enabled.
 
 ##### Subsurface scattering

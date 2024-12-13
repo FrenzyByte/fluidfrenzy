@@ -52,6 +52,17 @@ These steps will describe how to set up a fluid simulation that will simulate go
 
 You now have a functional Terraform Simulation using Fluid Frenzy. Hit Play and see your Terrain being filled with water and lava!
 
+<a name="setup-urp"></a>
+### Universal Render Pipeline
+
+Fluid Frenzy supports seamless integrating with Unity's [Universal Render Pipeline](https://unity.com/srp/universal-render-pipeline).
+Almost all simulation and rendering components are interchangeable between Built-in and URP without having to assign new shaders or materials.
+The following features require configuration changes of the [Universal Render Pipeline Asset](https://docs.unity3d.com/6000.0/Documentation/Manual/urp/universalrp-asset.html).
+
+- #### Screenspace Refraction
+    When **Screenspace Refraction** is enabled on the FluidFrenzy/Water shader/material URP requires the following setting to be enabled:
+    ![URP Opaque Texture](../../assets/images/urp_opaque_texture.png)
+
 ---
 
 <div style="page-break-after: always;"></div>

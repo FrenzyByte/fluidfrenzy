@@ -24,6 +24,12 @@ Fluid Frenzy contains five sample scenes to showcase the functionality and help 
 5. Click the ```Import``` button.
 <br>![Package Manager Import Scenes](../../assets/images/packagemanager_importscenes.png)<br>
 
+<a name="samples-urp"></a>
+### Universal Render Pipeline
+
+All samples withing the package a functional with both the Built-in and Universal Render Pipeline. 
+When opening the samples with the Universal Render Pipeline active the sample materials are automatically upgraded when opening the sample scene.
+
 <a name="samples-running"></a>
 ### Running Samples
 

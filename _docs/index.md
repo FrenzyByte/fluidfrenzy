@@ -18,11 +18,12 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 - Real-time fluid simulation: Utilizing GPU acceleration for fast and interactive fluids.
 - Seamless integration with Unity Terrain: Easily add fluid elements to your Unity Terrain for a more immersive environment.
 - Custom terrain support: Compatible with custom terrains to give developers more flexibility in their projects.
-- Advanced rendering capabilities: Create stunning visual effects with the built-in renderer.
+- Advanced rendering capabilities: Create stunning visual effects with the built-in renderer and Universal Render Pipeline.
 - Multiple fluid layers: Create complex interactions between different types of fluids, such as water and lava, that can mix and solidify into terrain surfaces like rock.
 - Terrain erosion: Simulate erosion effects on terrain surfaces as fluids flow over them, creating realistic effects over time.
 - Dynamic object interaction: Objects in the fluid can interact realistically, with buoyancy effects and advection as they move through the fluid simulation.
 - Fluid modifiers: Customize the behavior of the fluid simulation with modifiers like waves, pressure fields, and whirlpools to create dynamic and visually interesting effects in your project.
+- Universal Render Pipeline: Supports Universal Render Pipeline with minimal extra setup as all features, components, and shaders are useable in both Built-in and URP.
 
 <a name="contents"></a>
 ### Contents
@@ -52,7 +53,7 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 | GPU | Nvidia GTX 1050 equivalent or higher |
 | Graphics API | DirectX 11. DirectX 12. Vulkan. WebGL 2(Beta). |
 | Shader Model | Recommended: 5.0. Minimum: 3.0 |
-| Renderpipeline | Built-in |
+| Renderpipeline | Built-in. Universal Render Pipeline |
 
 <a name="limitations"></a>
 ### Limitations
