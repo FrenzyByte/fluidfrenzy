@@ -23,7 +23,7 @@ redirect_from: /changelog/index.html
 ### Fixed
 - Rendering: Tiling artefact when using Tiled Simulations with the lava shader.
 - Rendering: Compilation errors when enabling fog on the TerraformTerrain shader.
-- Rendering: Normalize the TerraformTerrain splatmap sampling to prevent weights higher than oen when layers are on top of each other.
+- Rendering: Normalize the TerraformTerrain splatmap sampling to prevent weights higher than one when layers are on top of each other.
 - Rendering: Soft shadows on Lava shader.
 - Editor: Remove warning in Unity 2023 for FluidModifierVolumeEditor.
 - Samples: Compilation error when enabling fog on RockSphereEffect.
