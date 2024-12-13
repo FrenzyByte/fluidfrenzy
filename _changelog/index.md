@@ -4,6 +4,31 @@ permalink: /changelog/index/
 redirect_from: /changelog/index.html
 ---
 
+## [1.1.0] - 2024-12-12
+
+### Added
+- Rendering: Support for Universal Render Pipeline.
+- Rendering: Ambient lighting support for Lava shader.
+- Editor: Automatic Pipeline upgrader for each sample so samples can be used in both Built-in and Universal Render Pipeline.
+- Editor: Warnings and tooltips for URLS on the Fluid Frenzy About Window.
+
+### Changed
+- Rendering: Restructured shader to split rendering shaders (Water, Lava, TerraformTerrain) into headers between shared, built-in and urp.
+- Rendering: Renamed old terrain shaders to FluidFrenzy/Legacy as they were previously superseded by TerraformTerrainShader.
+- Rendering: Remove unused shader variants from Lava, Water and TerraformTerrain shader as they weren't used but did increase compilation size.
+- Rendering: Reduce water shader specular intensity. Intensity was 25 times over-bright than what it should be causing bloom to be very intense. Specular now matches regular PBR. Users who still want a brighter specular can modify the intensity on the material as before.
+- Samples: Simplified some sample shaders.
+- Samples: Removed bloom clamping after modifying specular intensity.
+
+### Fixed
+- Rendering: Tiling artefact when using Tiled Simulations with the lava shader.
+- Rendering: Compilation errors when enabling fog on the TerraformTerrain shader.
+- Rendering: Normalize the TerraformTerrain splatmap sampling to prevent weights higher than oen when layers are on top of each other.
+- Rendering: Soft shadows on Lava shader.
+- Editor: Remove warning in Unity 2023 for FluidModifierVolumeEditor.
+- Samples: Compilation error when enabling fog on RockSphereEffect.
+- Samples: Artefact on RocKSphereEffect shader in certain locations in the world.
+
 ## [1.0.9] - 2024-11-21
 
 ### Added
