@@ -28,6 +28,7 @@ These are all the components that control and extend the simulation.
     - *Unity Terrain* - use a **Terrain** assigned to the **Unity Terrain** field.
     - *Simple Terrain* - use a [Simple Terrain](../fluid_rendering_components#simple-terrain) or a [Terraform Terrain](../fluid_rendering_components#terraform-terrain) assigned to the **Simple Terrain** field.
     - *Heightmap* - use a **Texture2D** as a heightmap. This feature can be used if you are using a custom terrain system.  
+    - *MeshCollider* - use a **MeshCollider** assigned to the **meshCollider** field. This feature can be used if you want to use a mesh as the simulation's base ground.
 - **Extension Layers** - fluid simulation extension layers like foam, flow mapping, and terraforming so they are executed within this fluid simulation. Assign any extension fluid layer components that should run with this fluid simulation. 
 
 <div style="page-break-after: always;"></div>
