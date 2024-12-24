@@ -4,6 +4,25 @@ permalink: /changelog/index/
 redirect_from: /changelog/index.html
 ---
 
+## [1.1.1] - 2024-12-24
+
+### Added
+- Simulation: Support for `MeshCollider` as simulation base ground.
+- Simulation: Support for setting fluid to a specific height in an area based on the `FluidModifierVolume` height.
+- Simulation: Support for square input mode.
+- Rendering: Added clipspace offset to URP water and lava shaders.
+- Editor: Tooltips added to `FluidSimulationEditor`.
+
+### Changed
+- Simulation: Smooth out the rendering mask for better shapes between fluid layers.
+- Rendering: Improved lava and water edge smoothness by sampling the mask in the fragment shader.
+
+### Fixed
+- Simulation: Second layer not leveling fluid around edges.
+- Rendering: Lava flowmapping resetting incorrectly due to tiling reduction.
+- Rendering: Automatically set texture keywords enabled when creating new material.
+- URP: Prevented enqueueing traverse pass unless it's the scene view or main camera.
+
 ## [1.1.0] - 2024-12-12
 
 ### Added
