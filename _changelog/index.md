@@ -4,6 +4,18 @@ permalink: /changelog/index/
 redirect_from: /changelog/index.html
 ---
 
+## [1.1.2] - 2025-01-04
+
+### Added
+- Unofficial support for Unity 2020. The asset is functional now in Unity 2020 but due to differences in API not all features may work the same as later versions.
+- Simulation: Added version to FluidSimulationSettings so it can be upgraded easier.
+
+### Fixed
+- Simulation: Obstacles are now functioning as expected on the first load of the asset. Previously obstacles would cause a corrupted simulation due to uninitialized values.
+- Simulation: FluidModifierVolume setting fluid amount is now set correctly on FluidSimulation's that use the Unity Terrain.
+- Rendering: FluidSimulationDebug shader.
+- Rendering: Fix detail waves flow mapping in Built-in renderpipeline water shader if foam is not assigned.
+
 ## [1.1.1] - 2024-12-24
 
 ### Added
