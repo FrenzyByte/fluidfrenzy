@@ -10,6 +10,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2025-01-19
+
+### Added
+- Rendering: Stereo Instanced GPULOD (Terrain + Fluid) Support.
+- Rendering: Stereo Instanced Planar Reflection.
+- Rendering: Stereo Instanced Water Refraction.
+- Samples: GPULODTerrain sample that shows rendering of a simple terrain.
+
+### Changed
+- Rendering: URP Terrain sample normals in Pixel shader same as Built-in renderpipeline.
+- Editor: Give SimpleTerrain the same GUI as TerraformTerain.
+
+### Fixed
+- Rendering: Fixed fog not working in Built-in renderpipeline.
+- Rendering: GLES3 Build duplicate instancing attribute error.
+- Rendering: TerraformTerrain shader compile error when targetting Vulkan.
+- Rendering: Built/Standalone GPU Particles "Unable to create ProceduralQuad Index Buffer" error.
+- Rendering: URP VR compile errors when building.
+- Rendering: Unity 2021.1, 2021.2, 2022.1 "CopyMatchingPropertiesFromMaterial" compile error.
+- Samples: Build error in RenderPipelineAutoUpgrader.
+
 ## [1.1.2] - 2025-01-04
 
 ### Added
