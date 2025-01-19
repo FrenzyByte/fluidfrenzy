@@ -163,31 +163,3 @@ ___
 ___
 
 <a name="terrain"></a>
-### Terrain
-
-<a name="simple-terrain"></a>
-#### Simple Terrain
-
-**Simple Terrain** is a terrain rendering component for fluid simulations that makes use of the [Erosion Layer](../fluid_simulation_components#erosion-layer). When the [Erosion Layer](../fluid_simulation_components#erosion-layer) makes modifications to the terrain height it is applied directly to the **Simple Terrain** in realtime.
-
-![Simple Terrain](../../assets/images/simpleterrain.png)
-
-- **Terrain Material** - is the material the terrain will be rendered with. Currently, only the **Simple Terrain** and **Terraform Terrain** shaders are supported. Custom shaders can be written.
-- **Dimension** - determines the width and height of the terrain.
-- **Mesh Resolution** - controls the density of vertices in the mesh for each axis, ideally matching the dimensions of the Source HeightMap.
-- **Source Heightmap** - specifies the heightmap applied to the terrain with the red channel representing base height and the green channel showing erodible layers above it. Using a 16-bit per channel texture is recommended to avoid artifacts like stepping or terracing.
-- **Height Scale** - adjusts the overall height of the terrain by applying a multiplier to both the red and green channels of the Source Heightmap.
-
-<a name="terraform-terrain"></a>
-#### Terraform Terrain
-The **Terraform Terrain** component is an extension of the **Simple Terrain** component. It adds an extra [splat map](https://en.wikipedia.org/wiki/Texture_splatting) that the [Terraform Layer](../fluid_simulation_components#terraform-layer) makes modifications to. This splat map is used to represent different terrain layers on the base layer of the terrain. It is rendered by the **FluidFrenzy/TerraformTerrain** shader.
-
-![Terraform Terrain](../../assets/images/terraformterrain.png)
-
-- **Splatmap** - is applied to the Terraformed terrain as a mask to determine which layer of textures and material properties of the assigned **Terrain Material** to use. The splat map is only applied to the base layer since there is only 1 erodible material.
-
----
-
-<div style="page-break-after: always;"></div>
-
-<a name="fluid-modifiers"></a>

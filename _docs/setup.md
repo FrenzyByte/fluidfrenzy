@@ -41,11 +41,11 @@ You now have a functional Fluid Simulation using Fluid Frenzy. Hit Play and see 
 
 ![Terraform Simulation Setup](../../assets/images/gameobject_fluidfrenzy_terraform.png)
 
-These steps will describe how to set up a fluid simulation that will simulate god game-like terraforming. The simulation supports fluids of water and lava, erosion and fluid mixing to turn water and lava into rock. In the current version of **Fluid Frenzy** terraforming only works the [Terraform Terrain](../fluid_rendering_components#terraform-terrain).
-1. Add a [Terraform Terrain](../fluid_rendering_components#terraform-terrain) to your scene by clicking the GameObject menu and selecting *`Fluid Frenzy > Terraform Terrain`*.
-2. Set up your [Terraform Terrain](../fluid_rendering_components#terraform-terrain) by assigning all required settings.
-2. Set up the newly created [Terraform Terrain](../fluid_rendering_components#terraform-terrain) to your liking.
-3. Select your [Terraform Terrain](../fluid_rendering_components#terraform-terrain) and add a Terraform Simulation by clicking *`Fluid Frenzy > Terraform Simulation`*.
+These steps will describe how to set up a fluid simulation that will simulate god game-like terraforming. The simulation supports fluids of water and lava, erosion and fluid mixing to turn water and lava into rock. In the current version of **Fluid Frenzy** terraforming only works the [Terraform Terrain](../terrain#terraform-terrain).
+1. Add a [Terraform Terrain](../terrain#terraform-terrain) to your scene by clicking the GameObject menu and selecting *`Fluid Frenzy > Terraform Terrain`*.
+2. Set up your [Terraform Terrain](../terrain#terraform-terrain) by assigning all required settings.
+2. Set up the newly created [Terraform Terrain](../terrain#terraform-terrain) to your liking.
+3. Select your [Terraform Terrain](../terrain#terraform-terrain) and add a Terraform Simulation by clicking *`Fluid Frenzy > Terraform Simulation`*.
 5. Fluid settings, assets, and materials are automatically created in the folder of your scene. You can tweak these values to your liking.
 6. Add a [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) by clicking the GameObject menu and selecting *`Fluid Frenzy > Fluid Source`*.
 7. Set up the new Fluid Modifier by placing it in the desired location in the scene and setting up the settings in the Inspector. You can change the layer to control which fluid the modifier should add to. Layer 1 is Water while Layer 2 is Lava.
