@@ -65,7 +65,7 @@ Each channel in the splatmap corresponds to a layer of the **Terrain Material**.
     - Layer 2: green
     - Layer 3: blue **(Not implemented yet)**
     - Layer 4: alpha **(Not implemented yet)**
-
+    
 ---
 
 <div style="page-break-after: always;"></div>

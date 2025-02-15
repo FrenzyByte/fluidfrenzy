@@ -19,7 +19,7 @@ Alternatively neighbours can be setup manually by dragging a [Fluid Simulation](
 
 ![Tiled Simulation Inspector](../../assets/images/tiled_simulation_neighbours.png)
 
-When neighbouring tiles use features like flow/foam mapping they require extra padding to simulate the same as their neighbour for optimal performance. The setting for padding can be found on the [Fluid Simulation Settings](../fluid_simulation_components#fluid-simulation-settings). 
+When neighbouring tiles use features like flow/foam mapping they require extra padding to simulate the same as their neighbour for optimal performance. The setting for padding can be found on the [Fluid Simulation Settings](../fluid_simulation_components#flux-fluid-simulation-settings). 
 
 ![alt text](../../assets/images/tiled_simulation_padding.png)
 
