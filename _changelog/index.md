@@ -10,6 +10,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-02-15
+
+### Added
+- Simulation: New fluid simulation mode called FlowFluidSimulation. This is a higher simpler to use and performent simulation. This new simulation supports all features where applicable that the other simulation used as well and most components are usablel in both simulations.
+- Simulation: FlowFluidSimulationSettings scriptable object that is extension of the base FluidSimulationSettings class to add FlowFluidSimulation specific settings.
+- Simulation: Added new foam inputs: Turbulence which looks at local difference in the velocity field and Shallow Velocity which looks at water depth and velocity.
+- Samples: RiverFlow and TerraformFlow sample scenes that demonstrate the new FlowFluidSimulation.
+
+### Changed
+- Simulation:Improve advection of velocity, foam, and flowmapping to match closer with the FluxFluidSimulation waves so no tweaks need to be made to have the effects coupled. A advection speed/scale of 1 now matches the base simulation.
+- Simulation: Renamed FluidSimulation to FluxFluidSimulation and made FluidSimulation a base class that other simulations can derive from.
+- Simulation: Renamed FluidSimulationSettings to FluxFluidSimulationSettings and moved Flux specific settings to the new class.
+- Simulation: Match size of all FluidSimulation buffers so there are better one to one translations.
+- Simulation: Split up FluidSimulation specific code into their own directories.
+- Simulation: Made FoamLayer use single channel rendertarget due to new foam inputs.
+- Simulation: Merged FoamLayer decay to single values instead of per channel as there is now only one channel.
+- Simulation: Pack shader variables together into single variables to reduce the number of variables needing to update in C#.
+- Simulation: Refactored FluidModifierWaves to use Gerstner wave math as a input to generate a wave field which has better and clearer controls. Note these are not real gerstner waves, but the functions returned nice outputs that can be used in both FluxFluidSimulation (Y) and FlowFluidSimulation (XZ). The previous implementation of this component has been renamed to FluidWavesModifierLegacy for backwards compatibility.
+- Shaders: Make all shaders include headers based on the package directory instead of relative to the shader's file location.
+- Rendering: Default PlanarReflection clear mode to Skybox.
+- Samples: Upgraded samples to use the new FluidModifierWaves component due to refractor.
+
+### Fixed
+- Simulation: FluidModifierWaves caused vibrations due to low floating point precision buffers, increase the precision to 16bit.
+- Rendering: TerraformTerrain Vulkan Compile errors.
+- Rendering: Lava Shader missing in right eye by adding support for single Instanced/Pass Stereo rendering.
+- Rendering: Water shader stereo instanced depth reading so absorption and refraction is correct in both eyes.
+- Rendering: Android refractions being flipped when in portrait mode.
+- Samples: Build error in RockSphereEffect.shader when building for VR.
+
 ## [1.1.3] - 2025-01-19
 
 ### Added
