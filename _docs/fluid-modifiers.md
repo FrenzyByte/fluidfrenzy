@@ -76,14 +76,12 @@ Is used to add a displacement force to the simulation. There are several types o
 ![Fluid Modifier Waves](../../assets/images/fluidmodifier_waves.png)
 
 - **Strength** - the amount of force to be applied in regions where waves are being generated.
-- **Octave 1** - defines the settings to generate random waves.
-- **Octave 2** - defines the settings to generate a second set of random waves.
-- **Noise Octave** defines settings to create small up-and-down river-like waves. This uses the input of Perlin noise to break up repetition. Hence the name, **Noise Waves**.
-Each of these Waves has the following settings
-    - *Frequency* - of waves. Higher values mean more waves.
-    - *Amplitude* - of the waves. Higher values create higher waves
-    - *Speed* - the wave travels at. Higher values will move the wave faster in the specified direction.
-    - *Direction* - the direction the wave travels in.
+- **Wave Count** - the number of waves/octaves to generate. Each wave will be a value between the following ranges below.
+    - *Wavelength* - the range of possibly sizes for the waves
+    - *Direction* - the directions the waves should be traveling in in degrees.
+    - *Amplitude* - the amplitude/height of the waves.
+    - *Speed* - generate waves based on a noise texture to break up repeating patterns. The height of small noise waves.
+= **Noise Amplitude** - noiseAmplitude
 
 <a name="fluid-modifier-pressure"></a>
 ### Fluid Modifier Pressure

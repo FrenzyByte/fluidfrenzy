@@ -114,13 +114,14 @@ A fluid second layer can be enabled within the [Fluid Simulation](#fluid-simulat
 ![Fluid Simulation Settings](../../assets/images/fluidsimulationsettings_slice_5_0.png)
 
 - **Second Layer** - enable or disable the second layer.
-- **Cell Size** - scales the size of each cell to control how fast the fluid flows, a smaller **Cell Size** means less fluid can exist in the cell resulting in faster flowing fluid.
-- **Wave Damping** - controls how fast the waves and fluid should dampen down to no waves.
-- **Acceleration** - controls the speed of the fluid. A higher value means the fluid will move faster.
-- **Velocity Scale** - the amount of the simulation's velocity should be written to the velocity map texture. Higher values mean faster appearing acceleration and flowing fluids. The fluid simulation generated an outflow map for every frame. This outflow turned into a 2D velocity field. The **Velocity Scale** controls how much of this velocity is applied to the final velocity field texture.
-- **Use Custom Viscosity** - enables/disables a custom viscosity control which allows you to make the fluid flow slower on slopes as well as stack up to a height before flowing.
-- **Viscosity** - scales the speed of the fluid's flow, the velocity generated in the velocity field will be the same, but the fluid will leave the cells at a slower rate. The higher the value the more viscous the fluid gets resulting in a slower flow
-- **Flow Height** - indicates at which height the fluid should start flowing on flatter surfaces. Fluids like lava have a height thickness to them as they flow, setting this value to a higher value will simulate that effect. There will always be some flow eventually if there is no more fluid left to stack up.
+- **Cell Size** - adjusts the second layer's size of each cell to control how fast the fluid flows, a smaller **Cell Size** means less fluid can exist in the cell resulting in faster flowing fluid.
+- **Wave Damping** - adjusts how fast the second layer's waves in the fluid simulation should dampen down to no waves.
+- **Acceleration** - adjusts the speed of the fluid's second layer. A higher value means the fluid will move faster.
+- **Velocity Scale** - the amount velocity of the FluxFluidSimulation's second layer should be written to the velocity map texture. Higher values mean faster appearing acceleration and flowing fluids. The fluid simulation generated an outflow map for every frame. This outflow turned into a 2D velocity field. The velocityScale controls how much of this velocity is applied to the final velocity field texture.
+- **Use Custom Viscosity** - Enables/Disables a custom viscosity control for the second layer to allow the fluid to flow slower on slopes as well as stack up to a height before flowing.
+- **Viscosity** - scales the speed of the second layer's fluid flow, the velocity generated in the velocity field will be the same, but the fluid will leave the cells at a slower rate. The higher the value the more viscous the fluid gets resulting in a slower flow.
+- **Flow Height** - indicates at which height the fluid second layer should start flowing on flatter surfaces. Fluids like lava have a height thickness to them as they flow, setting this value to a higher value will simulate that effect. There will always be some flow eventually if there is no more fluid left to stack up.
+
 
 <div style="page-break-after: always;"></div>
 

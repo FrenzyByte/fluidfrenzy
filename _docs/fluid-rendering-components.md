@@ -129,6 +129,22 @@ General rendering settings.
 - **Layer** - which layer from the Fluid Simulation to use.
 - **Render Queue** - the rendering order of the material.
 
+<a name="water-planar-reflections"></a>
+#### Planar Reflections
+The PlanarReflections component can be added to the water to enhance the rendering quality by adding reflections. This is achieved by rendering the scene again flipped around the water plane. 
+The PlanarReflections script reads the height of the fluid simulation to try and match the height as best as possible and smooths out the height to prevent quick jittering changes due to small waves.  
+
+![planar_reflections](../../assets/images/planar_reflections.png)
+
+The following settings can be configured to setup the Planar reflections:
+
+- **Culling Mask** - which layers the planar reflections render
+- **Clear Flags** - what to display in empty areas of the planar reflection's view.
+- **Resolution** - the quality of the planar reflections
+- **Clip Plane** - a offset to apply to the sampled simulation's height.
+- **Height Sample Transform** - override the location to use for sampling the height of the simulation.
+- **Smooth Position** - smooths the sampling height and position over multiple frames to prevent planar reflections jittering as the fluid simulation updates.
+
 ___
 <div style="page-break-after: always;"></div>
 
@@ -159,6 +175,12 @@ ___
 - **Emission Map** - is a texture used for the emission color of the lava. The sample of this texture is multiplied by the *heat*. 
 - **Emission** - is the intensity of the **Heat LUT** sampled based on the **Emission Map** and *heat*.
 - **Noise** - a texture used to eliminate tiling from the lava textures.
+
+___
+
+<a name="shadow-grabber"></a>
+### Shadows
+Both the Water and Lava is rendered after any opaque layers to allow for refraction and to prevent sorting issues. This means that in the Built-in Render pipeline shadows are not automatically sampled due to the transparent nature of the rendering. In order to solve this the user can add he **ShadowGrabber** component to the **Main Directional Light** in the scene. This will assign the shadow buffer to global shader property so that the Water and Lava shader can read it. In order for a material to read it the Shadows property on the Material needs to be set to either *Hard* or *Soft*.
 
 ___
 
