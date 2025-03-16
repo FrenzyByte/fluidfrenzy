@@ -180,6 +180,12 @@ These settings control the main part of the simulation, how fast fluids move dow
 - **CPU Height Read** - the simulation fully runs on the GPU but in some cases, interaction with objects that live in the CPU is desired like floating objects. When enabling this the simulation data for height and velocity will be read back to the CPU asynchronously. The reason the simulation data is readback asynchronously is to prevent stalls and improve performance, this does mean that the CPU data is a few frames behind the GPU simulation.
 - **Time Slicing** - to improve the performance further time slicing of the *readback* can be enabled. The selected value means how many *readbacks* will need to be done to get the full simulation back to the CPU. The higher this number, the less expensive the *readback* becomes but the longer it takes before the simulation is fully read back. Time slicing happens from top to bottom of the simulation, meaning the 100/N% in the height will be read back. Only one *readback* per simulation is performed at the same time so the next timeslice section will not start until the previous one is finished.
 
+#### Evaporation Settings
+
+![Evaporation Settings](../../assets/images/evaporation_settings.png)
+- **Linear Evaporation** - the amount of fluid removed from the fluid simulation each second. fluid -= linearEvaporation * dt.
+- **Exponential Evaporation**- the amount of fluid removed from the fluid simulation based on the amount currently there. Move fluid means a higher amount will be removed. fluid -= fluid * proportionalEvaporation * dt.
+
 #### Second Layer Settings
 
 A fluid second layer can be enabled within the [Fluid Simulation](#fluid-simulation) to simulate an extra type of fluid. There is a slight decrease in performance and an increase in VRAM usage but it is more performant than adding a separate [Fluid Simulation](#fluid-simulation). By default, this is disabled except for the Terraform Simulation option where the second layer is used for lava. The settings for this are overrides for the settings of the main layer.
@@ -352,6 +358,30 @@ The fluid will flow around or over this obstacle but cannot flow under it so it 
 - **Radius** - the radius of the sphere/cylinder.
 - **Length** - the length of the cylinder.
 - **Size** - the size of the box.
+
+<a name="fluid-simulation-event"></a>
+### Fluid Event Trigger
+**FluidEventTrigger** is a component that can be used to see if and when a object is in a region with fluid The most dominant/highest fluid will be reported. 
+
+![alt text](../../assets/images/fluid_trigger_event.png)
+
+- **onFluidEnter** - the event that will be triggered when fluid enters the trigger.
+- **onFluidExit** - the event that will be triggered when fluid has left the trigger.
+- **fluidLayer** - the current fluid layer at the location of this trigger.
+- **fluidHeight** - the height of the fluid at the location of this trigger.
+- **isInFluid** - is the trigger in fluid or not.
+
+Adding the following functions to a script allows the them to be registered to the **OnFluidEnter** and **OnFluidExit** event as shown in the image above.
+```c#
+public void OnFluidEnter(FluidFrenzy.FluidEventTrigger evt)
+{
+    Debug.LogFormat("Fluid Layer {0} entered trigger {1} ", evt.name, evt.fluidLayer);
+}
+public void OnFluidExit(FluidFrenzy.FluidEventTrigger evt)
+{
+    Debug.LogFormat("Fluid Layer {0} exit trigger {1} ", evt.name, evt.fluidLayer);
+}
+```
 
 ---
 
