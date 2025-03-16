@@ -39,7 +39,15 @@ Due to the lower cost and simplicity of the fluid simulation multiple iterations
 ![Fluid Simulation](../../assets/images/fluidsimulation.png)
 
 - **Settings** - a [Fluid Simulation Settings](#flux-fluid-simulation-settings) asset that holds the settings to be used for this Fluid Simulation. 
+- **Dimension Mode** - select the mode to be used when calculating/setting the dimension of the simulation
+    Options:
+    - *Bounds* - Allows the user to set custom bounds size which is used to calculate the **world space cell size** based on the **dimension** and **Number Of Cells**. Use this for square simulations to automatically calculate the correct world space cell size.
+    - *CellSize* - Allows the user to set the size of each **Number Of Cells** cell to determine the size of dimension, use this method for none square simulations to automatically get the bounds
 - **Dimension** - is the size simulation in *world space*. `dimension.x is width(x)` `dimension.y is depth(z)`. 
+- **World Space Cell Size** - the size of each cell of the fluid simulation's buffer (**Number Of Cells**)
+
+- **Iterations** - the number of internal iterations to perform in order to increase the stability of the simulation. Lower **Cell Size Scale** required more iterations. Higher iteration counts but increase the cost of the simulation.
+
 - **Fluid Base Height** - specifies a height that can be used to apply a height offset to the fluid. This can be used to reduce/remove clipping with tessellated terrains.
 - **Initial Fluid Height** - specifies the fluid height when the simulation starts. This is a *terrain space* height, meaning that any terrain lower than this height will have fluid up to this height and any terrain higher will have no fluid.
 - **Initial Fluid Height Texture** - is a texture mask of the fluid height when the simulation starts. This is a *terrain space* height, meaning that any terrain lower than this height will have fluid up to this height and any terrain higher will have no fluid. When combined with the **Initial Fluid Height** value the maximum for that pixel is taken.
@@ -142,8 +150,7 @@ A fluid second layer can be enabled within the [Fluid Simulation](#fluid-simulat
 These settings control the main part of the simulation, how fast fluids move down the terrain and around obstacles, how fast they dissolve and how high they get in certain regions.
 
 - **Number Of Cells** - controls the resolution of the simulation's grid(2D). It is recommended to use a power of 2 value like 512x512 or 1024x1024. The higher the value the more accurate the simulation is, but increase the cost(frame time and memory) of the simulation. 
-- **Cell Size** - adjusts the size of each cell to control how fast the fluid flows, a smaller **Cell Size** means less fluid can exist in the cell resulting in faster flowing fluid.
-- **Iterations** - the number of internal iterations to perform in order to increase the stability of the simulation. Lower <see cref="FluidSimulationSettings.cellSize"/> required more iterations. Higher iteration counts but increase the cost of the simulation.
+- **Cell Size Scale** - adjusts the size of each cell to control how fast the fluid flows, a smaller **Cell Size Scale** means less fluid can exist in the cell resulting in faster flowing fluid.
 - **Wave Damping** - adjusts how fast the waves in the fluid simulation should dampen down to no waves.
 - **Acceleration** - adjusts the speed of the fluid. A higher value means the fluid will move faster.
 - **Acceleration Max** - clamps the acceleration of the fluid to a maximum value. Limiting the acceleration helps create different fluid behavior and improves simulation stability by slowing down the fluid.
@@ -332,7 +339,19 @@ Terraforming is done using 2D textures for modifications. When two fluids occupy
 
 <a name="fluid-simulation-obstacle"></a>
 ### Fluid Simulation Obstacle
-**Fluid Simulation Obstacle** is a component that can be added to any object with a renderer component attached. When this component is attached it will be written into the fluid simulation's heightmap so that the fluid can interact with it. The fluid will flow around or over this obstacle but cannot flow under it so it is advised to use this on those that are mainly round and do not create a convex shape with the terrain.
+**Fluid Simulation Obstacle** is a component that can be added to any object to draw a **Renderer** or a procedural shape into the fluid simulation's heightmap automatically
+The fluid will flow around or over this obstacle but cannot flow under it so it is advised to use this on those that are mainly round and do not create a convex shape with the terrain. 
+
+![alt text](../../assets/images/fluidsimulationobstacle.png)
+
+- **Mode** - select the rendering mode to use for this obstacles
+    Options:
+    - *Renderer* - automatically grab the attached *Renderer* component from the gameobject.
+    - *Shape* - render a procedural shape based on the chosen size.
+- **Shape** - the shape of the procedural object.
+- **Radius** - the radius of the sphere/cylinder.
+- **Length** - the length of the cylinder.
+- **Size** - the size of the box.
 
 ---
 

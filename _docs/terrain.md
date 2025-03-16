@@ -52,6 +52,18 @@ Currently features for terrains are limited but consists of the following:
 - **Frequency** - update the collider in real time every Nth frame to match the collider with the rendered data. Updating the collider requires the GPU terrain data to be read back to the CPU and applied to the TerrainData, which can be resource-intensive.
 - **Timeslice** - splits the update of the heightmap in several segments. Each segment will be rendered on a different frame. A full collider update takes this many frames.
 
+##### Saving and Loading (BETA)
+<sub>**This functionality is subject to future changes.**</sub>
+
+The state of the terrain can both be saved and loaded back in by using the **SaveTerrain** and **LoadTerrain**. The result can be saved and loaded as a [.exr*](https://openexr.com/en/latest/) or [.png](https://en.wikipedia.org/wiki/PNG). The functionality is also exposed in the editor for testing purposes.
+
+Parameters:
+- *directory* - the directory where the file will be saved to/loaded from.
+- *filename* - the name of the file to save/load.
+- *format* - the format to save/load. Currently only exr and png is supported.
+
+
+<sub>* Loading .exr files is only available from Unity 6 and onward due to no functionality existing in older versions.</sub>
 
 <a name="terraform-terrain"></a>
 #### Terraform Terrain

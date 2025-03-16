@@ -10,7 +10,7 @@ To prevent large stalls the update is performed asynchronously and uses timeslic
 
 There are several settings to modify the quality and performance of the collider:
 
-![alt text](../../assets/images/physics-collider.png)
+![physics collider](../../assets/images/physics-collider.png)
 
 - **Create Collider** - toggles the generation of a TerrainCollider to use for physics.
 - **Resolution** - the quality of the TerrainCollider grid. Higher resolutions means more accurate physics, at the cost of longer generation times. Internally the grids resolution is resolution+1.
@@ -22,4 +22,4 @@ There are several settings to modify the quality and performance of the collider
 
 <div style="page-break-after: always;"></div>
 
-<a name="third-party-support"></a>
+<a name="simulation-debug-editor"></a>

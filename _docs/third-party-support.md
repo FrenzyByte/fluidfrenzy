@@ -17,7 +17,9 @@ Currently Fluid Frenzy supports the following assets:
 
 Fluid Frenzy has support for [Enviro 3 Sky and Weather](https://assetstore.unity.com/packages/tools/particles-effects/enviro-3-sky-and-weather-236601). 
 Support is directly integrated in the Water and Lava shader and will automatically be enabled when the Enviro 3 package is installed in your project.
-If it does not work automatically by default you may have to run the following command: *Edit > Fluid Frenzy > Generate External Shader Compatibility*.
+If it does not work automatically by default you may have to run the following command: *Edit > Fluid Frenzy > Generate External Shader Compatibility*. 
+
+If the asset does not exist in the default location it is installedt to by default Fluid Frenzy will attempt to find the asset and automatically patch the shader headers. See *ExternalCompatibilityGenerate.cs* for more information is this does not work as expected.
 
 ![alt text](../../assets/images/thirdparty_enviro3.png)
 

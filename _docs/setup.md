@@ -35,7 +35,6 @@ These steps will describe how to set up a fluid simulation that will simulate an
 
 You now have a functional Fluid Simulation using Fluid Frenzy. Hit Play and see your Terrain being flooded by water!
 
-
 <a name="setup-terraform-simulation"></a>
 ### Terraform Simulation
 
@@ -51,6 +50,18 @@ These steps will describe how to set up a fluid simulation that will simulate go
 7. Set up the new Fluid Modifier by placing it in the desired location in the scene and setting up the settings in the Inspector. You can change the layer to control which fluid the modifier should add to. Layer 1 is Water while Layer 2 is Lava.
 
 You now have a functional Terraform Simulation using Fluid Frenzy. Hit Play and see your Terrain being filled with water and lava!
+
+<a name="setup-simulation-regions"></a>
+### Simulation Regions
+As of version 1.2.1 a simulation does not need to match the exact size of the **Unity Terrain** and can be smaller to cover only a select region by setting a smaller **Dimension** and moving the simulation to the desired location.
+
+The simulation can also be non-square by setting the **Number Of Cells** of the [Fluid Simulation Settings](../fluid_simulation_components#flux-fluid-simulation-settings) to a non-square size. 
+It is recommended to set the **Dimension Mode** to *CellSize* and scale the **dimensions** of the fluid simulation using **World Space Cell Size** of the [Fluid Simulation](../fluid_simulation_components#fluid-simulation). This will help the simulation run at a constant speed in both directions as it will maintain the correct aspect ratio. 
+
+<sub> Note: Mixing square and non-square dimensions and **Number Of Cells** 
+is possible but not recommended as the aspect ratio correction code might not match at all configurations.</sub>
+
+<sub> Note: Non square simulation regions are currently only officially supported on the **Unity Terrain** mode of the fluid simulation, support for other modes is not guaranteed but will be added in the future.</sub>
 
 <a name="setup-urp"></a>
 ### Universal Render Pipeline
