@@ -10,6 +10,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2025-03-16
+
+### Added
+- Simulation: Fluid Regions, users can now place simulations that do not match the bounds of the terrain, allowing smaller and more concentrated fluid simulations, like a river or lake on the terrain instead of the whole terrain. This is useful to have higher quality fluid simulations in select areas.
+- Simulation: Non-square fluid simulations. Fluid Simulations can now be non-square which is useful for following regions like long rivers, saving performance and increasing quality along the river.
+- Simulation: Support for procedural shape FluidSimulationObstacle to allow users to block fluid without using a Unity's Renderers.
+- Simulation: FluidEventTrigger that triggers and reports when fluid enters/exits the trigger and reports the amount of fluid in that location.
+- Simulation: Evaporation control to linearly and exponentially reduce the amount of fluid to simulate evaporation.
+- Rendering: More 2 layers to Terraform Terrain shader to fully utilize the splatmap.
+- IO: [Beta] Saving and Loading of Terraform Terrain as .exr and .png.
+- Editor: Fluid simulation debugger to show information and visualize the buffers of a Fluid Simulation.
+- Editor: HelpURL attribute added to reference scripts in documentation.
+- Editor: More tooltips for FluidModifierWaves, FluidParticleSystem, and FluidSimulationSettingsEditor and many other scripts that missed them.
+- Editor: Improvements for obstacles, allowing addition through context menu.
+- Editor: Show a estimation of the start fluid height.
+- Script: Added version to all components so they can be automatically upgraded when something drastic needs changing.
+
+### Changed
+- Simulation: More improvements to the advection of velocity, foam, and flowmapping to match closer with the FluxFluidSimulation waves so no tweaks need to be made to have the effects coupled. A advection speed/scale of 1 now matches the base simulation.
+- Simulation: Exposed field to select the number of particles on the Terraform Layer.
+- Simulation: Grab the maximum height of the terrain when the Fluid Simulation has a smaller resolution than the Unity Terrain to improve the quality of the simulation.
+- Editor: Improved the visual of the component's editors.
+- Editor: Allow expanding of settings scriptable objects directly in the Fluid Simulation component for easier editing.
+
+### Fixed
+- Simulation: Open Border logic on FlowFluidSimulation when the simulation starts without fluid.
+- Simulation: FlowFluidSimulation Top and Right border properly reflect on boundaries when Open Border is disabled.
+- Simulation: Loading of the correct pass when initializing the Fluid Simulation with Unity Terrain.
+- Rendering: Enviro3 asset location will automatically be detected if it is not found at the default location.
+
 ## [1.2.0] - 2025-02-15
 
 ### Added
