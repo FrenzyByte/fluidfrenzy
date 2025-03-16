@@ -163,7 +163,7 @@ These settings control the main part of the simulation, how fast fluids move dow
 
 #### Overshooting Reduction
 
-- **Overshooting Reduction** - overshooting reduction is a technique used in simulations to mitigate the amplification of wave edges that occur when waves transition from deeper to shallower fluids, preventing spike artifacts in the results.
+- **Overshooting Reduction** - overshooting reduction is a technique used in simulations to mitigate the amplification of wave edges that occur when waves transition from deeper to shallower fluids, preventing spike artifacts in the results. This can come at the cost of mass converservation.
 - **Overshooting Edge** - adjusts a threshold that determines the sensitivity to changes in wave height when a wave exits deep fluids and enters shallow fluids.
 - **Overshooting Scale** - adjusts a scaling factor that adjusts the magnitude of the correction applied to reduce overshooting at detected edges.
 

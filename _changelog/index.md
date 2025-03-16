@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.0] - 2025-02-15
 
 ### Added
-- Simulation: New fluid simulation mode called FlowFluidSimulation. This is a higher simpler to use and performent simulation. This new simulation supports all features where applicable that the other simulation used as well and most components are usablel in both simulations.
+- Simulation: New fluid simulation mode called FlowFluidSimulation. This is a higher simpler to use and performant simulation. This new simulation supports all features where applicable that the other simulation used as well and most components are usable in both simulations.
 - Simulation: FlowFluidSimulationSettings scriptable object that is extension of the base FluidSimulationSettings class to add FlowFluidSimulation specific settings.
 - Simulation: Added new foam inputs: Turbulence which looks at local difference in the velocity field and Shallow Velocity which looks at water depth and velocity.
 - Samples: RiverFlow and TerraformFlow sample scenes that demonstrate the new FlowFluidSimulation.
@@ -80,12 +80,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Rendering: URP Terrain sample normals in Pixel shader same as Built-in renderpipeline.
-- Editor: Give SimpleTerrain the same GUI as TerraformTerain.
+- Editor: Give SimpleTerrain the same GUI as TerraformTerrain.
 
 ### Fixed
 - Rendering: Fixed fog not working in Built-in renderpipeline.
 - Rendering: GLES3 Build duplicate instancing attribute error.
-- Rendering: TerraformTerrain shader compile error when targetting Vulkan.
+- Rendering: TerraformTerrain shader compile error when targeting Vulkan.
 - Rendering: Built/Standalone GPU Particles "Unable to create ProceduralQuad Index Buffer" error.
 - Rendering: URP VR compile errors when building.
 - Rendering: Unity 2021.1, 2021.2, 2022.1 "CopyMatchingPropertiesFromMaterial" compile error.
