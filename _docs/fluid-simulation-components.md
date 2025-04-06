@@ -311,6 +311,48 @@ Terraforming is done using 2D textures for modifications. When two fluids occupy
 - **Fluid Particles** - defines the behavior and visual control of the particles that spawn when fluids mix. This can be used to spawn steam particles when lava and water touch. You can tweak the color, lifetime, and movement in these settings.
 - **Emission Rate** - sets the spawn rate of particles when fluids mix. A lower emission rate means more particles will be spawned more quickly.
 
+<a name="particle-generator"></a>
+### Fluid Particle Generator
+<sub>**This functionality is subject to future changes.**</sub>
+
+The **Fluid Particle Generator** is a extension layer that uses data from the fluid simulation to generate particles. There are currently two types of particles, 
+
+1. **Splash particles** which are generated at high turbulence and braking waves. These particles inherit the fluid simulation's velocity at spawn and continue the select trajectory until their life time expires
+2. **Surface particles** which are generated at high turbulence. These particles are spawned on top of the fluid and advect/move with the fluid simulation's velocity. They can be rendered to a offscreen buffer to be read in the water shader as a foam mask.
+
+#### Splash Particles
+
+![Splash Particles](../../assets/images/fluidparticlegenerator_splash.png)
+
+- **Breaking Waves** - emit splash particles when the fluid simulation meets the conditions for a breaking wave.
+- **Steepness Threshold** - the steepness of the wave's slope required to be to emit a particle
+- **Rise Rate Threshold** - the rising rate the wave requires to emit a particle.
+- **Wave Length Threshold** - the length a wave needs to be to a emit a particle.
+- **Breaking Wave Grid Stagger** - control the amount of frames between the update of each cell. A different cell will within a grid pattern will be selected each frame. This helps reduce the amount of particles being spawned each frame, requiring less particles while still analyzing the whole simulation.
+
+- **Turbulence Splashes** - emit splashes where the fluid is more turbulent (diverging neighbouring velocities).
+- **Splash Turbulence Threshold** - the amount of turbulence required before a splash particle spawns.
+- **Turbulence Splash Grid Stagger** - control the amount of frames between the update of each cell. A different cell will within a grid pattern will be selected each frame. This helps reduce the amount of particles being spawned each frame, requiring less particles while still analyzing the whole simulation.
+
+- **Layer** - the culling layer this particle system will be on, this can used for drawing the particles only to a specific camera.
+- **Material** - the material use when rendering the particles. This material requires the shader ProceduralParticle or ProceduralParticleUnlit.
+- **Max Particles** - The amount of particles to be allocated and can be active at one time. Increasing this number allows for more particles, but decreases performance.
+- **Particle Properties** - the properties of the emitted particles. Control the color, velocity, acceleration and life range of the particles.
+
+#### Surface Particles
+
+![Surface Particles](../../assets/images/fluidparticlegenerator_surface.png)
+
+- **Turbulence Surface** - Emit particles in turbulent fluids, these particles are advected by the fluid simulation's velocity field.
+- **Surface Turbulence Threshold** - The amount of turbulence required before a surface particle spawns. 
+- **Surface Grid Stagger** - Control the amount of frames between the update of each cell. A different cell will within a grid pattern will be selected each frame. This helps reduce the amount of particles being spawned each frame, requiring less particles while still analyzing the whole simulation.
+- **Render Offscreen** - Render the surface particles to a offscreen buffer to be in the Water shader when this is enabled on the material.
+
+- **Layer** - the culling layer this particle system will be on, this can used for drawing the particles only to a specific camera.
+- **Material** - the material use when rendering the particles. This material requires the shader ProceduralParticle or ProceduralParticleUnlit.
+- **Max Particles** - The amount of particles to be allocated and can be active at one time. Increasing this number allows for more particles, but decreases performance.
+- **Particle Properties** - the properties of the emitted particles. Control the color, velocity, acceleration and life range of the particles.
+
 <a name="fluid-rigidbody"></a>
 ### Fluid RigidBody
 

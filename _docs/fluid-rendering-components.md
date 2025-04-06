@@ -63,6 +63,7 @@ Water's reflection rendering properties.
 
 ![Water Shader](../../assets/images/watershader_slice_1_0.png)
 
+- **Reflectivity Offset** - offset the reflectiveness of the water surface. Use this if the water should be reflective even when at sharp angles.
 - **Planar Reflection** - enables/disables if the water should use planar reflections or just reflection probes.
 - **Distortion** - scales the distortion applied to the planar reflections.
 
@@ -76,8 +77,11 @@ Depth-based control of the water's color and refraction rendering properties.
     - *RGB* - is the color of the water at the maximum depth.
     - *Alpha* - is the base transparency of the water. Any value below 255 will make your water always transparent regardless of depth.
 - **Depth Transparency** - scales how transparent the water is based on the depth. Lower values make the water more transparent.
-- **Screenspace Refraction** - *enabled:* uses screenspace refraction by using GrabPass to sample what is behind the water, using this allows you to use distortion. *Disabled:* uses alpha blending to simulate water transparency. 
-*URP*: Requires rendering features to be enabled as described [here](../setup#setup-urp).
+- **Refraction Mode** - 
+    - *Screenspace:* uses screenspace refraction by using GrabPass to sample what is behind the water, using this allows you to use distortion. 
+    *URP*: Requires rendering features to be enabled as described [here](../setup#setup-urp).
+    - *Alpha:* uses alpha blending to simulate water transparency. 
+    - *Opaque:* water is rendered as solid. 
 - **Distortion** - scales the distortion of the screenspace refraction when enabled.
 
 ##### Subsurface scattering
@@ -114,7 +118,12 @@ Foam rendering effect properties.
 
 ![Water Shader](../../assets/images/watershader_slice_5_0.png)
 
-- **Foam Albedo** - a texture(RGB) multiplied by the color picker(RGB) is used as the diffuse color of the foam. The texture(A)  multiplied by the color picker(A) is used as a mask on where to apply the foam.
+- **Screenspace Particles** - enable the use of the [Offscreen Rendered particles](../fluid_simulation_components#particle-generator) as a foam mask.
+- **Foam Mode** - select the mode the **Foam Map** foam map is used for rendering.
+    - *Albedo:* - use the **Foam Map** and the selected color directly as the albedo color. This method gives soft foam.
+    - *Clip:* - use the **Foam Map's** red channel and selected color's alpha channel as a clip value, any value in the **Foam Layers** that is lower than this clip value will not be drawn. The color from the color picker is used as the color of the foam. This method gives foam with hard edges.
+    - *Mask:* - use the **Foam Map's** RGB channels as a extra mask to be applied to the **Foam Layer Mask**. Any values between 0 and 0.334 will use the blue channel as a mask, 0.334 and 0.667 will use the green channel as a mask, and 0.667 and 1 will use the red channel as a mask. This mask is then used to blend the foam color onto the water. Use this if you want variation in foam intensity.
+- **Foam Map** - a texture(RGB) multiplied by the color picker(RGB) is used as the diffuse color of the foam. The texture(A)  multiplied by the color picker(A) is used as a mask on where to apply the foam.
 - **Foam Normal Map** - a texture used to add detail to the PBR lighting of the foam.
 - **Tiling** - tiles the **Foam Albedo** and **Foam Normal Map** textures.
 - **Offset** - offsets the **Foam Albedo** and **Foam Normal Map** textures.
@@ -177,6 +186,23 @@ ___
 - **Noise** - a texture used to eliminate tiling from the lava textures.
 
 ___
+
+<a name="particle-shaders"></a>
+### Particles
+The particles in **Fluid Frenzy** are completely GPU accelerated and therefore require a custom shader to be rendered. Currently there is the selection of two shaders *ProceduralParticle* and *ProceduralParticleUnlit*. Both shaders will render the particles as billboards, however the Unlit version will not do any lighting and is therefore cheaper to render.
+
+![Particle Shader](../../assets/images/particle_shader.png)
+
+- **Color** - is the albedo color and transparency of the particle.
+- **Normal Map** - can be used to add extra lighting details to the *ProceduralParticle* shader.
+- **Metallic** - the metalness of the material.
+- **Smoothness** - the smoothness of the material.
+- **Blend Mode** - select which [blend mode](https://en.wikipedia.org/wiki/Blend_modes) to use for the particles.
+- **Billboard Mode** - select which method to use for rendering the particle billboard.
+    - *Camera:* the billboard and world normal will face in the direction of the camera.
+    - *Camera Normal Up:* the billboard will face the camera and the normal will face in in the world space up direction. This can be useful to have more uniform lighting from every direction.
+    - *Up:* the billboard and normal will both face in the world space up direction.
+    - *Normal:* not yet implemented. 
 
 <a name="shadow-grabber"></a>
 ### Shadows
