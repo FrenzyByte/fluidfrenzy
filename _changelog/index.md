@@ -10,6 +10,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2025-04-06
+
+### Added
+- Simulation: FluidParticleGenerator. A GPU Accelerated particle system to create splash and surface particles based of the Fluid Simulation Data.
+- Rendering: New ProceduralParticle and ProceduralParticleUnlit shader with more control over colors, blending and billboard orientation.
+- Rendering: Added size and angular velocity min max control to particles.
+- Rendering: Support for Orthographic Rendering.
+- Rendering: Water opaque render mode for users who do not need the water to be transparent or have refraction.
+- Rendering: Foam Modes to have more options on how to render the foam, users can now choose between albedo(previous default), clip, and mask to have variance in their foam look.
+- Rendering: Reflectivity offset control to make the water look more reflective on sharp angles.
+- Rendering: Culling layer control to GPU Particles.
+- Samples: Added FluidParticleGenerator to River and RiverFlow scene to demonstrate the effect.
+
+### Changed:
+- Simulation: Made improvements to obstacle merging with Unity Terrain to reduce clipping.
+- Simulation: Improved random number generation for particles, both cheaper and better uniform coverage.
+- Simulation: Optimized GPU Particle System by packing data and only rendering active particles.
+- Simulation: FlowFluidSimulation removed custom delta limit by implementing proper stability enhancements as described in the paper.
+- Simulation: Reset GPU Particles using Compute instead of setting data with big c# buffer allocations.
+- Rendering: Renamed old ProceduralParticle shader to ProceduralParticle(Legacy) so old projects still work but it is advised to use the new ProceduralParticle shaders
+- Editor: Added and improved tooltips for shaders.
+
+### Fixed
+- Simulation: Fluid Trigger Event now properly calls events when fluid enters/exits the trigger.
+- Simulation: FluidModifierSource non-additive mode when using Unity Terrain and Vulkan.
+- Rendering: Reflection probe sampling when using URP Forward+.
+- Editor: Errors in RenderPipelineAutoUpgrader when building in URP.
+
 ## [1.2.2] - 2025-03-31
 
 ### Fixed
