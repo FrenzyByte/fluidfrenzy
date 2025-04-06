@@ -198,6 +198,7 @@ The particles in **Fluid Frenzy** are completely GPU accelerated and therefore r
 - **Metallic** - the metalness of the material.
 - **Smoothness** - the smoothness of the material.
 - **Blend Mode** - select which [blend mode](https://en.wikipedia.org/wiki/Blend_modes) to use for the particles.
+- **Alpha Threshold** - alpha below this value will be clipped.
 - **Billboard Mode** - select which method to use for rendering the particle billboard.
     - *Camera:* the billboard and world normal will face in the direction of the camera.
     - *Camera Normal Up:* the billboard will face the camera and the normal will face in in the world space up direction. This can be useful to have more uniform lighting from every direction.

@@ -24,7 +24,7 @@ Currently features for terrains are limited but consists of the following:
 
 ![Simple Terrain](../../assets/images/simpleterrain.png)
 
-##### Mesh Rendering
+##### **Mesh Rendering**
 - **Rendering Mode** - The method used for rendering the surface.
 
     - **MeshRenderer**: Uses GameObjects with [MeshRenderer](https://docs.unity3d.com/ScriptReference/MeshRenderer.html) components to draw the surface. The surface is a evenly distributed fixed size grid. The grid can be split up into multiple blocks/objects for better culling. GPU instancing is supported when enabled on the assigned material. 
@@ -39,20 +39,20 @@ Currently features for terrains are limited but consists of the following:
 - **LOD Levels** - The minimum and maximum LOD levels that can be selected.
 - **Dimension** - determines the width and height of the terrain.
 
-##### Terrain Settings
+##### **Terrain Settings**
 - **Height Scale** - adjusts the overall height of the terrain by applying a multiplier to both the red and green channels of the Source Heightmap.
 - **Terrain Material** - is the material the terrain will be rendered with. Currently, only the **Simple Terrain** and **Terraform Terrain** shaders are supported. Custom shaders can be written.
 - **Terrain Heightmap** - specifies the heightmap applied to the terrain with the red channel representing base height and the green channel showing erodible layers above it. Using a 16-bit per channel texture is recommended to avoid artifacts like stepping or terracing.
 - **Shadow Light** - is used to perform a main shadow culling pass on the GPULOD Terrain to accelerated shadow rendering.
 
-##### Collision
+##### **Collision**
 - **Create Collider** - toggles the generation of a TerrainCollider to use for physics.
 - **Resolution** - the quality of the TerrainCollider grid. Higher resolutions means more accurate physics, at the cost of longer generation times. Internally the grids resolution is resolution+1.
 - **Update Realtime** - update the collider in real time every Nth frame to match the collider with the rendered data. Updating the collider requires the GPU terrain data to be read back to the CPU and applied to the TerrainData this can be expensive.
 - **Frequency** - update the collider in real time every Nth frame to match the collider with the rendered data. Updating the collider requires the GPU terrain data to be read back to the CPU and applied to the TerrainData, which can be resource-intensive.
 - **Timeslice** - splits the update of the heightmap in several segments. Each segment will be rendered on a different frame. A full collider update takes this many frames.
 
-##### Saving and Loading (BETA)
+##### **Saving and Loading (BETA)**
 <sub>**This functionality is subject to future changes.**</sub>
 
 The state of the terrain can both be saved and loaded back in by using the **SaveTerrain** and **LoadTerrain**. The result can be saved and loaded as a [.exr*](https://openexr.com/en/latest/) or [.png](https://en.wikipedia.org/wiki/PNG). The functionality is also exposed in the editor for testing purposes.
@@ -75,9 +75,19 @@ The **Terraform Terrain** component is an extension of the **Simple Terrain** co
 Each channel in the splatmap corresponds to a layer of the **Terrain Material**.
     - Layer 1: red
     - Layer 2: green
-    - Layer 3: blue **(Not implemented yet)**
-    - Layer 4: alpha **(Not implemented yet)**
-    
+    - Layer 3: blue
+    - Layer 4: alpha
+
+<a name="terraform-terrain-shader"></a>
+#### Terraform Terrain Shader
+The Terraform Terrain Shader handles the rendering of the Terraform Terrain. It has layers with texture slots for rendering the layers of the terrain. The layers 1 to 4 are layers that are rendered based of the non-erodible base layer of the terrain. The height of these layers is controlled by the heightmap's red channel. The heightmap and splatmap(RGBA) can be modified manually or by the **Terraform Terrain Layer** due to fluid mixing. Each layer corresponds to a channel in the splatmap as described above. The **Top/Erosion Layer** has a fixed color layer that cannot have its appearance changed as its visibility and height is controlled by the heightmap's green channel.
+
+![alt text](../../assets/images/terraformterrain_shader.png)
+
+- **Albedo** - albedo texture and color(multiplier) of the layer
+- **Normal Map** - normal map of the layer
+- **Mask Map** - metallic(R), occlusion(G), smoothness(A) of the layer.
+
 ---
 
 <div style="page-break-after: always;"></div>
