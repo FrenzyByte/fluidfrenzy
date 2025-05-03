@@ -10,6 +10,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [1.2.5] - 2025-05-03
+
+### Added
+- Simulation: Mode to capture layers as a heightmap. The option allows you to select and setup a LayerMask to choose which objects should be rendered to the heightmap used for the fluidsimulation.
+- Simulation: FluidModifierVolume blend modes for source and velocity. Choose between Additive, Set, and Minimum blendmode to have better control over the behaviour of the fluid simulation.
+- Simulation: FluidModifierVolume source option to select which space to modify the fluid height in, World or Local space.
+- Simulation: FluidModifierVolume Flow Texture support. Assign a Flowmap to Add or Set velocity to the fluid simulation.
+- Simulation: Distance Field for finding and sampling the nearest Fluid Simulation location.
+- Simulation: Fluid depth to FluidEventTrigger.
+- Rendering: Water material presets.
+- Rendering: URP Soft shadow support on water shader.
+- Rendering: URP PlanarReflection Renderer ID support to set cheaper passes for planar reflection rendering.
+- Rendering: Enviro3 Support in Planar Reflections.
+- Editor: ShaderStripper to reduce the number of shader permutations. Reduces URP build time and size by 80%.
+- Editor: FluidModifierVolume Flow visualizer by drawing arrows of the selected direction.
+
+### Changed
+- Simulation: Match Foam and Particle turbulence control so particles and foam can spawn similarly when the conditions and setup are met.
+- Simulation: Remove a speed limiter from Particle Generator.
+- Simulation: Optimized FluidRigidBody by caching transforms, position, rotation and reduces overal interfacing with the Unity Engine.
+- Simulation: Optimized FluidSimulation Readback by caching transforms, rendertextures and other static data.
+- Simulation: Removed Additive mode from FluidModifierVolume and replaced it with a Blend Mode option.
+- Simulation: Use ClipHeight in FlowFluidSimulation like FluxFluidSimulation does.
+- Simulation: Do not allocate the RAM for the CPU>GPU Readback when it is not enabled.
+- Simulation: Match FluidRigidBody and FluidParticleGenerator advection.
+- Rendering: Optimized the number of shader permutations on the water and lava shader to improve build time and size.
+- Rendering: Planar reflection lodding.
+- Rendering: Use nearest Fluid location Height for Planar Reflections when available.
+- Editor: FluidModifierVolume draws the direction as angle/degrees instead of a vector2 to make it easier to change direction.
+- Editor: Set the debugger to point filtering to see the raw data.
+
+### Fixed
+- Simulation: initialFluidHeight texture when used with Unity terrain.
+- Simulation: FluidEventTrigger reporting of height and depth.
+- Simulation: MeshRenderer Obstacle rendering with the FluidSimulation is not at 0 height.
+- Simulation: Cover the full 0 to 1 range with a better random number generator for Fluid Particles.
+- Simulation: Process FluidModifiers after setting all global properties to prevent uninitialized behaviour on the first simulation frame.
+- Rendering: URP FluidParticle shader particle rotation.
+- Rendering: FluidParticleGenerator layer check in URP.
+- Rendering: Changed Fluid Simulation rendering inputs to Texture2D instead of Sampler2D to lower the number of samplers used and prevent errors in URP with Enviro3 enabled.
+- Rendering: SamplerTextureStaticLOD flowmapping function to use the correct UV channel.
+- Editor: URP build error in RenderPipelineAutoUpgrader.
+- Editor: Grid Gizmo placement when the FluidSimulation is not at 0 height.
+- Editor: Default FluidSimulation and FluidRenderer/Material values when adding FluidSimulation through the context menu.
+
 ## [1.2.4] - 2025-04-11
 
 ### Fixed
