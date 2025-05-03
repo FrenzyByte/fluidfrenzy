@@ -27,11 +27,17 @@ Is used to add/remove fluid from the simulation.
     - *Circle* - the modifier inputs the fluid in a circular shape.
     - *Box* - the modifier inputs fluid in a rectangular shape.
     - *Texture* - the modifier inputs the fluid from a source texture.
+ - **BlendMode** - set the blend mode of the modifier
+    Options:
+    - *Set:* replaces the current fluid height.
+    - *Additive:* adds or removes fluid height.   
+    - *Minimum*: prevents the fluid from exceeding this height.
 - **Dynamic** - enables/disables if the modifier can be moved. When disabled the modifier will write to a static texture at the start of the simulation. This is useful if you have many fluid sources and want to improve your performance.
 - **Size** - adjusts the size of the volume in world space.
 - **Strength** - adjusts the amount of fluids input by the volume
 - **Falloff** - Adjusts the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create large but more focused fluid sources. A higher value means the source strength falls off faster.
-- **Texture** - the texture to use as an input. Only the red channel is used. 
+- **Texture** - the texture to use as an input. Only the red channel is used.
+- **Layer** - the layer to add the fluids to.
 
 <a name="fluid-volume-flow"></a>
 #### Flow
@@ -48,8 +54,11 @@ is used to add a force to the velocity field of the simulation. An example of th
 - **Strength** adjusts the amount of flow applied to the velocity field. For Vortex mode, this is the inward flow to the center.
 - **Falloff** - adjusts the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create sharper/flatter wave/vortex shapes. Higher values mean a faster falloff.
 - **Radial Flow Strength** - adjusts the amount of radial flow applied to the velocity field for vortex mode. Higher values make vortices flow faster.
-- **Additive** - *enabled:* adds the flow to the current flow in the velocity field. *disabled:* replaces the current flow of the velocity field.
-- **Texture** - a flow map texture that writes its red & green channels into the velocity field. 
+- **BlendMode** - set the mode used to blend in the velocity to the simulation*Set:* replaces the current flow of the velocity field.
+    Options:
+    - *Set:* replaces the current flow of the velocity field.
+    - *Additive:* adds the flow to the current flow in the velocity field. 
+- **Texture** -  flow map texture that writes its red & green channels into the velocity field. This texture is unpacked from 0 to 1 range to -1 to 1 range, so anything below 0.5 will be left/down and anything above will be right/up. For more information see: https://catlikecoding.com/unity/tutorials/flow/texture-distortion/
 
 <a name="fluid-volume-force"></a>
 #### Force
@@ -108,4 +117,4 @@ The **Foam Modifier** component adds and removes foam to the **Foam Layer** base
 
 <div style="page-break-after: always;"></div>
 
-<a name="tiled-simulation"></a>
+<a name="interaction-scripting"></a>

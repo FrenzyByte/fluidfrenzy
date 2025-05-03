@@ -94,8 +94,13 @@ These settings control the main part of the simulation, how fast fluids move dow
 #### CPU>GPU Readback
 
 ![Fluid Simulation Settings](../../assets/images/fluidsimulationsettings_slice_3_0.png)
+The simulation fully runs on the GPU but in some cases, interaction with objects that live in the CPU is desired like floating objects. When enabling this the simulation data for height and velocity will be read back to the CPU asynchronously. The reason the simulation data is readback asynchronously is to prevent stalls and improve performance, this does mean that the CPU data is a few frames behind the GPU simulation.
 
-- **CPU Height Read** - the simulation fully runs on the GPU but in some cases, interaction with objects that live in the CPU is desired like floating objects. When enabling this the simulation data for height and velocity will be read back to the CPU asynchronously. The reason the simulation data is readback asynchronously is to prevent stalls and improve performance, this does mean that the CPU data is a few frames behind the GPU simulation.
+- **Readback Height & Velocity** - enable the readback of the height and velocity data of simulation which can be used for sampling the height and velocity data in C# to create effects like floating objects.
+- **Readback Distance Field** - enable the readback of the distance field to make the simulation generated a distance field of the fluid simulation data. This distance field can be used to find the nearest fluid simulation location. This is useful to handle audio by placing a audio source at the nearest fluid location.
+- **Distance Field Downsample** - downsample the distance field to a lower resolution to decrease the cost of generating the distance field. Increasing the number of downsamples will reduce the accuracy of distance field.
+- **Distance Field Iterations** - set the number of iterations to perform to generate the distance field. lowering this number will increase performance but reduce accuracy of the distance field. Larger the distance fields, require more iterations.
+
 - **Time Slicing** - to improve the performance further time slicing of the *readback* can be enabled. The selected value means how many *readbacks* will need to be done to get the full simulation back to the CPU. The higher this number, the less expensive the *readback* becomes but the longer it takes before the simulation is fully read back. Time slicing happens from top to bottom of the simulation, meaning the 100/N% in the height will be read back. Only one *readback* per simulation is performed at the same time so the next timeslice section will not start until the previous one is finished.
 
 #### Velocity Field Settings
@@ -175,9 +180,14 @@ These settings control the main part of the simulation, how fast fluids move dow
 
 #### CPU>GPU Readback
 
-![Fluid Simulation Settings](../../assets/images/flow_fluidsimulationsettings_slice_4_0.png)
+![Fluid Simulation Settings](../../assets/images/fluidsimulationsettings_slice_3_0.png)
+The simulation fully runs on the GPU but in some cases, interaction with objects that live in the CPU is desired like floating objects. When enabling this the simulation data for height and velocity will be read back to the CPU asynchronously. The reason the simulation data is readback asynchronously is to prevent stalls and improve performance, this does mean that the CPU data is a few frames behind the GPU simulation.
 
-- **CPU Height Read** - the simulation fully runs on the GPU but in some cases, interaction with objects that live in the CPU is desired like floating objects. When enabling this the simulation data for height and velocity will be read back to the CPU asynchronously. The reason the simulation data is readback asynchronously is to prevent stalls and improve performance, this does mean that the CPU data is a few frames behind the GPU simulation.
+- **Readback Height & Velocity** - enable the readback of the height and velocity data of simulation which can be used for sampling the height and velocity data in C# to create effects like floating objects.
+- **Readback Distance Field** - enable the readback of the distance field to make the simulation generated a distance field of the fluid simulation data. This distance field can be used to find the nearest fluid simulation location. This is useful to handle audio by placing a audio source at the nearest fluid location.
+- **Distance Field Downsample** - downsample the distance field to a lower resolution to decrease the cost of generating the distance field. Increasing the number of downsamples will reduce the accuracy of distance field.
+- **Distance Field Iterations** - set the number of iterations to perform to generate the distance field. lowering this number will increase performance but reduce accuracy of the distance field. Larger the distance fields, require more iterations.
+
 - **Time Slicing** - to improve the performance further time slicing of the *readback* can be enabled. The selected value means how many *readbacks* will need to be done to get the full simulation back to the CPU. The higher this number, the less expensive the *readback* becomes but the longer it takes before the simulation is fully read back. Time slicing happens from top to bottom of the simulation, meaning the 100/N% in the height will be read back. Only one *readback* per simulation is performed at the same time so the next timeslice section will not start until the previous one is finished.
 
 #### Evaporation Settings

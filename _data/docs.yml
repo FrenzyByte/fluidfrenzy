@@ -10,6 +10,7 @@
   - terrain
   - tiled_simulations_beta
   - physics_colliders
+  - c_interaction_scripting
   - simulation_debugger
   - third_party_support
   - future_updates_roadmap
