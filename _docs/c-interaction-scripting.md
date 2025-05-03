@@ -9,6 +9,7 @@ permalink: /docs/c_interaction_scripting/
 {:toc}
 ---
 Fluid Frenzy offers several methods to interact with the Fluid Simulation on the C# side. It is recommended to use the functions available in FluidSimulationManager.cs
+<br>
 
 #### Adding Fluid
 Add Fluid to the active Fluid Simulations in the scene at a using the following functions: 
@@ -17,6 +18,7 @@ Add Fluid to the active Fluid Simulations in the scene at a using the following 
 AddFluid(Vector3 worldPos, Vector2 size, float amount, float falloff, int layer, float timestep)
 ```
 Adds a amount of fluid in at the specified location and size.
+<br>
 
 #### Sampling the simulation.
 Sample the height and/or velocity data of all Fluid Simulations using the following functions.
@@ -31,6 +33,7 @@ GetHeightVelocity(Vector3 worldPos, out Vector2 heightData, out Vector3 velocity
 - *heightData.x contains the total height in worldspace, including the height of the underlying terrain.*
 - *heightData.y contains depth of the fluid in relation to the underlying terrain.*
 - *velocity contains the velocity of the fluid.*
+<br>
 
 ##### Normals
 
@@ -38,10 +41,9 @@ Sample the world space normal vector of the Fluid Simulation using the following
 
 ```c#
 bool GetNormal(Vector3 worldPos, out Vector3 normal)
-
 ```
 *Samples the normal at the specified world space position*
-
+<br>
 ##### Distance Field
 
 Sample the Fluid Simulation distance field using the following functions:
@@ -71,9 +73,9 @@ public class FluidFinder : MonoBehaviour
 
     void Update()
     {
-		FluidFrenzy.FluidSimulationManager.GetNeartestFluidLocation3D(transform.position, out Vector3 location);
-		audioSource.transform.position = location;
-	}
+        FluidFrenzy.FluidSimulationManager.GetNeartestFluidLocation3D(transform.position, out Vector3 location);
+        audioSource.transform.position = location;
+    }
 }
 ```
 
