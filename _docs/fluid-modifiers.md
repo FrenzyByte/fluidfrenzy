@@ -32,6 +32,7 @@ Is used to add/remove fluid from the simulation.
     - *Set:* replaces the current fluid height.
     - *Additive:* adds or removes fluid height.   
     - *Minimum*: prevents the fluid from exceeding this height.
+    - *Maximum*: prevents the fluid from going below this height.
 - **Dynamic** - enables/disables if the modifier can be moved. When disabled the modifier will write to a static texture at the start of the simulation. This is useful if you have many fluid sources and want to improve your performance.
 - **Size** - adjusts the size of the volume in world space.
 - **Strength** - adjusts the amount of fluids input by the volume
@@ -49,7 +50,12 @@ is used to add a force to the velocity field of the simulation. An example of th
     - *Circle* - the modifier inputs the flow in a direction within a circular shape.
     - *Vortex* - the modifier inputs the flow of a vortex. The flow shape will be circular but has control over the radial flow and the inward flow
     - *Texture* - the modifier inputs the flow direction from a flow map texture.
-- **Direction** - is the 2D direction that the flow force will be applied in. On a flat surface `direction.x` is in X world space and `direction.y` is Z in world space. If the surface is sloped either component will appear to go more in the world space Y since the velocity field is in 2D. 
+ - **BlendMode** - set the blend mode of the modifier
+    Options:
+    - *Set:* replaces the current velocity of the velocity field.
+    - *Additive:* adds the flow to the current velocity in the velocity field.
+    - *Damping:* reduces the velocity in the velocity field." 
+- **Direction** - is the 2D direction that the flow force will be applied in simulation space.
 - **Size** - adjusts the size of the flow volume in world space.
 - **Strength** adjusts the amount of flow applied to the velocity field. For Vortex mode, this is the inward flow to the center.
 - **Falloff** - adjusts the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create sharper/flatter wave/vortex shapes. Higher values mean a faster falloff.
@@ -63,7 +69,7 @@ is used to add a force to the velocity field of the simulation. An example of th
 <a name="fluid-volume-force"></a>
 #### Force
 
-Is used to add a displacement force to the simulation. There are several types of forces ranging from waves, splashes and whirlpools.
+Is used to add a displacement force to the simulation. There are several types of forces ranging from waves, splashes and whirlpools. This modifier mainly works on the FluxFluidSimulation, some effects might translate to the FlowFluidSimulation, but will do the same as the **Flow** mode.
 
 - **mode** sets the input mode of the modifier.
     Options:
@@ -71,8 +77,12 @@ Is used to add a displacement force to the simulation. There are several types o
     - *Vortex* - create a force that moves fluids down with a distance-based falloff, creating a vortex/whirlpool-like shape.
     - *Splash* - creates a splash effect on the fluid surface. Pushes fluids in an outward direction from the center so that the simulation can move it back in, causing a splash effect.
     - *Texture* - creates forces from a texture input. The red channel of this texture will be used as a height displacement. This can be used to create multiple fluid effects in one drawcall.
+ - **BlendMode** - set the blend mode of the modifier
+    Options:
+    - *Additive:* adds or removes forces from the outflow field.
+    - *Damping:* reduces the force in the outflow field." 
 - **Size** - adjusts the size of the modifier in world space.
-- **Direction** - is the direction the applied force causes the waves to move in. `direction.x` is X in world space and `direction.y` is Z in world space.
+- **Direction** - is the 2D direction that the flow force will be applied in simulation space.
 - **Strength** - the height of the wave/splash, the depth of the vortex, or the strength to apply the supplied texture.
 - **Falloff** - adjusts the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create sharper/flatter wave/vortex shapes. Higher values mean a faster falloff.
 - **Texture** - the texture to use as an input into the outflow texture. Only the red channel is as a height used. 
