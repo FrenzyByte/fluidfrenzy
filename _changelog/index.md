@@ -10,6 +10,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.6] - 2025-05-10
+
+### Added
+- Rendering: Curved World support on water, lava and terraform terrain shader.
+- Simulation: Maximum bend mode to FluidModifierVolume Source mode.
+- Simulation: Damping blend mode to FluidModifierVolume Flow and Force mode to dampen waves and velocity field.
+
+### Changed
+- Editor: Draw all modes of the FluidModifierVolume separately.
+
+### Fixed
+- Simulation: FluidFoamModifier adds foam to the correct channel.
+- Simulation: FluidEventTrigger reporting of height and depth.
+- Simulation: Add up to 2x2 downsample support to WebGL so it will match other platforms better.
 
 ## [1.2.5] - 2025-05-03
 
