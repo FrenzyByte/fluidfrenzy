@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.6] - 2025-05-10
 
 ### Added
-- Rendering: Curved World support on water, lava and terraform terrain shader.
+- Rendering: Curved World support on water, lava, particles, and terraform terrain shader.
 - Simulation: Maximum bend mode to FluidModifierVolume Source mode.
 - Simulation: Damping blend mode to FluidModifierVolume Flow and Force mode to dampen waves and velocity field.
 
