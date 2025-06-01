@@ -5,7 +5,6 @@ permalink: /docs/tiled_simulations_beta/
 
 
 Tiled Simulations have been made available in Fluid Frenzy in version v1.0.6 as a beta feature if there any bugs, issues or suggestions please report them [here](https://github.com/FrenzyByte/fluidfrenzy/issues). 
-To enable this feature add the following symbol to your **Scripting Define Symbols** in the project settings: `FLUIDFRENZY_NEIGHBOURS_ENABLED`
 
 ![Tiled Simulation Gizmos](../../assets/images/tiled_simulation_playersettings.png)
 

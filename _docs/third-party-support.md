@@ -21,12 +21,12 @@ If it does not work automatically by default you may have to run the following c
 
 If the asset does not exist in the default location it is installedt to by default Fluid Frenzy will attempt to find the asset and automatically patch the shader headers. See *ExternalCompatibilityGenerate.cs* for more information is this does not work as expected.
 
+![alt text](../../assets/images/thirdparty_enviro3.png)
+
 ### Curved World
 Fluid Frenzy has support for [Curved World](https://assetstore.unity.com/packages/vfx/shaders/curved-world-173251).
 Support is directly integrated in the water and lava shader the same way as any of the shaders included in the Curved World asset.
 If it does not work automatically by default you may have to run the following command: *Edit > Fluid Frenzy > Generate External Shader Compatibility*. 
-
-![alt text](../../assets/images/thirdparty_enviro3.png)
 
 ---
 
