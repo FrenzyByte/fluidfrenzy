@@ -10,6 +10,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.7] - 2025-06-01
+
+### Added
+- Simulation: Tiling support for FlowFluidSimulation.
+- Editor: Toggle for neighbour handles in sceneview.
+- Editor: Buttons to Add and Disconnect FluidSimulation neighbours through the inspector.
+
+### Changed
+- Simulation: Improved tilling support in FluxFluidSimulation.
+- Simulation: Remove requirement of scripting define to use tiled simulation logic.
+- Simulation: Improved terrain unity initialization/copy by copying bordering pixels in seperate pass instead of scaling and repeating, improves the edges of the simulation.
+- Simulation: FluidFlowSimulation open/closed borders is handled with custom blits, simplifies the main pass and allows more control for each border separately in the future.
+- Simulation: Remove compute dependency so all logic is the same and works on each platform.
+
+### Fixed
+- Simulation: FlowFluidSimulation stability enhancements average using correct samples, was using bottom twice.
+- Simulation: Hydraulic erosion with FlowFluidSimulation.
+- Simulation: Fluid input on WebGL + IOS.
+- Rendering: Foam layer sampling by using the correct 0 to 1 UVs.
+- Rendering: ProceduralParticle shader compilation in BRP.
+- Rendering: TerraformTerrain shader compilation in BRP.
+- Editor: Gamma control in FluidSimulation debugger.
+- Samples: Mouse3D in WebGL + URP.
+
 ## [1.2.6] - 2025-05-10
 
 ### Added
