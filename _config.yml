@@ -74,6 +74,16 @@ defaults:
     seo:
       type: "WebPage"   
 
+- scope:
+    path: _media
+    type: media
+  values:
+    layout: media
+    sectionid: media
+    seo:
+      type: "WebPage"   
+  
+
 collections:
   docs:
     permalink: /:collection/:path/
@@ -83,6 +93,9 @@ collections:
     output: true    
   demo:
     permalink: /:collection/:path/
+    output: true       
+  media:
+    permalink: /:collection/:path/    
     output: true       
   posts:
     permalink: /blog/:year/:month/:day/:title/
