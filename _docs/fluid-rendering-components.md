@@ -79,7 +79,8 @@ Depth-based control of the water's color and refraction rendering properties.
     - *Alpha* - is the base transparency of the water. Any value below 255 will make your water always transparent regardless of depth.
 - **Depth Transparency** - scales how transparent the water is based on the depth. Lower values make the water more transparent.
 - **Refraction Mode** - 
-    - *Screenspace:* uses screenspace refraction by using GrabPass to sample what is behind the water, using this allows you to use distortion. 
+    - *Screenspace Tint:* uses screenspace refraction by using GrabPass to sample what is behind the water, using this allows you to use distortion. The water color is interpolated from clear to the selected color depending on the depth. Use this feature if you want a single color
+    - *Screenspace Absorb:* uses screenspace refraction by using GrabPass to sample what is behind the water, using this allows you to use distortion. The water color used to multiply the scene color. Use this feature if you want the color gradient to change from blue to clear with different tings like green in between, depending on the depth, similar how the water at a beach tropical beach behaves.
     *URP*: Requires rendering features to be enabled as described [here](../setup#setup-urp).
     - *Alpha:* uses alpha blending to simulate water transparency. 
     - *Opaque:* water is rendered as solid. 
