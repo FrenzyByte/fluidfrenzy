@@ -10,6 +10,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.8] - 2025-07-12
+
+### Added
+- Rendering: ShaderGraph support to allow users to create custom shaders. See the documentation for more information about the nodes.
+- Rendering: [Beta] HDRP Support to Water Shader.
+- Rendering: [Beta] HDRP Water System mode to the WaterSuface script to allow users to use the fluid simulation with the built-in HDRP Water System.
+- Rendering: [Beta] HDRP Shaders for Lava, TerraformTerrain and ProceduralParticle using ShaderGraph.
+- Rendering: Refraction Screenspace Absorption mode to water shader that behaves more like correct water absorption.
+
+### Changed
+- Rendering: Renamed Screenspace refraction mode to Screenspace Tint.
+- Simulation: Improved edge detection when creating fluid simulation renderdata, reduces clipping on shallow edges.
+- Simulation/Rendering: Rename FLUID_UNITY_TERRAIN keyword to _FLUID_UNITY_TERRAIN.
+- Rendering: Renamed Flowmapping shader keywords.
+- Rendering: Added common headers for TerraformTerrain so they can be re-used by users and shadergraph.
+- Rendering: Added common headers for ProceduralParticle so they can be re-used by users and shadergraph.
+- Rendering: Apply GPULOD Transform directly instead of overriding the unity_ObjectToWorld matrix.
+
+### Fixed
+- Simulation: Simulation delta time step check so that smaller steps can be done when possible.
+
+
 ## [1.2.7] - 2025-06-01
 
 ### Added
