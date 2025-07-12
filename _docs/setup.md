@@ -74,6 +74,20 @@ The following features require configuration changes of the [Universal Render Pi
     When **Screenspace Refraction** is enabled on the FluidFrenzy/Water shader/material URP requires the following setting to be enabled:
     ![URP Opaque Texture](../../assets/images/urp_opaque_texture.png)
 
+<a name="setup-hdrp"></a>
+### High-Definition Render Pipeline
+
+Fluid Frenzy support for HDRP requires different shaders on most materials. This is due to Unity recommending the use of ShaderGraph to create custom shaders for future compatibility with newer features. The one exception for this is the **FluidFrenzy/Water** shader, which is interchangeable with URP and Built-in. The table below will show which shader to use for which rendering feature.
+
+| Feature                   | Built-in                                  | Universal Render Pipeline (URP)           | High Definition Render Pipeline (HDRP)         |
+|---------------------------|-------------------------------------------|-------------------------------------------|------------------------------------------------|
+| WaterSurface              | FluidFrenzy/Water                         | FluidFrenzy/Water                         | FluidFrenzy/Water                              |
+| WaterSurfaceHDRP          | N/A                                       | N/A                                       | FluidFrenzy/HDRP/WaterSurfaceHDRP              |
+| LavaSurface               | FluidFrenzy/Lava                          | FluidFrenzy/Lava                          | FluidFrenzy/HDRP/Lava                          |
+| TerraformTerrain          | Fluidfrenzy/TerraformTerrain              | Fluidfrenzy/TerraformTerrain              | FluidFrenzy/HDRP/TerraformTerrain              |
+| FluidParticleGenerator    | FluidFrenzy/ProceduralParticle (or Unlit) | FluidFrenzy/ProceduralParticle (or Unlit) | FluidFrenzy/HDRP/ProceduralParticle (or Unlit) |
+
+
 ---
 
 <div style="page-break-after: always;"></div>

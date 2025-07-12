@@ -18,6 +18,7 @@ The **FluidRenderer** component is responsible for rendering the Fluid Simulatio
     - **DrawMesh**: Uses [Graphics.RenderMesh](https://docs.unity3d.com/ScriptReference/Graphics.RenderMesh.html) or [Graphics.RenderMeshInstanced](https://docs.unity3d.com/ScriptReference/Graphics.RenderMeshInstanced.html) to render a height field to each camera, it has the same functionality as the MeshRenderer method except it doesn't create any GameObjects and it is rendered manually and can therefore support GPU Instancing on the water shader.
 
     - **GPULOD**: Draws the surface using a fully [GPU-Accelerated distance based LOD system](https://www.researchgate.net/publication/331761994_Quadtrees_on_the_GPU) for maximum performance. The surfaces will be drawn with higher detail up close, and lower detail in the distance.
+    - **HDRP Water System**: Use the [HDRP Water System](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@14.0/manual/WaterSystem-use.html) by combining the **Fluid Simulation** with the input for the water system. More information can be found [here](#hdrp-water-system).
 - **Mesh Resolution** - the amount of vertices the mesh is in each axis. It is best to match **Fluid Simulation Settings -** **Number of Cells**.
 - **Mesh Blocks** - the amount of blocks the rendering mesh is to be subdivided in to improve GPU performance by culling parts of the renderer.
 - **LOD Resolution** - The resolution of each LOD mesh in the terrain.
@@ -209,6 +210,22 @@ The particles in **Fluid Frenzy** are completely GPU accelerated and therefore r
 ### Shadows
 Both the Water and Lava is rendered after any opaque layers to allow for refraction and to prevent sorting issues. This means that in the Built-in Render pipeline shadows are not automatically sampled due to the transparent nature of the rendering. In order to solve this the user can add he **ShadowGrabber** component to the **Main Directional Light** in the scene. This will assign the shadow buffer to global shader property so that the Water and Lava shader can read it. In order for a material to read it the Shadows property on the Material needs to be set to either *Hard* or *Soft*.
 
+<a name="hdrp-water-system"></a>
+### HDRP Water System
+Fluid Frenzy has the ability to apply the Fluid Simulation's data to the [HDRP Water System](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@14.0/manual/WaterSystem-use.html). This allows the user to enhance their HDRP scene without sacrificing the quality HDRP provides.
+
+To support this the user will have to enable decal support in their HDRP Quality settings:
+![alt text](../../assets/images/hdrp_settings_decal.png)
+
+The displacement and flowmapping of the Fluid Simulation is applied using the [Water Decal](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@17.1/manual/water-deform-a-water-surface.html) system, which is automatically created when setting the [Water Surface](#water-surface) to the **HDRP Water System** mode.
+The Water Decal system uses signed normalized render buffers to apply the displacement, which requires a amplitude to be applied to the decal. This amplitude is the maximum height the simulation will be able to displace the water surface.
+
+![alt text](../../assets/images/hdrp_watersurface_settings.png)
+
+- **Target Water Surface** - defines the HDRP Water System to which the simulation is to be applied.
+- **Amplitude** - is the maximum amplitude of the Fluid Simulation used to encode/decode the height to/from 0-1 range.
+- **Large Current** - is the weight that the Fluid Simulation's velocity should be applied to the Large Current waves of the HDRP Water System. 
+- **Ripples** - is the weight that the Fluid Simulation's velocity should be applied to the Rupples of the HDRP Water System. 
 ___
 
 <a name="terrain"></a>

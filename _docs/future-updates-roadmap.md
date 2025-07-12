@@ -11,5 +11,5 @@ These are some future features that are planned to be supported in Fluid Frenzy.
 - **Tiled Simulations:** [Beta feature added in v1.0.6](#8-tiled-simulations-beta) Allow neighboring simulations to interact with each other. The purpose of tiled simulations is to create bigger simulation areas where simulations that are too far away can be disabled. 
 - **Simulation Regions/Domains:** *Feature added in v1.2.1*
 Allow only parts of the terrain to interact with the simulation, creating smaller simulations within a terrain instead of the full terrain being used by automatically grabbing the correct area of the source terrains.
-- **HDRP Support:** The simulation itself works within different render pipelines but the rendering of the simulation is currently not yet supported. The plan is to support HDRP.
+- **HDRP Support:** Beta support for HDRP haas been added in v1.2.8. Shaders for HDRP have been added and a special mode for using it with the [HDRP Water System](../fluid_rendering_components#hdrp-water-system)
 - **Underwater Rendering:** Enable rendering features like underwater rendering when the player/camera goes below the water.

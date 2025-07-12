@@ -65,4 +65,18 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 - WebGL 2 does not support Compute Shaders, for this reason, the GPU particle system used for steam when water/lava interact does not work on WebGL 2. In the future, WebGPU should support this but there are still some bugs within Unity that cause instability with Fluid Frenzy.
 - Older Unity versions below Unity 2021.3 are not officially supported. Unity 2020.3 is functional as of 01-04-2025 but may not have feature parity and constant support. Support may be added on request depending on the amount of work.
 
+<a name="pipeline-support"></a>
+### Pipeline Support
+
+Fluid Frenzy supports all pipelines. Please refer to the table below for each version and the corresponding supported pipeline features. There are some differences between pipelines; for example, HDRP recommends using ShaderGraph to create shaders instead of writing custom shaders.
+
+As a result, all shaders have HDRP-specific versions created in ShaderGraph, which should be used in place of custom shaders. The exception is the FluidFrenzy/Water shader, which remains a custom shader. To minimize compatibility issues across different Unity versions, support is limited to Unity 6000.0 and above for HDRP.
+
+| Unity Version | Built-in Render Pipeline | Universal Render Pipeline | High Definition Render Pipeline |
+|----------------|--------------------------|---------------------------|---------------------------------|
+| 2021.3         | **<span style="color:green;">Supported</span>** | **<span style="color:green;">Supported</span>** | **<span style="color:red;">Not Supported</span>** |
+| 2022.3         | **<span style="color:green;">Supported</span>** | **<span style="color:green;">Supported</span>** | **<span style="color:red;">Not Supported</span>** |
+| 6000.0         | **<span style="color:green;">Supported</span>** | **<span style="color:green;">Supported</span>** | **<span style="color:orange;">Beta</span>** |
+| 6000.1         | **<span style="color:green;">Supported</span>** | **<span style="color:green;">Supported</span>** | **<span style="color:orange;">Beta</span>** |
+
 <a name="installation"></a>
