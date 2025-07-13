@@ -24,16 +24,11 @@ Fluid Frenzy contains five sample scenes to showcase the functionality and help 
 5. Click the ```Import``` button.
 <br>![Package Manager Import Scenes](../../assets/images/packagemanager_importscenes.png)<br>
 
-<a name="samples-urp"></a>
+<a name="samples-pipelines"></a>
 ### Universal Render Pipeline
 
-All samples withing the package a functional with both the Built-in and Universal Render Pipeline. 
-When opening the samples with the Universal Render Pipeline active the sample materials are automatically upgraded when opening the sample scene.
-
-<a name="samples-hdrp"></a>
-### High-Definition Render Pipeline
-
-There are currently no samples for HDRP.
+All samples withing the package are designed for the Built-in Render Pipeline but are functional with all Render Pipelines. 
+When opening the samples with the Universal or High-Definition Render Pipeline active the sample materials are automatically upgraded when opening the sample scene.
 
 <a name="samples-running"></a>
 ### Running Samples
