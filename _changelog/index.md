@@ -10,6 +10,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.10] - 2025-08-01
+
+### Changed
+- Simulation: Apply horizontal limiter to particles based on height change in waves.
+- Editor: Error when not settings are assigned to the FluidSimulation component.
+- Samples: Convert Volcano sample to FlowFluidSimulation.
+
+### Fixed
+- Simulation: Flip Y sampling in Boundary Copy in OpenGL.
+- Simulation: Closed border Boundary copy only copies single row of pixels, not all.
+- Simulation: Allow FluidSimulation MeshCollider mode to capture meshes higher than 1000 meters.
+- Simulation: Allow FluxFluidSimulation tiled simulation to work without Velocity Padding. It is still recommended to use the Velocity Padding for quality reasons.
+- Simulation: Android precision issue preventing height from going higher than 32 meters when using low additive increments.
+- Rendering: Non-Tiled texture sampling seam artefact on the edges of neighbouring terrains.
+- Rendering: Water shader in URP VR mode.
+- Editor: Disable drawing base GUI of FluidLavaShaderGUI.
+
+## [1.2.9] - 2025-07-18
+
+### Changed
+- Simulation: Improve the velocity of the splash particles to match the scale of the simulation better.
+
+### Fixed
+- Rendering: URP + Unity 6000.1 Water.shader error for missing FORWARD_PLUS_SUBTRACTIVE_LIGHT_CHECK define.
+
 ## [1.2.8] - 2025-07-12
 
 ### Added
