@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Simulation: Apply horizontal limiter to particles based on height change in waves.
+- Simulation: Exposed UpdateTerrain function so the simulation can be refreshed with a updated Unity Terrain.
 - Editor: Error when not settings are assigned to the FluidSimulation component.
 - Samples: Convert Volcano sample to FlowFluidSimulation.
 
