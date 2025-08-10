@@ -10,6 +10,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.11] - 2025-08-10
+
+### Added
+- Simulation: Added support for fluid mixing when using Unity Terrain system. Terraforming is still not supported.
+
+### Fixed
+- Simulation: Disable Terraform Mixing particles in WebGPU as there are bugs with Unity's experimental implementation of WebGPU.
+- Simulation: Apply same fluid input in WebGL as in WebGL mobile, as Unity have not implemented fp32 blend modes correctly yet. [Issue-50](https://github.com/FrenzyByte/fluidfrenzy/issues/50)
+- Rendering: Correct Terrain sampling during creation of Renderdata, fixing the broken normals. [Issue-50](https://github.com/FrenzyByte/fluidfrenzy/issues/50)
+
 ## [1.2.10] - 2025-08-01
 
 ### Changed
