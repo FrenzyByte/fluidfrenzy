@@ -85,10 +85,10 @@ As a result, all shaders have HDRP-specific versions created in ShaderGraph, whi
 | Platform        | State       | Comments                                                |
 |-----------------|-----------------|---------------------------------------------------------|
 | Windows         | **<span style="color:green;">Supported</span>**             | Fully supported.                                       |
-| macOS           | **<span style="color:red;">Unknown</span>**           | Untested, no access to develop or test                |
+| macOS           | **<span style="color:red;">Unknown</span>**           | Untested, no device to develop or test                |
 | Linux           | **<span style="color:green;">Supported</span>**             | Supported through Vulkan                              |
 | Android         | **<span style="color:green;">Supported</span>**             | Supported, performance varies per device              |
-| iOS             | **<span style="color:red;">Unknown</span>**           | Untested, no access to develop or test                |
+| iOS             | **<span style="color:red;">Unknown</span>**           | Untested, no device to develop or test                |
 | WebGL           | **<span style="color:green;">Supported</span>**             | Supported, except GPU Particles (steam/splash)       |
 | WebGPU          | **<span style="color:orange;">Experimental</span>**   | Experimental due to Unity bugs                        |
 | VR              | **<span style="color:green;">Supported</span>**             | Tested on Quest 1, performance varies per device     |
