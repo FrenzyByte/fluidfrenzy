@@ -10,6 +10,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.12] - 2025-09-28
+
+### Reimport the Samples if you encounter compile errors in PlayerBoat.cs
+
+### Added
+- Simulation: New FluidRigidBody system that applies more physically correct splashes/wakes in the simulation and buoyancy/drag/lift to the RigidBody component.
+- Simulation: FluidSimulationLoop which is a custom PlayerLoop that manages and updates the FluidSimulation.
+- Simulation: Conservative rasterization pass to FluidObstacles to create a tighter fit around obstacles. Only used on platforms that support geometry shaders.
+- Simulation: FluidDebugViewer script and prefab which can be dropped into the scene to have onscreen debugging.
+- Samples: New PlayerBoat script that uses FluidRigidBody.
+
+### Changed
+- Simulation: Renamed the old FluidRigidBody to FluidRigidBodyLite as it is a simpler and lighter version more appropiate for Web and Mobile.
+- Simulation: Removed option runInFixedUpdate from FluidSimulationSettings. Instead place it behind the FLUIDFRENZY_RUN_UPDATE scripting symbol.
+- Simulation: Small optimizations to readback data calculation.
+- Samples: Renamed PlayerBoat to PlayerBoatLite.
+
+### Fixed
+- Simulation: Obstacle->Fluid mismatch due to introduction of padding and tiling.
+- Simulation: Fluid leaking when using FluxFluidSimulation with FluidWavesModifier.
+- Simulation: Tiled simulation mismatch/seam when adding fluid on a border.
+- Rendering: URP modes without color and depth buffers during planar reflections and screenspace particles.
+
+### Fixed
+- Simulation: Disable Terraform Mixing particles in WebGPU as there are bugs with Unity's experimental implementation of WebGPU.
+- Simulation: Apply same fluid input in WebGL as in WebGL mobile, as Unity have not implemented fp32 blend modes correctly yet. [Issue-50](https://github.com/FrenzyByte/fluidfrenzy/issues/50)
+- Rendering: Correct Terrain sampling during creation of Renderdata, fixing the broken normals. [Issue-50](https://github.com/FrenzyByte/fluidfrenzy/issues/50)
+
 ## [1.2.11] - 2025-08-10
 
 ### Added

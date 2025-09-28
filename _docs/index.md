@@ -89,7 +89,7 @@ As a result, all shaders have HDRP-specific versions created in ShaderGraph, whi
 | Linux           | **<span style="color:green;">Supported</span>**             | Supported through Vulkan                              |
 | Android         | **<span style="color:green;">Supported</span>**             | Supported, performance varies per device              |
 | iOS             | **<span style="color:red;">Unknown</span>**           | Untested, no device to develop or test                |
-| WebGL           | **<span style="color:green;">Supported</span>**             | Supported, except GPU Particles (steam/splash)       |
+| WebGL           | **<span style="color:green;">Supported</span>**             | Supported, except GPU Particles (steam/splash) and FluidRigidBody. Use FluidRigidBodyLite instead      |
 | WebGPU          | **<span style="color:orange;">Experimental</span>**   | Experimental due to Unity bugs                        |
 | VR              | **<span style="color:green;">Supported</span>**             | Tested on Quest 1, performance varies per device     |
 
