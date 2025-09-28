@@ -366,9 +366,67 @@ The **Fluid Particle Generator** is a extension layer that uses data from the fl
 <a name="fluid-rigidbody"></a>
 ### Fluid RigidBody
 
-**Fluid RigidBody** is a component that can be applied to a GameObject to interact with the fluid simulation. It supports physics features like buoyancy, advection and creating waves. To simulate these effects **CPU Height Read** needs to be enabled.
+![Fluid Rigid Body](../../assets/images/fluidrigidbody.png)
 
-![Fluid Rigidbody](../../assets/images/fluidrigidbody.png)
+The **Fluid RigidBody** component enables two-way physics interaction between a GameObject and a `FluidSimulation`. It allows the object's `Rigidbody` to be affected by fluid forces (like buoyancy and drag) and for the object itself to displace the fluid, creating splashes and wakes. This component makes use of compute shaders and therefore does not work in WebGL.
+
+This component requires a `Rigidbody` and a `Collider` (`MeshCollider`, `SphereCollider`, `BoxCollider`, or `CapsuleCollider`) to be present on the same GameObject.
+
+#### Global Physics Settings
+
+-   **Fluid Density** - A global multiplier to calibrate the fluid's density against your project's existing physics scale.
+
+    If you find that objects with high `Rigidbody.mass` values (e.g., a vehicle with a mass of 1500) sink when they should be floating, it is likely because the default fluid density is too low for your project's scale.
+
+    You should adjust `Fluid Density` to match the general magnitude of mass used by your game's Rigidbodies. A good starting point is to set this value to be similar to the mass of an average-sized object that you expect to float.
+
+#### Solid Influence (Solid -> Fluid)
+
+This section controls how this object affects and displaces the fluid simulation.
+
+-   **Apply Fluid Displacement** - A toggle for the solid-to-fluid interaction. If enabled, this object will create splashes and wakes in the water.
+
+-   **Height Influence** - Controls how strongly the object's volume displaces the water's height. Higher values create larger waves and splashes.
+
+-   **Velocity Influence** - Controls how much of the object's velocity is transferred to the water. Higher values create stronger currents and wakes as the object moves.
+
+-   **Velocity Scale** - An overall artistic multiplier for the object's "splashiness." It scales the final height and velocity displacement forces, allowing you to easily exaggerate or dampen the effect.
+
+-   **Subdivision Area Threshold** - (MeshColliders Only) The area threshold used to recursively subdivide the mesh for the displacement effect. Smaller values increase the triangle count, leading to more accurate and detailed splashes at a higher performance cost.
+
+#### Fluid Response (Fluid -> Solid)
+
+This section controls how the fluid simulation applies forces to this object's `Rigidbody`.
+
+-   **Enable Buoyancy & Forces (applyFluidForcesToRigibody)** - A toggle for the fluid-to-solid interaction. If enabled, the fluid will apply buoyancy, drag, and lift forces to this object.
+
+-   **Center of Mass Offset** - The most important setting for controlling stability. By default, a Rigidbody is often "top-heavy" and can easily tip over in turns or rough water. This property allows you to manually lower the center of mass, making the object "bottom-heavy" and much more stable, similar to the keel on a real boat. 
+Lower the Y-value to increase stability. A good starting point is between -0.5 and -2.0.
+
+-   **Drag Coefficient** - Controls the resistance the object experiences when moving through the fluid. Higher values will make the object feel like it's moving through a thicker substance, like mud or honey.
+
+-   **Lift Coefficient** - Controls the force generated perpendicular to the direction of fluid flow. This models how a surface can act like a hydrofoil (creating upward force) or a spoiler (creating downward force).
+
+-   **Effective Area Weight** - Blends between using the full surface area (0) and only the area projected against the flow (1) for drag/lift calculations. A value of 1 makes the object's orientation highly sensitive to the flow direction.
+
+-   **Sampling Group Size** - The size of the grid cells used to group the object's surface points for optimization. The fluid simulation is sampled only once per group, instead of once for every triangle or point. Smaller values increase the accuracy of the interaction at a potential performance cost, while larger values increase performance. A good starting value roughly matches the cell size of your fluid simulation.
+
+#### Primitive Collider Settings
+
+These settings control the density of sample points generated for procedural colliders. They are only visible in the Inspector if the corresponding `Collider` component is attached to the GameObject.
+
+-   **Sphere Sample Count** - The total number of sample points to generate on the surface of a `SphereCollider`.
+
+-   **Box Face Sample Count** - The number of sample points to generate along *each axis* of a `BoxCollider`'s face. A value of 8 will create an 8x8 grid of points on each of the 6 faces.
+
+-   **Capsule Sample Count** - The total number of sample points to generate on the surface of a `CapsuleCollider`, distributed proportionally across its body and caps.
+
+<a name="fluid-rigidbody-lite"></a>
+### Fluid RigidBody Lite
+
+**Fluid RigidBody Lite** is a component that can be applied to a GameObject to interact with the fluid simulation. It supports physics features like buoyancy, advection and creating waves. To simulate these effects **CPU Height Read** needs to be enabled.
+
+![Fluid Rigidbody Lite](../../assets/images/fluidrigidbody_lite.png)
 
 #### Waves
 

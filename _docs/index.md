@@ -74,10 +74,10 @@ As a result, all shaders have HDRP-specific versions created in ShaderGraph, whi
 
 | Unity Version | Built-in Render Pipeline | Universal Render Pipeline | High Definition Render Pipeline |
 |----------------|--------------------------|---------------------------|---------------------------------|
-| 2021.3         | **<span style="color:green;">Supported</span>** | **<span style="color:green;">Supported</span>** | **<span style="color:red;">Not Supported</span>** |
-| 2022.3         | **<span style="color:green;">Supported</span>** | **<span style="color:green;">Supported</span>** | **<span style="color:red;">Not Supported</span>** |
-| 6000.0         | **<span style="color:green;">Supported</span>** | **<span style="color:green;">Supported</span>** | **<span style="color:orange;">Beta</span>** |
-| 6000.1         | **<span style="color:green;">Supported</span>** | **<span style="color:green;">Supported</span>** | **<span style="color:orange;">Beta</span>** |
+| 2021.3         | ✅ **<span style="color:green;">Supported</span>** | ✅ **<span style="color:green;">Supported</span>** | ❌ **<span style="color:red;">Not Supported</span>** |
+| 2022.3         | ✅ **<span style="color:green;">Supported</span>** | ✅ **<span style="color:green;">Supported</span>** | ❌ **<span style="color:red;">Not Supported</span>** |
+| 6000.0         | ✅ **<span style="color:green;">Supported</span>** | ✅ **<span style="color:green;">Supported</span>** | 🟠 **<span style="color:orange;">Beta</span>** |
+| 6000.1         | ✅ **<span style="color:green;">Supported</span>** | ✅ **<span style="color:green;">Supported</span>** | 🟠 **<span style="color:orange;">Beta</span>** |
 
 <a name="platform-support"></a>
 ### Platform Support
