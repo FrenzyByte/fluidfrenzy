@@ -67,11 +67,11 @@ Parameters:
 
 <a name="terraform-terrain"></a>
 #### Terraform Terrain
-The **Terraform Terrain** component is an extension of the **Simple Terrain** component. It adds an extra [splat map](https://en.wikipedia.org/wiki/Texture_splatting) that the [Terraform Layer](../fluid_simulation_components#terraform-layer) makes modifications to. This splat map is used to represent different terrain layers on the base layer of the terrain. It is rendered by the **FluidFrenzy/TerraformTerrain** shader.
+The **Terraform Terrain** component is an extension of the **Simple Terrain** component. It adds an extra [splat map](https://en.wikipedia.org/wiki/Texture_splatting) that the [Terraform Layer](../fluid_simulation_components#terraform-layer) makes modifications to. This splat map is used to represent different terrain layers on the base layer of the terrain. It is rendered by the **FluidFrenzy/TerraformTerrain** or **FluidFrenzy/TerraformTerrain(Single Layer) shader.
 
 ![Terraform Terrain](../../assets/images/terraformterrain.png)
 
-- **Splatmap** - is applied to the Terraformed terrain as a mask to determine which layer of textures and material properties of the assigned **Terrain Material** to use. The splat map is only applied to the base layer since there is only 1 erodible material.
+- **Splatmap** - is applied to the Terraformed terrain as a mask to determine which layer of textures and material properties of the assigned **Terrain Material** to use. The splat map is only applied to the base(R) layer.
 Each channel in the splatmap corresponds to a layer of the **Terrain Material**.
     - Layer 1: red
     - Layer 2: green
@@ -80,7 +80,38 @@ Each channel in the splatmap corresponds to a layer of the **Terrain Material**.
 
 <a name="terraform-terrain-shader"></a>
 #### Terraform Terrain Shader
-The Terraform Terrain Shader handles the rendering of the Terraform Terrain. It has layers with texture slots for rendering the layers of the terrain. The layers 1 to 4 are layers that are rendered based of the non-erodible base layer of the terrain. The height of these layers is controlled by the heightmap's red channel. The heightmap and splatmap(RGBA) can be modified manually or by the **Terraform Terrain Layer** due to fluid mixing. Each layer corresponds to a channel in the splatmap as described above. The **Top/Erosion Layer** has a fixed color layer that cannot have its appearance changed as its visibility and height is controlled by the heightmap's green channel.
+
+![alt text](../../assets/images/terraformterrain_mutilayer.png)
+
+The Terraform Terrain shader is used to render the terrain. It organizes textures into two main groups: **Splat Layers** and **Dynamic Layers**. Both groups are fully terraformable.
+
+This shader requires **Texture2DArray** assets for its texture slots. You can create these assets using the **Window > Fluid Frenzy Texture Array Creator** tool.
+
+##### Splat Layers (R)
+This section defines the four base terrain layers. They are blended together using the RGBA channels of the splatmap to create ground variation. These layers are fully terraformable.
+
+- **Albedo** - The Texture2DArray containing the base color textures for the four splat layers.
+- **Mask Map** - The Texture2DArray containing data for Metallic (R), Occlusion (G), and Smoothness (A).
+- **Normal Map** - The Texture2DArray for the splat layers' normal maps.
+
+##### Dynamic Layers
+These three layers are intended for terraformable materials like mud, sand, or snow, which can be transformed into other layers during gameplay. They use a separate set of Texture2DArray assets.
+
+- **Albedo** - The Texture2DArray for the base color of the three dynamic layers.
+- **Mask Map** - The Texture2DArray for the dynamic layers' mask maps.
+- **Normal Map** - The Texture2DArray for the dynamic layers' normal maps.
+
+##### Layer Settings
+This section provides a grid to override properties for each of the 7 terrain layers (4 Splat Layers and 3 Dynamic Layers). This allows you to adjust the look of each material without creating new textures.
+
+- **Layer Tint** - A color multiplier applied to each base layer's albedo.
+- **Tiling / Offset** - Controls the UV scale and position for each layer's textures.
+- **Normal Scale** - Adjusts the intensity of the normal map for each layer.
+
+
+<a name="terraform-terrain-single-shader"></a>
+#### Terraform Terrain (Single Layer) Shader
+The Terraform Terrain (Single Layer) shader is a cheaper version of the Terraform Terrain shader and handles the rendering of the Terraform Terrain. It has layers with texture slots for rendering the layers of the terrain. The height of these layers 1 to 4 is controlled by the heightmap's red channel. The heightmap and splatmap(RGBA) can be modified manually or by the **Terraform Terrain Layer** due to fluid mixing. Each layer corresponds to a channel in the splatmap as described above. The **Top/Erosion Layer** has a fixed color layer that cannot have its appearance changed as the visibility and height is controlled by the heightmap's green channel.
 
 ![alt text](../../assets/images/terraformterrain_shader.png)
 

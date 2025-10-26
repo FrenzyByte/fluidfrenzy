@@ -292,34 +292,90 @@ The erosion of terrains is simulated by using 2D textures. The higher the veloci
 
 ![Erosion Layer](../../assets/images/erosionlayer.png)
 
-- **Slippage** - enables/disables erosion caused by slippage of materials. When enabled the top layer of the terrain smooths over time due to erosion.
-- **Slope Angle** - adjusts the angle at which the slippage should happen. Any terrain angle higher than this value will smooth due to slippage.
-- **Slope Smoothness** - adjusts how smooth the terrain becomes, higher values make the terrain smoother.
-- **Hydraulic Erosion** - enables/disables hydraulic erosion caused by fluids flowing over the top layer of the terrain. Faster-flowing fluids erode the terrain faster.
-- **Max Sediment** - adjusts the amount of sediment every cell in the sediment map can contain before the erosion stops in this area.
-- **Sediment Dissolve Rate** - adjusts the rate at which the terrain will erode. Higher values mean faster erosion, as long as there is room in the sediment map.
-- **Sediment Deposit Rate** - adjusts the rate sediment gets deposited back into the terrain when it settles due to slow velocity or when the maximum amount of sediment in the cell is reached.
-- **Min Tilt Angle** - adjusts the rate of hydraulic erosion on slopes. Steeper slopes have stronger hydraulic erosion. Changing the **Min Tilt Angle** causes flat surfaces to have erosion at higher rates. 
+The erosion system allows you to define up to four distinct terrain layers, each with its own properties.
+
+The list of layers is structured from the bottom up. The first element in the list (Layer 0) represents the bottom-most layer of the terrain (e.g., bedrock), and each subsequent element represents the material stacked on top of it.
+
+For clarity in the editor, you can give each layer a custom name to help you keep track of what it represents (e.g., "Rock", "Soil", or "Snow"). Each layer has the following settings:
+
+- **Slippage** - If enabled, apply erosion caused by slippage of materials. When enabled the terrain layer smooths over time due to erosion.
+- **Slope Angle** - Adjusts the angle at which the slippage should happen. Any terrain angle higher than this value will smooth due to slippage.
+- **Slope Smoothness** - Adjusts how smooth the terrain becomes, higher values make the terrain smoother.
+- **Hydraulic Erosion** - If enabled, applies hydraulic erosion caused by fluids flowing over the top exposed layer of the terrain. Faster-flowing fluids erode the terrain faster.
+- **Max Sediment** - Adjusts the amount of sediment every cell in the sediment map can contain before the erosion stops in this area.
+- **Sediment Dissolve Rate** - Adjusts the rate at which the terrain will erode. Higher values mean faster erosion, as long as there is room in the sediment map.
+- **Sediment Deposit Rate** - Adjusts the rate sediment gets deposited back into the terrain when it settles due to slow velocity or when the maximum amount of sediment in the cell is reached.
+
+The following settings are shared between all layers:
+
+- **Min Tilt Angle** - Adjusts the rate of hydraulic erosion on slopes. Steeper slopes have stronger hydraulic erosion. Changing the **Min Tilt Angle** causes flat surfaces to have erosion at higher rates. 
     - 0 means no erosion on flatter surfaces, 
     - 1 is full erosion on flatter surfaces.
-- **Sediment Advection Speed** - adjusts the advection speed of the sediment in the eroded sediment map. Higher values transport the sediment farther through the world before depositing. 
+- **Sediment Advection Speed** - Adjusts the advection speed of the sediment in the eroded sediment map. Higher values transport the sediment farther through the world before depositing. 
 *Note: higher values transport sediment further, but this may cause sediment to be lost as the erosion simulation is not mass conserving. Sediment may reach areas where there is no fluid, or leave the simulation*
 
 <a name="terraform-layer"></a>
 ### Terraform Layer
 
-The **Terraform Layer** is an extension of the [Erosion Layer](#erosion-layer) which allows 'god game-like' features to mix fluids into terrain rock, emit particles when fluids mix, and change terrain types using the **Terrain Modifier** by modifying the terrain heightmap and splatmap. The current support of this layer is the mixing of water and lava to create terrain, adding different terrain types by writing to the terrain heightmap and splatmap, and based on user input and the spawning of particles when fluids mix. 
+The **Terraform Layer** is an extension of the [Erosion Layer](#erosion-layer) which allows 'god game-like' features to mix fluids into terrain, emit particles when fluids mix, add reactions when the terrain comes into contact with a fluid, and change terrain types using the **Terrain Modifier** by modifying the terrain heightmap and splatmap.
 
-Terraforming is done using 2D textures for modifications. When two fluids occupy the same sell they remove a certain amount from the fluid heightmap and place it into the *Modify textures*. The *Modify texture* then deposits the mixed fluids as terrain into the terrain heightmap and splatmap.
+The system is written in a modular way where up to 4 layers can be added with different customizable interactions per layer. The following settings can be changed to achieve the desired results:
 
 ![Terraform Layer](../../assets/images/terraformlayer.png)
 
-- **Fluid Mixing** - enables/disables fluid mixing of multi-layered fluid simulations. When enabled two fluids occupying the same cell will start mixing together. In the case of this simulation mixing of water and lava occurs by turning the fluids into rocky terrain.
-- **Mix Rate** - adjusts the rate at which the fluids mix. Higher values mean faster mixing.
-- **Mix Scale** - adjusts the amount of terrain to be added when two fluids mix. You can use this value if you want to have more or less terrain added when fluids mix. **Mix Scale** 1 means for every unit of fluid being mixed, the same amount is added to the terrain. Any **Mix Scale** below 1 causes fewer units of terrain to be added, any **Mix Scale** higher than 1 causes more units of terrain to be added.
-- **Deposit Rate** - adjusts the rate at which terrain height from mixed fluids is added to the terrain heightmap.
-- **Fluid Particles** - defines the behavior and visual control of the particles that spawn when fluids mix. This can be used to spawn steam particles when lava and water touch. You can tweak the color, lifetime, and movement in these settings.
-- **Emission Rate** - sets the spawn rate of particles when fluids mix. A lower emission rate means more particles will be spawned more quickly.
+#### Liquefaction
+Each terrain layer can be turned into a selected fluid layer over time (e.g. snow melting into water).
+
+- **Liquify** - If enabled, this terrain layer will dissolve into a fluid layer over time.
+- **Target Fluid Layer** - The fluid layer (e.g., Layer 1, Layer 2) that this terrain will dissolve into.
+- **Liquify Rate** - The speed at which the terrain dissolves into fluid, in units of height per second. Higher values mean faster melting or dissolving.
+- **Liquify Amount** - The conversion ratio of terrain height to fluid depth. A value of 1 means 1 unit of terrain height becomes 1 unit of fluid depth. A value of 2 means 1 unit of terrain becomes 2 units of fluid.
+
+#### Fluid Contact Reactions
+Each terrain layer can react to each fluid layer when it comes into contact with it (e.g. snow melting when lava touched it, sand turning to rock when lava touches it, or into grass when water touches it). Each layer is configurable to determine if and how much terrain or fluid is added or removed during the reaction.
+
+- **Fluid Layer # Contact Reaction** - If enabled, this terrain layer will react to the corresponding fluid layer and perform the selected actions.
+- **Conversion Rate** - The speed of the conversion process, in units of height/depth per second.
+- **Terrain Dissolve Amount** - The amount of the terrain that is consumed when it comes in contact with the fluid, in units of terrain height per second.
+- **Fluid Consumption Amount** - The amount of the fluid that is consumed when it comes in contact with the fluid, in units of fluid height per second.
+- **Convert To Terrain** - Select terrain layer and splat channel that the terrain and fluid will turn into on contact.
+- **Terrain Volume** - A multiplier for the amount of terrain created when terrain is consumed. A value of 1 means 1 unit of terrain height becomes 1 unit of new terrain. A value greater than 1 simulates expansion.
+- **Convert To Fluid** - The target fluid layer that the terrain will turn into when it dissolves (e.g. Lava on snow will create water).
+- **Fluid Volume** - A multiplier for the amount of fluid created when terrain is consumed. A value of 1 means 1 unit of terrain height becomes 1 unit of fluid depth. A value greater than 1 simulates expansion.
+
+#### Fluid Mixing
+When two fluids occupy the same sell they remove a certain amount from the fluid heightmap and place it into the *Modify textures*. The *Modify texture* then deposits the mixed fluids as terrain into the terrain heightmap and splatmap.
+
+- **Fluid Mixing** - If enabled, apply fluid mixing of multi-layered fluid simulations. Two fluids occupying the same cell will start mixing together. In the case of this simulation mixing of water and lava occurs by turning the fluids into rocky terrain.
+- **Mix Rate** - Adjusts the rate at which the fluids mix. Higher values mean faster mixing.
+- **Mix Scale** - Adjusts the amount of terrain to be added when two fluids mix. You can use this value if you want to have more or less terrain added when fluids mix. **Mix Scale** 1 means for every unit of fluid being mixed, the same amount is added to the terrain. Any **Mix Scale** below 1 causes fewer units of terrain to be added, any **Mix Scale** higher than 1 causes more units of terrain to be added.
+- **Deposit Rate** - Adjusts the rate at which terrain height from mixed fluids is added to the terrain heightmap.
+- **Deposit Terrain Layers** - Select the terrain layers and splat channel that the mixed fluid will deposit to.
+- **Fluid Particles** - Defines the behavior and visual control of the particles that spawn when fluids mix. This can be used to spawn steam particles when lava and water touch. You can tweak the color, lifetime, and movement in these settings.
+- **Emission Rate** - Sets the spawn rate of particles when fluids mix. A lower emission rate means more particles will be spawned more quickly.
+
+### Terrain Modifier
+This component allows the modification of the terrain heightmap and terraform layers in real-time. The settings below define the shape, strength, and blending of this modification.
+
+![alt text](../../assets/images/terrainmodifier.png)
+
+#### Settings
+- **Mode** - The shape of the modification brush.
+    - *Circle*: The modifier inputs in a circular shape.
+    - *Box*: The modifier inputs in a rectangular shape.
+    - *Texture*: The modifier inputs from a source texture.
+- **Blend Mode** - The blending operation to apply to the terrain.
+    - *Set*: Sets the terrain height to the Strength value.
+    - *Additive*: Adds the Strength value to the current terrain height (use a negative strength to subtract).
+    - *Minimum*: Takes the minimum value between the current terrain height and the Strength value.
+    - *Maximum*: Takes the maximum value between the current terrain height and the Strength value.
+- **Space** - The coordinate space for the height modification. WorldHeight sets the terrain to a specific world Y-position; TerrainHeight adds/sets height relative to the layer below it.
+- **Strength** - The intensity of the deformation. For 'Add' mode, this is the amount of height to add. For 'Set' mode, this is the target height.
+- **Falloff** - Controls the sharpness of the brush edge for Circle and Square modes. Lower values create a harder edge.
+- **Size** - The width and height of the modification area in world units.
+- **Target Layer** - The terrain heightmap layer/channel to modify (0 = Red channel, 1 = Green channel).
+- **Splat Channel** - The terrain splatmap channel to use for blending (0=R, 1=G, 2=B, 3=A).
+- **Source Texture**: The texture to use as a height source when Mode is set to 'Texture'.
 
 <a name="particle-generator"></a>
 ### Fluid Particle Generator
@@ -374,7 +430,7 @@ This component requires a `Rigidbody` and a `Collider` (`MeshCollider`, `SphereC
 
 #### Global Physics Settings
 
--   **Fluid Density** - A global multiplier to calibrate the fluid's density against your project's existing physics scale.
+-   **Fluid Density** - A global multiplier to calibrate the fluid's density against the project's existing physics scale.
 
     If you find that objects with high `Rigidbody.mass` values (e.g., a vehicle with a mass of 1500) sink when they should be floating, it is likely because the default fluid density is too low for your project's scale.
 

@@ -10,6 +10,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2025-10-26
+
+### Reimport the Samples if you encounter compile errors in the sample code.
+
+### Added
+- Simulation: Multi-layer terraforming. Control up to 4 Terraform/Erosion layers with each layer having a wide range of properties on how they interact with the fluid. See TerraformFlow for some examples.
+- Simulation: Fluid Mixing controls to allow the user to decide which layer the mixed fluid turns into and which rate.
+- Simulation: Added Liquify mode to Terraforming. Turn terrain into a fluid over time. For example melting snow.
+- Simulation: Saving and loading of simulation data.
+- Simulation: Terraform Modifier modes for add/set/max/min blend modes.
+- Rendering: New Terraform Terrain shader which makes use of Texture2DArray to allow multiple layers.
+- Editor: Texture Atlast Creator tool in Window > Fluid Frenzy menu which can be used to create a Texture2DArray for the new Terraform Terrain shader.
+- Editor: TerrainModifierEditor to a cleaner inspector and gizmos previewing the effect of the modifier.
+- Editor: Auto update code for ErosionLayer and TerraformLayer to initialize them with the new settings.
+
+### Changed
+- Simulation: Apply Fluid/Terrain input using ColorMask to reduce number of shader passes.
+- Simulation: Disable Overshooting reduction by default.
+- Simulation: Match advection of sediment to other advection effects like foam and flow.
+- Rendering: Renamed old Terraform Terrain shader to Terraform Terrain(Single Layer).
+- Editor: Moved Terraform/Erosion editors to the correct folder.
+- Editor: Converted Falloff property to slider on Fluid and Terrain Modifiers.
+- Samples: TerraformFlow has been updated with new Multi-layer terraform settings. Mud and snow has been added, as well as volcanic rock on lava contact.
+
+### Fixed
+- Simulation: Obstacle movement when using TerraformLayer/ErosionLayer causing fluids to shake violently for a few frames.
+- Simulation: Padding when sampling velocity in hydraulic erosion and sediment advection.
+- Simulation: Padding on Fluid Modifier input.
+- Simulation: Texture source mode for Terrain Modifier.
+- Rendering: SimpleTerrain sets Obstacle property to Texture2D.black to not add height of 1.
+
 ## [1.2.12] - 2025-09-28
 
 ### Reimport the Samples if you encounter compile errors in PlayerBoat.cs
