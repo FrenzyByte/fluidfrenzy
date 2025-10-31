@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Simulation: Saving and loading of simulation data.
 - Simulation: Terraform Modifier modes for add/set/max/min blend modes.
 - Rendering: New Terraform Terrain shader which makes use of Texture2DArray to allow multiple layers.
-- Editor: Texture Atlast Creator tool in Window > Fluid Frenzy menu which can be used to create a Texture2DArray for the new Terraform Terrain shader.
+- Editor: Texture Atlas Creator tool in Window > Fluid Frenzy menu which can be used to create a Texture2DArray for the new Terraform Terrain shader.
 - Editor: TerrainModifierEditor to a cleaner inspector and gizmos previewing the effect of the modifier.
 - Editor: Auto update code for ErosionLayer and TerraformLayer to initialize them with the new settings.
 
