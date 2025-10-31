@@ -10,6 +10,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2025-10-31
+
+### Added
+- Rendering: Support for COZY: Stylized Weather 3.
+- Rendering: Third Party Fog support for particles.
+- Rendering: ShaderGraph support for Third Party Fog.
+
+### Changed
+- Rendering: Refactored Third Party fog.
+
+### Fixed
+- Rendering: Use unmodified scene color for soft water edges instead of absorbed scene color.
+
 ## [1.3.0] - 2025-10-26
 
 ### Reimport the Samples if you encounter compile errors in the sample code.

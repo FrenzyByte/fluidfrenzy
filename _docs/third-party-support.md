@@ -19,7 +19,12 @@ Fluid Frenzy has support for [Enviro 3 Sky and Weather](https://assetstore.unity
 Support is directly integrated in the Water and Lava shader and will automatically be enabled when the Enviro 3 package is installed in your project.
 If it does not work automatically by default you may have to run the following command: *Edit > Fluid Frenzy > Generate External Shader Compatibility*. 
 
-If the asset does not exist in the default location it is installedt to by default Fluid Frenzy will attempt to find the asset and automatically patch the shader headers. See *ExternalCompatibilityGenerate.cs* for more information is this does not work as expected.
+If the asset does not exist in the default location it is installedt to by default Fluid Frenzy will attempt to find the asset and automatically patch the shader headers. See *ExternalCompatibilityGenerate.cs* for more information if this does not work as expected.
+
+### COZY: Stylized Weather 3
+Fluid Frenzy has support for [COZY: Stylized Weather 3](https://assetstore.unity.com/packages/vfx/shaders/cozy-stylized-weather-3-271742). Support is directly integrated in the rendering shaders and will automatically enabled upon installation of the package.
+
+If it does not work automatically by default you may have to run the following command: *Edit > Fluid Frenzy > Generate External Shader Compatibility*. 
 
 ![alt text](../../assets/images/thirdparty_enviro3.png)
 
