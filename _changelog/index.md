@@ -10,6 +10,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.2] - 2025-11-11
+
+### Added
+- Samples: Support for the new Unity Input System if included.
+- Samples: Complete sample setup overhaul and addition of the new Radial Menu system, including button background logic and button creation.
+- Samples: Added the `SurfaceCursor` component for visual interaction.
+- Samples: Implemented auto-building functionality for the Toolbar with background support.
+- Samples: New sphere effects added to new materials.
+
+### Changed
+- Samples: Fluid simulation speed improved by reducing the number of iterations.
+- Samples: Updated `SandboxTerrain.mat` to utilize the new texture array version.
+- Samples: Optimized texture memory usage by resizing all textures.
+- Samples: Visual adjustments to the terraform scene, including greener grass and improved splatmap aesthetics.
+- Samples: Sliders now correctly set maximum size/volume limits.
+- Samples: Simplification of the side user interface and improvements to the Toolbar.
+- Samples: Simplified cursor selection setup; now configured via the configuration asset instead of requiring scene assignment.
+- Samples: Fixed mouse sampling to only update when the mouse is moved if `onlyUpdateDepthOnMove` is enabled.
+
+### Fixed
+- Simulation: Fixed static input in flux simulation caused by a missing property.
+- Simulation: Fixed an issue where colliders were ignoring certain masks on TerraformTerrain.
+- Rendering: Fixed a TerraformTerrain Multi-layer turning black issue when there was no height data by ensuring the base layer always draws.
+- Rendering: Fixed an issue with updating the neighbour copy.
+
 ## [1.3.1] - 2025-10-31
 
 ### Added

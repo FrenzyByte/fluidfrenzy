@@ -40,26 +40,30 @@ To run the samples, open any of the scenes in the ```Assets/Samples/Fluid Frenzy
 *Note: The samples optionally use the [Unity Post-Processing package](https://docs.unity3d.com/Packages/com.unity.postprocessing@3.4/manual/Installation.html) for higher-quality visuals. It will be automatically enabled if the Post-Processing package is imported into the project.*  
 
 <a name="samples-controls"></a>
-### Controls
+Controls
 
-- F1 - select the *Fly Cam* to fly around the scene using the *'WASD'* keys and mouse.
-- F2 - select the *Offset Cam* which follows around the *Player Boat*.
-- F3 - select the *Third Person Cam* which follows around the *Player Boat*.
-- F4 - select the *Smooth Third Person Cam* which follows around the *Player Boat*.
-- F5 - select the *Orbit Cam* which orbits around the *Player Boat* and can be controlled with the mouse.
-- F6 - enables the *RTS Cam* which can be used to pan over the scene using the *'WASD'* keys.
-- 1-5 - select the simulation input mode depending on the scene loaded. 1 Is always water.
-- 'WASD' - controls the *Fly Cam*, *RTS Cam*, and the *Player Boat*, allowing you to move forward.
-- Arrows - rotates the *Fly Cam* and *RTS Cam*.
-- Mouse Left - when held rotates *Fly Cam* and *RTS Cam* when moving the mouse.
-- Mouse Right - when held adds the selected fluid/terrain to the simulation at the mouse location.
+All samples are designed to be compatible with both the Unity Input System package and the Legacy Input Manager. The system automatically checks for the presence of the new Input System package at runtime and uses it if available; otherwise, it defaults to the Legacy Input Manager. This ensures the controls below function regardless of your project's input configuration.
+
+- F1 - select the Fly Cam to fly around the scene using the 'WASD' keys and mouse.
+- F2 - select the Offset Cam which follows around the Player Boat.
+- F3 - select the Third Person Cam which follows around the Player Boat.
+- F4 - select the Smooth Third Person Cam which follows around the Player Boat.
+-  F5 - select the Orbit Cam which orbits around the Player Boat and can be controlled with the mouse.
+- F6 - enables the RTS Cam which can be used to pan over the scene using the 'WASD' keys.
+- 1-9 - select the simulation input mode depending on the scene loaded. 1 Is always water.
+- 'WASD' - controls the Fly Cam, RTS Cam, and the Player Boat, allowing you to move forward.
+- Arrows - rotates the Fly Cam and RTS Cam.
+- Mouse Left - when held rotates Fly Cam and RTS Cam when moving the mouse.
+- Mouse Right - when held adds the selected fluid/terrain to the simulation at the mouse location.eld adds the selected fluid/terrain to the simulation at the mouse location.
 
 <a name="samples-river"></a>
 ### River
 
 ![River Sample](../../assets/images/sample_river.png)
 
-The River sample shows the use of [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) adding water from multiple sources to create three river branches. The camera starts at the end of one of these branches with a boat that can be driven across the scene. Water flows out of the scene due to the *Open Borders* functionality of the fluid simulation to prevent flooding of the scene. This scene makes use of the Unity Terrain so modifying the terrain in realtime- is not possible.
+The River sample shows the use of [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) adding water from multiple sources to create three river branches. The camera starts at the end of one of these branches with a boat that can be driven across the scene. Water flows out of the scene due to the *Open Borders* functionality of the fluid simulation to prevent flooding of the scene. This scene makes use of the Unity Terrain so modifying the terrain in real-time is not possible.
+
+An alternative scene, **RiverFlow**, is also available and utilizes the `FlowFluidSimulation` instead of the default `FluxFluidSimulation`. The `FlowFluidSimulation` is an alternative fluid dynamics model that may offer different performance characteristics and simulation behavior compared to the `FluxFluidSimulation`.
 
 <div style="page-break-after: always;"></div>
 
@@ -91,13 +95,16 @@ The Volcano scene showcases that different fluids can be rendered like lava. Thi
 
 The Terraform scene showcases God Game simulation with two types of fluid interacting with each other and erosion of the top sand layer. Water and Lava are automatically added to the scene from different locations and when they touch they turn into rocky terrain and steam. Fluid and Terrain can be added using the mouse input as described in the controls section. This scene makes use of a custom terrain allowing modifications to be made to it in real-time by adding erodible sand, or non-erodible rock and vegetation.
 
+An alternative scene, **TerraformFlow**, is also available and utilizes the `FlowFluidSimulation` instead of the default `FluxFluidSimulation` for its fluid dynamics. The `FlowFluidSimulation` is an alternative fluid dynamics model that may offer different performance characteristics and simulation behavior compared to the `FluxFluidSimulation`.
+
 <a name="samples-simpleterraform"></a>
 ### Simple Terraform
 
 ![Terraform Sample](../../assets/images/sample_terraform.png)
 
-The Simple Terraform scene a minimal version of the terraform simulation, it has a simpler UI so that it's scripts be be easily copied to other scenes.
-*Note: The scripts, scene and UI components in this sample are setup with specific type of terrain layers and fluids. If you wish to reuse the scripts make sure your scene is setup the same or modify your layers accordingly
+The Simple Terraform scene offers a minimal version of the full Terraform simulation, focusing on ease of use and script readability. Unlike the main samples (like **Terraform**), where available fluids and terrain layers are dynamically generated at runtime from a centralized [Scene Configuration](#scene-configuration) file, this scene utilizes a simpler setup where the UI buttons for adding materials (e.g., Water, Lava, Sand) are fixed and hardcoded within the scene's scripts. This design is intended for users who wish to quickly copy and integrate the core terraforming logic into their own scenes without relying on the dynamic configuration system.
+
+*Note: The scripts, scene and UI components in this sample are setup with specific type of terrain layers and fluids. If you wish to reuse the scripts make sure your scene is setup the same or modify your layers accordingly.*
 
 <a name="samples-tiledsimulation"></a>
 ### Tiled Simulation
@@ -109,6 +116,17 @@ More information can be found [here](#8-tiled-simulations-beta)
 ### Runtime Setup
 
 Demonstrates how to setup a fluid simulation at runtime. This can be useful for when a game makes use of procedurally generated terrain that does not exist before entering playmode.
+
+<a name="scene-configuration"></a>
+### Scene Configuration
+
+The `SceneConfiguration` is a central **Scriptable Object** asset used across many of the provided samples (such as **River**, **Grand Canyon**, and **Terraform**) to define the available fluids and terrain materials for a scene.
+
+This approach decouples the UI and simulation setup from the core scene logic. A typical `SceneConfiguration` asset includes lists of:
+*   Fluid materials (e.g., Water, Lava).
+*   Terrain layers (e.g., Erodible Sand, Non-Erodible Rock, Vegetation).
+
+At runtime, sample scenes load this configuration to dynamically generate UI elements (like buttons for adding fluid or terrain materials). This system allows developers to easily modify the types of fluids and terrain available in a scene without needing to change the underlying scene code or scripts. The **Simple Terraform** scene is the primary exception, as it uses a fixed setup for simplicity.
 
 <div style="page-break-after: always;"></div>
 
