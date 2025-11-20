@@ -1,6 +1,6 @@
 ---
 layout: default-nosearch
-permalink: demo/curvedworlddemo.html
+permalink: demo/fossilfinderdemo.html
 ---
 <div class="container">
     <div class="row">
@@ -37,7 +37,7 @@ permalink: demo/curvedworlddemo.html
         const contentDiv = document.getElementById('content');
         if (isMobileDevice()) {
             // Load mobile content
-            fetch('curvedworlddemo-mobile.html')
+            fetch('fossilfinderdemo-mobile.html')
                 .then(response => response.text())
                 .then(html => {
                     contentDiv.innerHTML = html;
@@ -45,7 +45,7 @@ permalink: demo/curvedworlddemo.html
                 .catch(error => console.error('Error loading mobile content:', error));
         } else {
             // Load desktop content
-            fetch('curvedworlddemo-desktop.html')
+            fetch('fossilfinderdemo-desktop.html')
                 .then(response => response.text())
                 .then(html => {
                     contentDiv.innerHTML = html;
