@@ -39,15 +39,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Samples: Implemented auto-building functionality for the Toolbar with background support.
 - Samples: New sphere effects added to new materials.
 
-## [1.3.2] - 2025-11-11
-
-### Added
-- Samples: Support for the new Unity Input System if included.
-- Samples: Complete sample setup overhaul and addition of the new Radial Menu system, including button background logic and button creation.
-- Samples: Added the `SurfaceCursor` component for visual interaction.
-- Samples: Implemented auto-building functionality for the Toolbar with background support.
-- Samples: New sphere effects added to new materials.
-
 ### Changed
 - Samples: Fluid simulation speed improved by reducing the number of iterations.
 - Samples: Updated `SandboxTerrain.mat` to utilize the new texture array version.
