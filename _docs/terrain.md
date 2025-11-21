@@ -43,6 +43,7 @@ Currently features for terrains are limited but consists of the following:
 - **Height Scale** - adjusts the overall height of the terrain by applying a multiplier to both the red and green channels of the Source Heightmap.
 - **Terrain Material** - is the material the terrain will be rendered with. Currently, only the **Simple Terrain** and **Terraform Terrain** shaders are supported. Custom shaders can be written.
 - **Terrain Heightmap** - specifies the heightmap applied to the terrain with the red channel representing base height and the green channel showing erodible layers above it. Using a 16-bit per channel texture is recommended to avoid artifacts like stepping or terracing.
+- **Upsample** - Upsample the heightmap using interpolation to increase the number of samples and reduce precision artifacts, especially when using low bit-depth source heightmaps.
 - **Shadow Light** - is used to perform a main shadow culling pass on the GPULOD Terrain to accelerated shadow rendering.
 
 ##### **Collision**

@@ -371,6 +371,7 @@ This component allows the modification of the terrain heightmap and terraform la
     - *Maximum*: Takes the maximum value between the current terrain height and the Strength value.
 - **Space** - The coordinate space for the height modification. WorldHeight sets the terrain to a specific world Y-position; TerrainHeight adds/sets height relative to the layer below it.
 - **Strength** - The intensity of the deformation. For 'Add' mode, this is the amount of height to add. For 'Set' mode, this is the target height.
+- **Remap** - The range used to remap a normalized input value  to a new output value. An input of 0 maps to remap.x, and an input of 1 maps to remap.y.
 - **Falloff** - Controls the sharpness of the brush edge for Circle and Square modes. Lower values create a harder edge.
 - **Size** - The width and height of the modification area in world units.
 - **Target Layer** - The terrain heightmap layer/channel to modify (0 = Red channel, 1 = Green channel).
