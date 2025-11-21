@@ -10,6 +10,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.3] - 2025-11-22
+
+### Added
+- Simulation: Remap range control to TerrainModifier.
+- Simulation: Added MacCormack advection option to ErosionLayer to allow increased erosion stability.
+- Rendering: Upsample option to Simple/Terraform Terrain to create smoother terrains if low bit depth heightmaps are used.
+- Editor: Undo support for Simple/Terraform Terrain.
+- Editor: HDRP Shader Stripping.
+- Editor: Draw the LOD resolution in the GUI.
+- Samples: New FossilFinder sample scene using the Erosion Layer.
+
+### Changed
+- Rendering: Use Texture2D instead of Sampler2D to make sure sampling is done in the correct floating point precision.
+
+### Fixed
+- Simulation: SedimentAdvection speed linked up so it works.
+- Simulation: ErosionLayer Slippage stability on low timestep project settings.
+- Simulation: [WebGPU] ErosionLayer terrain infinitly raising in.
+- Simulation: [WebGL] Compute shader error with SolidToFluid feature.
+
+## [1.3.2] - 2025-11-11
+
+### Added
+- Samples: Support for the new Unity Input System if included.
+- Samples: Complete sample setup overhaul and addition of the new Radial Menu system, including button background logic and button creation.
+- Samples: Added the `SurfaceCursor` component for visual interaction.
+- Samples: Implemented auto-building functionality for the Toolbar with background support.
+- Samples: New sphere effects added to new materials.
+
 ## [1.3.2] - 2025-11-11
 
 ### Added
