@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Simulation: ErosionLayer Slippage stability on low timestep project settings.
 - Simulation: [WebGPU] ErosionLayer terrain infinitly raising in.
 - Simulation: [WebGL] Compute shader error with SolidToFluid feature.
+- Simulation: Typo renamed GetNeartestFluidLocation3D to GetNearestFluidLocation3D
 
 ## [1.3.2] - 2025-11-11
 

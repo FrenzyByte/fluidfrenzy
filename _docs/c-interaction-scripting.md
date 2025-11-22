@@ -50,7 +50,7 @@ Sample the Fluid Simulation distance field using the following functions:
 
 
 ```c#
-GetNeartestFluidLocation2D(Vector3 worldPos, out Vector3 fluidLocation)
+GetNearestFluidLocation2D(Vector3 worldPos, out Vector3 fluidLocation)
 ```
 *Samples the fluid distance field to find the nearest fluid location .
 Use this function if you want to sample other Fluid Simulation data at the nearest location, for example the velocity to dim the audio of fluid based on the speed of the fluid*
@@ -58,9 +58,9 @@ Use this function if you want to sample other Fluid Simulation data at the neare
 - *fluidLocation The resulting nearest location to worldPos containing fluid in 2D space. The x and z are the location sampled from the distance field. The y is the worldPos.y*
 
 ```c#
-GetNeartestFluidLocation3D(Vector3 worldPos, out Vector3 fluidLocation)
+GetNearestFluidLocation3D(Vector3 worldPos, out Vector3 fluidLocation)
 ```
-*Samples the fluid distance field to find the nearest fluid location. Unlike **GetNeartestFluidLocation2D** this returns the location of the fluid including the world space height of the fluid. This can be useful for directly positioning objects like an audio source at that location.*
+*Samples the fluid distance field to find the nearest fluid location. Unlike **GetNearestFluidLocation2D** this returns the location of the fluid including the world space height of the fluid. This can be useful for directly positioning objects like an audio source at that location.*
 
 - *fluidLocation The resulting nearest location to worldPos containing fluid.*
 
@@ -73,7 +73,7 @@ public class FluidFinder : MonoBehaviour
 
     void Update()
     {
-        FluidFrenzy.FluidSimulationManager.GetNeartestFluidLocation3D(transform.position, out Vector3 location);
+        FluidFrenzy.FluidSimulationManager.GetNearestFluidLocation3D(transform.position, out Vector3 location);
         audioSource.transform.position = location;
     }
 }
