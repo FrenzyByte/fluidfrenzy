@@ -20,51 +20,55 @@ Currently features for terrains are limited but consists of the following:
 <a name="simple-terrain"></a>
 #### Simple Terrain
 
-**Simple Terrain** is a terrain rendering component for fluid simulations that makes use of the [Erosion Layer](../fluid_simulation_components#erosion-layer). When the [Erosion Layer](../fluid_simulation_components#erosion-layer) makes modifications to the terrain height it is applied directly to the **Simple Terrain** in realtime.
+A specialized terrain rendering component designed for the [Fluid Simulation](../fluid_simulation_components#fluid-simulation) system, capable of supporting real-time modifications from an [Erosion Layer](../fluid_simulation_components#erosion-layer).
+
+Unlike a Unity Terrain, `SimpleTerrain` allows for dynamic updates to its heightmap data directly on the GPU. When an [Erosion Layer](../fluid_simulation_components#erosion-layer) is active, sediment transport and deposition changes are applied to this terrain instantly.
 
 ![Simple Terrain](../../assets/images/simpleterrain.png)
 
-##### **Mesh Rendering**
-- **Rendering Mode** - The method used for rendering the surface.
-
-    - **MeshRenderer**: Uses GameObjects with [MeshRenderer](https://docs.unity3d.com/ScriptReference/MeshRenderer.html) components to draw the surface. The surface is a evenly distributed fixed size grid. The grid can be split up into multiple blocks/objects for better culling. GPU instancing is supported when enabled on the assigned material. 
-
-    - **DrawMesh**: Uses [Graphics.RenderMesh](https://docs.unity3d.com/ScriptReference/Graphics.RenderMesh.html) or [Graphics.RenderMeshInstanced](https://docs.unity3d.com/ScriptReference/Graphics.RenderMeshInstanced.html) to render a height field to each camera, it has the same functionality as the MeshRenderer method except it doesn't create any GameObjects and it is rendered manually and can therefore support GPU Instancing on the water shader.
-
-    - **GPULOD**: Draws the surface using a fully [GPU-Accelerated distance based LOD system](https://www.researchgate.net/publication/331761994_Quadtrees_on_the_GPU) for maximum performance. The surfaces will be drawn with higher detail up close, and lower detail in the distance.
-- **Mesh Resolution** - the amount of vertices the mesh is in each axis. It is best to match **Fluid Simulation Settings -** **Number of Cells**.
-- **Mesh Blocks** - the amount of blocks the rendering mesh is to be subdivided in to improve GPU performance by culling parts of the renderer.
-- **LOD Resolution** - The resolution of each LOD mesh in the terrain.
-- **Traverse Iterations** - The number of iterations the GPULOD Quadtree will run when traversing the Quadtree. Higher iterations resolve the quality of the surface faster, but reduces performance.
-- **LOD Levels** - The minimum and maximum LOD levels that can be selected.
-- **Dimension** - determines the width and height of the terrain.
-
 ##### **Terrain Settings**
-- **Height Scale** - adjusts the overall height of the terrain by applying a multiplier to both the red and green channels of the Source Heightmap.
-- **Terrain Material** - is the material the terrain will be rendered with. Currently, only the **Simple Terrain** and **Terraform Terrain** shaders are supported. Custom shaders can be written.
-- **Terrain Heightmap** - specifies the heightmap applied to the terrain with the red channel representing base height and the green channel showing erodible layers above it. Using a 16-bit per channel texture is recommended to avoid artifacts like stepping or terracing.
-- **Upsample** - Upsample the heightmap using interpolation to increase the number of samples and reduce precision artifacts, especially when using low bit-depth source heightmaps.
-- **Shadow Light** - is used to perform a main shadow culling pass on the GPULOD Terrain to accelerated shadow rendering.
+
+| Property | Description |
+| :--- | :--- |
+| Terrain Material | The material used to render the terrain surface.<br/><br/>The assigned shader must support vertex displacement based on the **Render Heightmap** to correctly visualize the terrain shape. |
+| [Surface Properties](../fluid_rendering_components#render-properties) | Configuration settings that determine the visual quality, resolution, and rendering method (e.g., MeshRenderer vs. GPULOD) of the terrain. |
+| Source Heightmap | The input texture that defines the initial shape and composition of the terrain.<br/><br/>For best results, use a 16-bit (16bpp) texture to prevent stepping artifacts. <br/><br/> The texture channels represent distinct material layers stacked sequentially from bottom to top. All layers are erodible.  <br/>-  **`Red Channel`**  Layer 1 (Bottom). Defines the base height. In `TerraformTerrain`, a separate splatmap texture is used to apply visual variation to this specific layer.  <br/>-  **`Green Channel`**  Layer 2. Stacked on top of the Red channel.  <br/>-  **`Blue Channel`**  Layer 3. Stacked on top of the Green channel.  <br/>-  **`Alpha Channel`**  Layer 4 (Top). Stacked on top of the Blue channel. |
+| Height Scale | A global multiplier applied to the height values sampled from the [Source Heightmap](#source-heightmap).<br/><br/>This converts the normalized (0 to 1) texture data into world-space height units. |
+| Upsample | Toggles bilinear interpolation for the heightmap sampling.<br/><br/>Enabling this increases the number of samples taken to smooth out the terrain. This is particularly useful for reducing "stair-stepping" artifacts when using lower bit-depth source textures. |
+| Shadow Light | The primary directional light used to calculate shadows on the terrain.<br/><br/>This is primarily used when rendering in the Built-in Render Pipeline (BiRP) to manually handle shadow projection on the custom terrain mesh. |
+| [Collider Properties](../physics_colliders#collider-properties) | Configuration settings for generating the physical [Terrain Collider](https://docs.unity3d.com/ScriptReference/TerrainCollider.html) associated with this terrain. |
+
+##### **Mesh Rendering**
+| Property | Description |
+| :--- | :--- |
+| Render Mode | The method used for generating and rendering the fluid surface geometry.<br/><br/>-  **`MeshRenderer`**  Uses standard GameObjects with [Mesh Renderer](https://docs.unity3d.com/ScriptReference/MeshRenderer.html) components. Best for simple setups where standard object culling is sufficient.  <br/>-  **`DrawMesh`**  Uses [Render Mesh](#render-mesh) to avoid GameObject overhead. Supports GPU Instancing.  <br/>-  **`GPULOD`**  Draws the surface using a GPU-accelerated LOD system. Best for large-scale oceans or lakes.  <br/>-  **`HDRPWaterSurface`**  Bridges the simulation data to a Unity [HDRP Water Surface](../fluid_rendering_components#hdrp-water-surface) component (Requires HDRP). |
+| Dimension | The total world-space size (X and Z) of the rendered surface. |
+| Mesh Resolution | The vertex resolution of the surface's base grid mesh.<br/><br/>For the most accurate visualization, it is recommended to match this value to the source heightmap resolution. |
+| Mesh Blocks | The number of subdivisions (blocks) to split the rendering mesh into along the X and Z axes.<br/><br/>Subdividing the mesh improves GPU performance by allowing the camera to cull blocks that are outside the view frustum. |
+| Lod Resolution | The vertex resolution of individual LOD patches when using **GPULOD**. |
+| Traverse Iterations | The number of iterations the Quadtree traversal algorithm performs per frame when using **GPULOD**.<br/><br/>Higher values resolve the surface quality faster during camera movement but may reduce performance. |
+| Lod Min Max | The range of allowable LOD levels, where X is the minimum level and Y is the maximum level. |
 
 ##### **Collision**
-- **Create Collider** - toggles the generation of a TerrainCollider to use for physics.
-- **Resolution** - the quality of the TerrainCollider grid. Higher resolutions means more accurate physics, at the cost of longer generation times. Internally the grids resolution is resolution+1.
-- **Update Realtime** - update the collider in real time every Nth frame to match the collider with the rendered data. Updating the collider requires the GPU terrain data to be read back to the CPU and applied to the TerrainData this can be expensive.
-- **Frequency** - update the collider in real time every Nth frame to match the collider with the rendered data. Updating the collider requires the GPU terrain data to be read back to the CPU and applied to the TerrainData, which can be resource-intensive.
-- **Timeslice** - splits the update of the heightmap in several segments. Each segment will be rendered on a different frame. A full collider update takes this many frames.
 
-##### **Saving and Loading (BETA)**
-<sub>**This functionality is subject to future changes.**</sub>
+| Property | Description |
+| :--- | :--- |
+| Create Collider | Toggles the generation of a [Terrain Collider](https://docs.unity3d.com/ScriptReference/TerrainCollider.html) to handle physical interactions with the fluid surface. |
+| Resolution | Specifies the grid resolution of the generated [Terrain Collider](https://docs.unity3d.com/ScriptReference/TerrainCollider.html).<br/><br/>This value determines the density of the physics mesh. Higher resolutions result in more accurate physical interactions but increase generation time and physics processing overhead. <br/><br/> Internally, the actual grid size is set to `resolution + 1` to satisfy heightmap requirements. |
+| Realtime | Controls whether the collider's heightmap is updated at runtime to match the visual fluid simulation.<br/><br/>When enabled, the simulation data is continuously synchronized with the physics collider. Note that this process requires reading GPU terrain data back to the CPU and applying it to the **Terrain Data**, which can be resource-intensive and cause garbage collection spikes. |
+| Update Frequency | The interval, in frames, between consecutive collider updates when [Realtime](#realtime) is enabled.<br/><br/>Increasing this value reduces the performance cost of the readback but causes the physics representation to lag behind the visual rendering. |
+| Timeslicing | The number of frames over which a single full collider update is distributed.<br/><br/>This feature splits the heightmap update into smaller segments, processing only a fraction of the data per frame. This helps to smooth out performance spikes and maintain a stable framerate, though it increases the time required for the collider to fully reflect a change in the fluid surface. |
 
-The state of the terrain can both be saved and loaded back in by using the **SaveTerrain** and **LoadTerrain**. The result can be saved and loaded as a [.exr*](https://openexr.com/en/latest/) or [.png](https://en.wikipedia.org/wiki/PNG). The functionality is also exposed in the editor for testing purposes.
+##### **Saving and Loading**
+The state of the terrain and fluid simulation can both be saved and loaded back in by using the SaveTerrain and LoadTerrain methods (or equivalent editor functions).
 
-Parameters:
-- *directory* - the directory where the file will be saved to/loaded from.
-- *filename* - the name of the file to save/load.
-- *format* - the format to save/load. Currently only exr and png is supported.
+The simulation state is saved as a collection of textures (e.g., height map, velocity, pressure). Each texture can be saved and loaded using one of two formats, managed by the new SimulationIO utility:
 
+    RAW (.data): The recommended, high-fidelity format. This custom format is fast, lossless, and is essential for saving high-precision simulation data (e.g., floating-point textures). It supports optional GZip compression and embedding texture metadata directly within the file.
 
-<sub>* Loading .exr files is only available from Unity 6 and onward due to no functionality existing in older versions.</sub>
+    PNG (.png): A standard image format. While useful for visual debugging, it is lossy and is not recommended for saving the full, high-precision simulation state.
+
+The functionality is also exposed in the editor for testing purposes.
 
 <a name="terraform-terrain"></a>
 #### Terraform Terrain
@@ -72,43 +76,60 @@ The **Terraform Terrain** component is an extension of the **Simple Terrain** co
 
 ![Terraform Terrain](../../assets/images/terraformterrain.png)
 
-- **Splatmap** - is applied to the Terraformed terrain as a mask to determine which layer of textures and material properties of the assigned **Terrain Material** to use. The splat map is only applied to the base(R) layer.
-Each channel in the splatmap corresponds to a layer of the **Terrain Material**.
-    - Layer 1: red
-    - Layer 2: green
-    - Layer 3: blue
-    - Layer 4: alpha
+| Property | Description |
+| :--- | :--- |
+| Splatmap | The texture defining the initial material distribution (splatmap) across the terrain surface.<br/><br/>The splat map acts as a mask to determine which of the four material layers from the assigned [Terrain Material](#terrain-material) are rendered at any given coordinate. Each channel of the splat map corresponds to a material layer:  <br/>- Layer 1: Red channel (Primary Material) <br/>- Layer 2: Green channel <br/>- Layer 3: Blue channel <br/>- Layer 4: Alpha channel  **Crucial Constraint:** When using `TerraformTerrain`, this splat map is only applied to the base (Red channel) physical layer data defined by the [Source Heightmap](#source-heightmap). The other physical layers (G, B, A channels of the heightmap) use their respective material properties directly without being masked by this splat map. |
 
 <a name="terraform-terrain-shader"></a>
 #### Terraform Terrain Shader
 
+A multi-layered, texture-array-driven surface shader designed to render a terrain that is fully compatible with Fluid Frenzy's terraforming capabilities.
+
+This shader requires **Texture2DArray** assets for its texture slots. These assets can be created using the **Window > Fluid Frenzy Texture Array Creator** tool.
+
+The shader organizes its texture inputs into two primary, fully terraformable groups: Splat Layers and Dynamic Layers.
+
+Splat Layers (R):
+Defines the four base layers, blended by a Splatmap (RGBA).
+
+Dynamic Layers:
+Three additional layers for dynamic, transformable materials (mud, sand, snow).
+
+Layer Overrides:
+Allows per-layer adjustments across all seven layers, including Layer Tint, Tiling / Offset, and Normal Scale, without modifying source textures.
+
+Compatibility:
+The FluidFrenzy/TerraformTerrain shader is for URP and BiRP. The High Definition Render Pipeline (HDRP) requires a separate, dedicated shader: FluidFrenzy/HDRP/TerraformTerrain.
+
 ![alt text](../../assets/images/terraformterrain_mutilayer.png)
-
-The Terraform Terrain shader is used to render the terrain. It organizes textures into two main groups: **Splat Layers** and **Dynamic Layers**. Both groups are fully terraformable.
-
-This shader requires **Texture2DArray** assets for its texture slots. You can create these assets using the **Window > Fluid Frenzy Texture Array Creator** tool.
 
 ##### Splat Layers (R)
 This section defines the four base terrain layers. They are blended together using the RGBA channels of the splatmap to create ground variation. These layers are fully terraformable.
 
-- **Albedo** - The Texture2DArray containing the base color textures for the four splat layers.
-- **Mask Map** - The Texture2DArray containing data for Metallic (R), Occlusion (G), and Smoothness (A).
-- **Normal Map** - The Texture2DArray for the splat layers' normal maps.
+| Property | Description |
+| :--- | :--- |
+| Albedo | Texture2DArray for Albedo (RGB). |
+| Mask Map | Texture2DArray for Metallic (R), Occlusion (G), and Smoothness (A). |
+| Normal Map | Texture2DArray for Normal Maps. |
 
 ##### Dynamic Layers
 These three layers are intended for terraformable materials like mud, sand, or snow, which can be transformed into other layers during gameplay. They use a separate set of Texture2DArray assets.
 
-- **Albedo** - The Texture2DArray for the base color of the three dynamic layers.
-- **Mask Map** - The Texture2DArray for the dynamic layers' mask maps.
-- **Normal Map** - The Texture2DArray for the dynamic layers' normal maps.
+| Property | Description |
+| :--- | :--- |
+| Albedo | Texture2DArray for Albedo (RGB). |
+| Mask Map | Texture2DArray for Metallic (R), Occlusion (G), and Smoothness (A). |
+| Normal Map | Texture2DArray for Normal Maps. |
 
 ##### Layer Settings
 This section provides a grid to override properties for each of the 7 terrain layers (4 Splat Layers and 3 Dynamic Layers). This allows you to adjust the look of each material without creating new textures.
 
-- **Layer Tint** - A color multiplier applied to each base layer's albedo.
-- **Tiling / Offset** - Controls the UV scale and position for each layer's textures.
-- **Normal Scale** - Adjusts the intensity of the normal map for each layer.
-
+| Property | Description |
+| :--- | :--- |
+| Layer Tint | A color multiplier for each layer's albedo. |
+| Tiling | The UV tiling (XY) for each layer. |
+| Offset | The UV offset (ZW) for each layer. |
+| Normal Scale | Per-layer scale for each of the Layer normal maps. |
 
 <a name="terraform-terrain-single-shader"></a>
 #### Terraform Terrain (Single Layer) Shader
@@ -116,12 +137,14 @@ The Terraform Terrain (Single Layer) shader is a cheaper version of the Terrafor
 
 ![alt text](../../assets/images/terraformterrain_shader.png)
 
-- **Albedo** - albedo texture and color(multiplier) of the layer
-- **Normal Map** - normal map of the layer
-- **Mask Map** - metallic(R), occlusion(G), smoothness(A) of the layer.
+| Property | Description |
+| :--- | :--- |
+| Albedo | albedo texture and color(multiplier) of the layer |
+| Normal Map | normal map of the layer |
+| Mask Map | metallic(R), occlusion(G), smoothness(A) of the layer. |
 
 ---
 
 <div style="page-break-after: always;"></div>
 
-<a name="fluid-modifiers"></a>
+<a name="fluid-modifier"></a>

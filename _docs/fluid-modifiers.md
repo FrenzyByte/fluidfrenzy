@@ -9,109 +9,101 @@ permalink: /docs/fluid_modifiers/
 {:toc}
 ---
 
-**Fluid Modifiers** are *Components* that can be attached to a *GameObject*. They are used to interact with the simulation in multiple ways, ranging from adding/removing fluids and applying forces. There are several **Fluid Modifier** types each with specific behaviors.
+[Fluid Modifier](../terrain#fluid-modifier) are Components that can be attached to a GameObject. This is the base class other [Fluid Modifier](../terrain#fluid-modifier) (can) derive from and can be used to write custom interactions with the [Fluid Simulation](../fluid_simulation_components#fluid-simulation) They are used to interact with the simulation in multiple ways, ranging from adding/removing fluids and applying forces. There are several Fluid Modifier types each with specific behaviors.
 
 <a name="fluid-modifier-volume"></a>
 ### Fluid Modifier Volume
 
-**Fluid Modifier Volume** has multiple types that can be used simultaneously. The types are:
+[Fluid Modifier Volume](#fluid-modifier-volume) is a FluidModifier that interacts with any [Fluid Simulation](../fluid_simulation_components#fluid-simulation). There are several modes that can be used to interact with fluid simulations by setting the Fluid Modifier Type.
 
 ![Fluid Modifier Volume](../../assets/images/fluidsource.png)
 
-<a name="fluid-volume-source"></a>
-#### Source
+<a name="fluid-source-settings"></a>
+#### Fluid Source Settings
 
-Is used to add/remove fluid from the simulation.
-- **Mode** - sets the input mode of the modifier.
-    Options:
-    - *Circle* - the modifier inputs the fluid in a circular shape.
-    - *Box* - the modifier inputs fluid in a rectangular shape.
-    - *Texture* - the modifier inputs the fluid from a source texture.
- - **BlendMode** - set the blend mode of the modifier
-    Options:
-    - *Set:* replaces the current fluid height.
-    - *Additive:* adds or removes fluid height.   
-    - *Minimum*: prevents the fluid from exceeding this height.
-    - *Maximum*: prevents the fluid from going below this height.
-- **Dynamic** - enables/disables if the modifier can be moved. When disabled the modifier will write to a static texture at the start of the simulation. This is useful if you have many fluid sources and want to improve your performance.
-- **Size** - adjusts the size of the volume in world space.
-- **Strength** - adjusts the amount of fluids input by the volume
-- **Falloff** - Adjusts the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create large but more focused fluid sources. A higher value means the source strength falls off faster.
-- **Texture** - the texture to use as an input. Only the red channel is used.
-- **Layer** - the layer to add the fluids to.
+Defines the settings when [Source](#source) is enabled on the [Fluid Modifier Volume](#fluid-modifier-volume).
 
-<a name="fluid-volume-flow"></a>
-#### Flow
+| Property | Description |
+| :--- | :--- |
+| Mode | Sets the insdasput mode of the modifier, defining the shape or source of the fluid input.<br/><br/>Fluid input modes include:  <br/>-  **[Circle](#circle)**  Fluid input in a circular shape.  <br/>-  **[Box](#box)**  Fluid input in a rectangular shape.  <br/>-  **[Texture](#texture)**  Fluid input defined by a source texture. |
+| Dynamic | Enables or disables movement for this modifier.<br/><br/>When disabled, the modifier is treated as static and its contribution is calculated once at the start of the simulation. This improves performance for multiple stationary fluid sources. |
+| Blend Mode | Defines the blending operation used to apply the fluid source to the simulation's height field.<br/><br/>This determines how the fluid is applied to the simulation's current height. Options include:<br/> - [Additive](#additive): Adds or subtracts the fluid amount.<br/> - [Set](#set): Sets the height to a specific value.<br/> - [Minimum](#minimum)/[Maximum](#maximum): Clamps the height to the target value. |
+| Space | Specifies the coordinate space to which the fluid height source should be set relative to.<br/><br/>-  **[World Height](#world-height)**  The height is interpreted as a specific world Y-coordinate.  <br/>-  **[Local Height](#local-height)**  The height is interpreted relative to the fluid surface's base height. |
+| Strength | Adjusts the amount of fluid added or set by the volume.<br/><br/>-  **For Additive blending**  This is the rate per second of fluid to add/subtract.  <br/>-  **For Set blending**  This value contributes to the target height. |
+| Falloff | Adjusts the curve of the distance-based strength, controlling how quickly the influence falls off from the center.<br/><br/>Higher values create a faster falloff, resulting in a more focused fluid source. |
+| Target Layer | Specifies the target fluid layer to which the fluid will be added. |
+| Size | Adjust the size (width and height) of the modification area in world units. |
+| Source Texture | The source texture used to determine the shape and intensity of the fluid input when [Mode](#mode) is [Texture](#texture). Only the red channel of the texture is used. |
 
-is used to add a force to the velocity field of the simulation. An example of this would be a boat's motor pushing away foam or a whirlpool.
+<a name="fluid-flow-settings"></a>
+#### Fluid Flow Settings
 
-- **Mode** - is the input mode of the modifier.
-    Options:
-    - *Circle* - the modifier inputs the flow in a direction within a circular shape.
-    - *Vortex* - the modifier inputs the flow of a vortex. The flow shape will be circular but has control over the radial flow and the inward flow
-    - *Texture* - the modifier inputs the flow direction from a flow map texture.
- - **BlendMode** - set the blend mode of the modifier
-    Options:
-    - *Set:* replaces the current velocity of the velocity field.
-    - *Additive:* adds the flow to the current velocity in the velocity field.
-    - *Damping:* reduces the velocity in the velocity field." 
-- **Direction** - is the 2D direction that the flow force will be applied in simulation space.
-- **Size** - adjusts the size of the flow volume in world space.
-- **Strength** adjusts the amount of flow applied to the velocity field. For Vortex mode, this is the inward flow to the center.
-- **Falloff** - adjusts the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create sharper/flatter wave/vortex shapes. Higher values mean a faster falloff.
-- **Radial Flow Strength** - adjusts the amount of radial flow applied to the velocity field for vortex mode. Higher values make vortices flow faster.
-- **BlendMode** - set the mode used to blend in the velocity to the simulation*Set:* replaces the current flow of the velocity field.
-    Options:
-    - *Set:* replaces the current flow of the velocity field.
-    - *Additive:* adds the flow to the current flow in the velocity field. 
-- **Texture** -  flow map texture that writes its red & green channels into the velocity field. This texture is unpacked from 0 to 1 range to -1 to 1 range, so anything below 0.5 will be left/down and anything above will be right/up. For more information see: https://catlikecoding.com/unity/tutorials/flow/texture-distortion/
+Defines the settings when [Flow](#flow) is enabled on the [Fluid Modifier Volume](#fluid-modifier-volume).
 
-<a name="fluid-volume-force"></a>
-#### Force
+| Property | Description |
+| :--- | :--- |
+| Mode | Sets the input mode of the modifier, defining how flow is applied.<br/><br/>Flow application modes include:  <br/>-  **[Circle](#circle)**  A constant directional flow within a circular shape.  <br/>-  **[Vortex](#vortex)**  A circular flow with radial and tangential control.  <br/>-  **[Texture](#texture)**  Flow direction supplied from a dedicated flow map texture. |
+| Direction | Sets the 2D direction in which the flow force will be applied for [Circle](#circle).<br/><br/>The `x` component maps to world X, and the `y` component maps to world Z (assuming a flat surface). |
+| Blend Mode | The blending operation used to apply the generated velocity to the simulation's velocity field.<br/><br/>This determines how the velocity is applied to the simulation's current flow. Options include:  <br/>-  **[Additive](#additive)**  Adds or subtracts the flow/velocity amount.  <br/>-  **[Set](#set)**  Sets the flow/velocity to a specific vector.  <br/>-  **[Minimum](#minimum)/[Maximum](#maximum)**  Clamps the velocity vector components to the target values. |
+| Strength | Adjusts the magnitude of the flow applied to the velocity field.<br/><br/>For [Vortex](#vortex) mode, this specifically controls the *inward* flow to the center. |
+| Radial Flow Strength | Adjusts the amount of *tangential* flow applied for [Vortex](#vortex) mode. Higher values create a faster spinning vortex. |
+| Falloff | Adjusts the curve of the distance-based strength, controlling how quickly the influence falls off from the center.<br/><br/>Higher values create a sharper shape with faster falloff. |
+| Size | Adjust the size (width and height) of the modification area in world units. |
+| Texture | The flow map texture used as input when [Mode](#mode) is [Texture](#texture).<br/><br/>The texture's Red and Green channels map to the X and Y velocity components. The texture is unpacked from the [0, 1] range to the [-1, 1] velocity range. |
 
-Is used to add a displacement force to the simulation. There are several types of forces ranging from waves, splashes and whirlpools. This modifier mainly works on the FluxFluidSimulation, some effects might translate to the FlowFluidSimulation, but will do the same as the **Flow** mode.
+<a name="fluid-force-settings"></a>
+#### Fluid Force Settings
 
-- **mode** sets the input mode of the modifier.
-    Options:
-    - *Circle* - creates a force in a direction within a circular shape. This is useful for creating waves and pushing fluids around.
-    - *Vortex* - create a force that moves fluids down with a distance-based falloff, creating a vortex/whirlpool-like shape.
-    - *Splash* - creates a splash effect on the fluid surface. Pushes fluids in an outward direction from the center so that the simulation can move it back in, causing a splash effect.
-    - *Texture* - creates forces from a texture input. The red channel of this texture will be used as a height displacement. This can be used to create multiple fluid effects in one drawcall.
- - **BlendMode** - set the blend mode of the modifier
-    Options:
-    - *Additive:* adds or removes forces from the outflow field.
-    - *Damping:* reduces the force in the outflow field." 
-- **Size** - adjusts the size of the modifier in world space.
-- **Direction** - is the 2D direction that the flow force will be applied in simulation space.
-- **Strength** - the height of the wave/splash, the depth of the vortex, or the strength to apply the supplied texture.
-- **Falloff** - adjusts the curve of the distance-based strength to fall off faster/slower when the distance from the center is greater. Use this to create sharper/flatter wave/vortex shapes. Higher values mean a faster falloff.
-- **Texture** - the texture to use as an input into the outflow texture. Only the red channel is as a height used. 
+Defines the settings when [Force](#force) is enabled on the [Fluid Modifier Volume](#fluid-modifier-volume).
+
+| Property | Description |
+| :--- | :--- |
+| Mode | Sets the input mode of the modifier, defining the type of force applied.<br/><br/>Force application modes include:  <br/>-  **[Circle](#circle)**  A directional force within a circular shape (for waves/pushes).  <br/>-  **[Vortex](#vortex)**  A downward, distance-based force (for whirlpools).  <br/>-  **[Splash](#splash)**  An immediate outward force (for splash effects).  <br/>-  **[Texture](#texture)**  Forces created from a texture input. |
+| Blend Mode | The blending operation used to apply or dampen the force in the simulation.<br/><br/>This determines how the force is applied to the simulation. Options include:  <br/>-  **[Additive](#additive)**  Adds or subtracts the force amount.  <br/>-  **[Set](#set)**  Sets the force to a specific vector.  <br/>-  **[Minimum](#minimum)/[Maximum](#maximum)**  Clamps the force vector components to the target values. |
+| Direction | Sets the 2D direction of the applied force/wave propagation.<br/><br/>The `x` component maps to world X, and the `y` component maps to world Z (assuming a flat surface). |
+| Strength | Controls the magnitude of the force applied.<br/><br/>This represents the height of the wave/splash, the depth of the vortex, or the strength to apply the supplied texture. |
+| Falloff | Adjusts the curve of the distance-based strength, controlling how quickly the influence falls off from the center.<br/><br/>Higher values create a sharper shape with faster falloff. |
+| Size | Adjust the size (width and height) of the modification area in world units. |
+| Texture | The source texture used as an input when [Mode](#mode) is [Texture](#texture). Only the red channel is used for height/force displacement. |
+
 
 <a name="fluid-modifier-waves"></a>
 ### Fluid Modifier Waves
 
-**Fluid Modifier Waves** applies a displacement force to the simulation to replicate waves generated by external forces like wind. 
+A specialized [Fluid Modifier](../terrain#fluid-modifier) that generates procedural wave forces to simulate wind-driven water surfaces.
+
+This component stacks multiple layers of waves (octaves) with varying properties to create complex, non-repetitive surface motion. It generates forces that displace the fluid, creating the visual and physical appearance of waves.
 
 ![Fluid Modifier Waves](../../assets/images/fluidmodifier_waves.png)
 
-- **Strength** - the amount of force to be applied in regions where waves are being generated.
-- **Wave Count** - the number of waves/octaves to generate. Each wave will be a value between the following ranges below.
-    - *Wavelength* - the range of possibly sizes for the waves
-    - *Direction* - the directions the waves should be traveling in in degrees.
-    - *Amplitude* - the amplitude/height of the waves.
-    - *Speed* - generate waves based on a noise texture to break up repeating patterns. The height of small noise waves.
-= **Noise Amplitude** - noiseAmplitude
+| Property | Description |
+| :--- | :--- |
+| Strength | A global multiplier applied to the total force calculated from all wave octaves. |
+| Wave Count | The number of individual wave layers (octaves) to generate and stack.<br/><br/>Each octave is randomly generated based on the ranges defined below. Increasing this count adds more detail and complexity to the surface but increases the computational cost. |
+| Wave Length Range | Defines the minimum and maximum wavelength (physical size) for the generated octaves.<br/><br/>-  **X (Min)**  The smallest allowed wavelength (tight ripples).  <br/>-  **Y (Max)**  The largest allowed wavelength (broad swells). |
+| Direction Range | Defines the angular range (in degrees) for the propagation direction of the waves.<br/><br/>-  **X (Min)**  The minimum angle in degrees.  <br/>-  **Y (Max)**  The maximum angle in degrees.   Use this to restrict waves to a specific wind direction or allow them to move chaotically in all directions. |
+| Amplitude Range | Defines the minimum and maximum height intensity for the generated octaves.<br/><br/>-  **X (Min)**  The lowest possible amplitude for an octave.  <br/>-  **Y (Max)**  The highest possible amplitude for an octave. |
+| Speed Range | Defines the minimum and maximum phase speed (travel speed) for the generated octaves.<br/><br/>-  **X (Min)**  The slowest speed a wave can travel.  <br/>-  **Y (Max)**  The fastest speed a wave can travel. |
+| Noise Amplitude | Controls the intensity of the secondary Perlin noise layer.<br/><br/>A noise layer is applied on top of the wave octaves to break up mathematical patterns and add organic irregularity to the surface. Higher values result in a more chaotic surface. |
+| Perlin Noise Scale | Controls the spatial frequency (tiling) of the secondary Perlin noise layer.<br/><br/>-  **High Values**  Creates high-frequency noise, resulting in small, detailed surface disturbances.  <br/>-  **Low Values**  Creates low-frequency noise, resulting in large, broad variations. |
 
 <a name="fluid-modifier-pressure"></a>
 ### Fluid Modifier Pressure
 
-**Fluid Modifier Pressure** applies a displacement force to the simulation based on the pressure generated by the velocity field. Areas of high pressure where fluid pushes against an obstacle like terrain or object will become elevated making the fluid field appear like it is accumulating before spreading around the obstacle. 
+A specialized [Fluid Modifier](../terrain#fluid-modifier) that applies vertical displacement forces based on the internal pressure of the fluid.
+
+This component simulates the physical phenomenon where fluid "piles up" when colliding with obstacles or terrain. It creates localized elevation in high-pressure zones, effectively bulging waves and dips. 
+
+ *Requirement: This modifier relies on pressure field data, which is only calculated by the [Flux Fluid Simulation](../fluid_simulation_components#flux-fluid-simulation). This component will have no effect if used with a [Flow Fluid Simulation](#flow-fluid-simulation).*
+
 *Note: for this modifier to function the simulation needs to use additive velocity mode in the [Fluid Simulation Settings](../fluid_simulation_components#flux-fluid-simulation-settings)*.
 
 ![Fluid Modifier Pressure](../../assets/images/fluidmodifier_pressure.png)
 
-- **Pressure Range** - is the range at which the pressure is high enough to start applying forces to the fluid simulation. Any pressure below the minimum value will apply no forces, and anything above the maximum will apply the full strength. Anything in between is interpolated using [smoothstep](https://en.wikipedia.org/wiki/Smoothstep).
-- **Strength** - is the amount of force to be applied when there is enough pressure built up in the fluid simulation.
+| Property | Description |
+| :--- | :--- |
+| Pressure Range | Defines the pressure threshold range for applying displacement forces.<br/><br/>-  **X (Min)**  Pressure values below this threshold generate no displacement.  <br/>-  **Y (Max)**  Pressure values above this threshold apply the full displacement strength.   Intermediate values are interpolated using Smoothstep. |
+| Strength | A global multiplier applied to the displacement force in high-pressure regions.<br/><br/>Higher values result in more exaggerated peaks where the fluid accumulates against obstacles. |
 
 <a name="foam-modifier"></a>
 ### Foam Modifier
@@ -119,9 +111,11 @@ Is used to add a displacement force to the simulation. There are several types o
 The **Foam Modifier** component adds and removes foam to the **Foam Layer** based on settings and transform of the object. 
 ![foammodifier](../../assets/images/foammodifier.png)
 
-- **Strength** - adjusts the amount of foam to add or remove.
-- **exponent** - the falloff/shape of the foam added.
-- **size** - adjusts the size/area that is covered by the modifier to add foam in that region.
+| Property | Description |
+| :--- | :--- |
+| Strength | The amount of foam to add or remove |
+| Exponent | The falloff/shape of the foam added. |
+| Size | The size/area that is covered by the modifier to add foam in that region. |
 
 ---
 
