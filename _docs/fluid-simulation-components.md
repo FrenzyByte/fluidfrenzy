@@ -508,6 +508,40 @@ This component acts as a "brush" for precise terrain editing, allowing you to ra
 | Splat | Specifies the target splatmap channel to use when the blend mode involves a terrain splatmap.<br/><br/>Used to select a specific texture layer for blending (e.g., channel 0 for Red, 1 for Green, etc.). |
 | Texture | The source texture used to define the modification shape and intensity when [Mode](#mode) is set to [Texture](#texture). |
 
+<a name="terraform-modifier"></a>
+#### Terraform Modifier
+
+[Terraform Modifier](#terraform-modifier) is a component used to interactively modify both the terrain and fluid layers within the [Fluid Simulation](#fluid-simulation).
+
+![Terraform Modifier](../../assets/images/terraform_modifier.png)
+
+This component acts as a "brush" to simulate the transformation of material layers between solid ground and liquid fluid. It enables real-time interactive effects, such as melting snow/ice (`liquify`) into water or the water into snow (`solidify`), making it ideal for "God games" or complex world interaction scenarios.
+
+**Note:** This component requires and works in conjunction with the `TerraformLayer` (or a similar erosion/terrain modification system) on the [Fluid Simulation](#fluid-simulation) to enable the material transformation process.
+
+The modification effect is defined by the [Terraform Modifier Settings](#terraform-modifier-settings) and applied within a localized area determined by the selected **Terraform Input Mode** and size.
+
+<a name="terraform-modifier-settings"></a>
+##### Terraform Modifier Settings
+
+| Property | Description |
+| :--- | :--- |
+| Mode | Set the shape of the modification brush (Circle, Box, Sphere, Cube, Cylinder, Capsule). |
+| Size | Adjust the dimensions of the modification area in world units. Interpretation varies by mode (e.g., Circle uses X for radius, Box uses X/Z for width/depth). |
+| Falloff | Adjust the sharpness of the brush edge. Higher values create a softer edge. |
+| Liquify | If enabled, the modifier will attempt to dissolve terrain into fluid (liquify). |
+| Source Terrain Layer | Set the terrain layer (e.g. Layer 1, Layer 2) that will be dissolved. |
+| Target Fluid Layer | Set the fluid layer (e.g., Layer 1, Layer 2) that this terrain will dissolve into. |
+| Liquify Rate | Set the speed at which the terrain dissolves into fluid, in units of height per second. Higher values mean faster melting or dissolving.. |
+| Liquify Amount | Set the conversion ratio of terrain height to fluid depth. A value of 1 means 1 unit of terrain<br/>height becomes 1 unit of fluid depth. A value of 2 means 1 unit of terrain becomes 2 units of fluid. |
+| Solidify | If enabled, the modifier will attempt to solidify fluid into terrain. |
+| Target Terrain Layer | Set the terrain layer (e.g. Layer 1, Layer 2) that will be built up. |
+| Target Splat Channel | Set the splat channel (e.g., R, G, B, A) that will be used to paint the built-up terrain. |
+| Source Fluid Layer | Set the fluid layer (e.g., Layer 1, Layer 2) that will be consumed to create terrain. |
+| Solidify Rate | Set the speed at which the fluid solidifies into terrain, in units of height per second. Higher values mean faster build-up of terrain. |
+| Fluid to Terrain Ratio | Set the conversion ratio of fluid depth to terrain height. A value of 1 means 1 unit of fluid<br/>depth becomes 1 unit of terrain height. A value of 2 means 2 units of fluid become 1 unit of terrain. |
+
+
 <a name="particle-generator"></a>
 ### Fluid Particle Generator
 <sub>**This functionality is subject to future changes.**</sub>
