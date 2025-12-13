@@ -87,9 +87,4 @@ Fluid Frenzy support for HDRP requires different shaders on most materials. This
 | TerraformTerrain          | Fluidfrenzy/TerraformTerrain              | Fluidfrenzy/TerraformTerrain              | FluidFrenzy/HDRP/TerraformTerrain              |
 | FluidParticleGenerator    | FluidFrenzy/ProceduralParticle (or Unlit) | FluidFrenzy/ProceduralParticle (or Unlit) | FluidFrenzy/HDRP/ProceduralParticle (or Unlit) |
 
-
----
-
-<div style="page-break-after: always;"></div>
-
-<a name="fluid-simulation-components"></a>
+<a name="fluid-toolbar"></a>
