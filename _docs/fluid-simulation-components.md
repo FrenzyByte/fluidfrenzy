@@ -509,7 +509,7 @@ This component acts as a "brush" for precise terrain editing, allowing you to ra
 | Texture | The source texture used to define the modification shape and intensity when [Mode](#mode) is set to [Texture](#texture). |
 
 <a name="terraform-modifier"></a>
-#### Terraform Modifier
+### Terraform Modifier
 
 [Terraform Modifier](#terraform-modifier) is a component used to interactively modify both the terrain and fluid layers within the [Fluid Simulation](#fluid-simulation).
 
