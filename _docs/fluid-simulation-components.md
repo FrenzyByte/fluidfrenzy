@@ -65,6 +65,7 @@ Here is the final, corrected table, without any external search or links:
 | Mesh Collider | Assign a ***Mesh Collider*** component to be used as the simulation's base ground when ***Terrain Type*** is ***Mesh Collider***. |
 | Capture Layers | A layer mask used to filter which scene objects are captured when ***Terrain Type*** is ***Layers***. |
 | Capture Height | The vertical extent, measured in world units, for the top-down orthographic capture when ***Terrain Type*** is ***Layers***.<br/><br/>The orthographic render captures geometry from the simulation object's Y position up to `transform.position.y + captureHeight`. |
+| Update Ground Every Frame | If true, the simulation re-samples the underlying geometry (Unity Terrain, Meshes, Layers, or Colliders) every frame. <br/>Enable this if your ground surface is deforming or moving during the simulation. |
 | ***Extension Layers*** | A list of optional ***Fluid Layer*** extensions (e.g., `FoamLayer`, `FluidFlowMapping`) that should be executed and managed by this fluid simulation. |
 | [Collider Properties](../physics_colliders#collider-properties) | Properties used to control the generation and configuration of the ***Mesh Collider*** representing the fluid surface.<br/><br/>These settings determine the physical shape and properties of the fluid's surface when interacting with objects via Unity's physics system. |
 | Dimension Mode | Choose how the dimenions of the fluid simulation and renderer should be calculated. |
@@ -725,9 +726,17 @@ When this component is attached, its shape and height are `orthographically rend
 | Property | Description |
 | :--- | :--- |
 | Obstacle Mode | Defines the source used to determine the obstacle's height and shape within the fluid simulation grid. |
+| Obstacle Shape | Defines the type of procedural shape to use when [Mode](#mode) is set to [Shape](#shape). |
 | Mode | The method used to define the obstacle's shape for the heightmap render. Defaults to [Renderer](#renderer). |
-| Shape | The type of procedural shape to use when [Mode](#mode) is [Shape](#shape). |
-| Size | The dimensions used for the procedural shape.  <br/>- **Sphere:** The X component represents the Radius. <br/>- **Box:** The X, Y, and Z components represent the full Size. <br/>- **Cylinder:** The X component represents the Radius, and the Y component represents the Length (Height). |
+| Shape | The type of procedural primitive to use when [Mode](#mode) is [Shape](#shape).<br/><br/>- Sphere<br/> <br/>- Box<br/> <br/>- Cylinder<br/> <br/>- Capsule<br/> <br/>- Ellipsoid<br/> <br/>- CappedCone<br/> <br/>- HexPrism<br/> <br/>- Wedge |
+| Center | Local offset from the Transform position. |
+| Size | The XYZ dimensions for non-uniform procedural shapes.<br/><br/>- **Box:** The full width, height, and depth.<br/> <br/>- **Ellipsoid:** The diameter of the X, Y, and Z axes.<br/> <br/>- **Wedge:** The bounding dimensions of the wedge base and height. |
+| Radius | The primary radius for rounded procedural shapes.<br/><br/> <br/>- **Sphere:** The radius of the sphere.<br/> <br/>- **Cylinder:** The radius of the base.<br/> <br/>- **HexPrism:** The radius of the base.<br/> <br/>- **Capsule:** The radius of the cylinder body and the hemispherical end-caps.<br/> <br/>- **Capped Cone:** The radius of the bottom base. |
+| Secondary Radius | An secondary radius used for complex shapes. <br/> <br/>- **Capped Cone:** The radius of the top cap. |
+| Height | The total length or height of the procedural shape along its alignment [Direction](#direction). |
+| Direction | The local axis that the procedural shape's height or length is aligned with.<br/><br/>- **0:** X-Axis (Horizontal)<br/> <br/>- **1:** Y-Axis (Vertical)<br/> <br/>- **2:** Z-Axis (Forward) |
+| Conservative Rasterization | Ensures that even sub-pixel geometry is captured during the heightfield bake.<br/><br/>Standard rasterization only renders a pixel if its center is covered by a triangle. <br/>Conservative Rasterization renders a pixel if any part of it is touched by a triangle.<br/><br/>Enabling this prevents thin obstacles like thin walls from being missed <br/>if they happen to fall between pixel centers, ensuring more reliable collision data.<br/>This may cause the obstacle to appear slightly larger than its actual mesh.<br/><br/>***Warning***: This feature requires hardware-level support. It is not supported on platforms like WebGL, OpenGL ES, <br/>or older mobile devices. The system will automatically fall back to standard <br/>rasterization on unsupported hardware. |
+| Smooth Rasterization | Enables multi-sampling to produce smoother edges for procedural shapes.<br/><br/>When disabled, procedural shapes are sampled at a single point per grid cell, which can result in jagged edges or<br/>stair stepping in the heightfield. When enabled, the shader performs a multi-sample average <br/>to create a soft, anti-aliased edge.<br/><br/>***Warning***: Because this averages height values within a local neighborhood, perfectly vertical drops <br/>(like the sides of a box) might be turned into slopes. This can lead to height leakage or cause fluid <br/>to climb the edges of an obstacle instead of colliding with a sharp wall. |
 
 <a name="fluid-simulation-event"></a>
 ### Fluid Event Trigger
