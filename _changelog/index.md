@@ -10,6 +10,62 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.5] - 2025-12-25
+
+### Added
+- Simulation: New procedural shapes for obstacles (including HexPrism and Wedge).
+- Simulation: Improvements to `FluidSimulationObstacle` to behave more like standard Unity colliders.
+- Simulation: Support for `conservativeRasterization` and `smoothRasterization` toggles on obstacles.
+- Simulation: Option to continuously update the base ground every frame.
+- Samples: Added sensitivity setting for the fly camera.
+- Samples: Option to use raycasting for the surface cursor.
+- Samples: Added new Pool sample that uses the FluidSimulation Layers option and a few objects.
+- Samples: Added new Terraform sample that should the `TerraformModifier` feature by shooting lasers that melt terrain and solidify fluid.
+- Samples: Added a compiler define to easily disable `Mouse3D` input.
+
+### Changed
+- Simulation: Refactored obstacle logic to improve extensibility for future shapes.
+- Simulation: Increased the maximum allowable strength for the `TerraformModifier`.
+
+### Fixed
+- Simulation: Fixed procedural obstacles being placed in the wrong position.
+- Simulation: Fixed constant camera spawning when `updateGroundEveryFrame` is enabled with layers.
+- Simulation: Fixed erosion layer not correctly copying borders.
+- Simulation: Fixed velocity difference calculation between solids and fluids.
+- Simulation: Fixed `FluidSimulationInit` to correctly include all heights.
+- Simulation: Corrected collision surface layer assignment.
+- Rendering: Fixed alpha blending issues for `ProceduralParticleUnlit.shader` in URP when using ENVIRO3.
+- Rendering: Fixed WebGL textures being flipped when using max blend.
+- Rendering: Added missing depth bits assignment during RenderTarget (RT) creation.
+- Input: Fixed `InputAlias` touch controls when using the new Input System.
+- General: Resolved various compiler warnings for improved stability.
+
+## [1.3.4] - 2025-12-13
+
+### Added
+- Simulation: New Terraform Modifier component added, supporting Solidify and Liquify operations.
+- Editor: New Toolbar for quick level editting and adding modifiers and obstacles.
+- Editor: 3D Icons for Modifiers
+
+### Changed
+- Editor: FluidVolumeGrid drawing method updated to render triangles for improved visualization.
+- Editor: Simulation/Editor logic now only uses the height of the selected terrain for modification.
+- Editor: Menu functions refactored to share UI logic with the new toolbar implementation.
+- Documentation: Updated and match component documentation, tooltips and comments.
+
+### Fixed
+- Simulation: Error when doing runtime setup.
+- Simulation: Fixed fluid height check by correctly including terrain height.
+- Simulation: Fixed incorrect bounds and size for the obstacle box.
+- Simulation: FluidSimulationObstacle being in the wrong place when using TerraformLayer.
+- Simulation: Copy back splatmap with the correct offsets.
+- Rendering: Fixed issue with incorrect splatmap copying after terrain modification.
+- Rendering: Default water shader render queue in URP.
+- Rendering: Fixed commandbuffer usage and missing shader properties.
+- Editor: Added safety checks to FluidVolumeGrid.shader and FluidModifierVolumeEditor for improved stability.
+- Editor: FluidVolumeGrid rendering issue by assigning a black texture instead of null.
+- Editor: Fixed sphere radius calculation and visual size (was previously drawn too small).
+
 ## [1.3.3] - 2025-11-22
 
 ### Added
