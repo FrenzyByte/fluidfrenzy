@@ -70,18 +70,21 @@ ___
 
 ![Water Surface](../../assets/images/watersurface.png)
 
-[Water Surface](#water-surface) is an extension of the [Fluid Renderer](#fluid-renderer) component that specifically deals with rendering water-related elements of the fluid simulation, such as [Foam Layer](../fluid_simulation_components#foam-layer). It accomplishes this by assigning the currently active rendering layers to its assigned material.
+The [Water Surface](#water-surface) is an extension of the [Fluid Renderer](#fluid-renderer) component that renders all things water like [Foam Layer](../fluid_simulation_components#foam-layer), [Underwater Effect](#underwater-effect) visuals, absorption, and scattering.
+It does this by assigning the active rendering layers to its surface material and using the underwater settings.
 
 | Property | Description |
 | :--- | :--- |
-| [Foam Layer](../fluid_simulation_components#foam-layer) | A FoamLayer component that provides the dynamically generated foam mask texture for water rendering effects.<br/><br/>The component's primary role is to update and supply the dynamic foam mask texture, ensuring foam is applied accurately to the water material. It also handles necessary adjustments to the mask's texture coordinates (UVs) to maintain alignment across different rendering setups. |
+| [Foam Layer](../fluid_simulation_components#foam-layer) | A FoamLayer component that provides the dynamically generated foam mask texture for water rendering effects.<br/><br/>The component's primary role is to update and supply the dynamic foam mask texture, ensuring foam is applied<br/>accurately to the water material. It also handles necessary adjustments to the mask's texture coordinates (UVs)<br/>to maintain alignment across different rendering setups. |
+| Under Water Enabled | Controls whether the [Underwater Effect](#underwater-effect) is currently enabled. |
+| [Under Water Settings](#underwater-settings) | Settings for all configurable visual parameters of the [Underwater Effect](#underwater-effect).<br/>This class defines how light interacts with the water volume, including absorption rates, scattering colors, and the appearance of the surface meniscus. |
 
 <div style="page-break-after: always;"></div>
 
 <a name="water-shader"></a>
 #### Water Shader
 
-The *FluidFrenzy/Water* shader is applied to the material used by the Water Surface component. It provides a comprehensive set of material properties for creating visually appealing water.
+The `FluidFrenzy/Water` shader is applied to the material used by the Water Surface component. It provides a comprehensive set of material properties for creating visually appealing water.
 
 **Compatibility:**
 This shader is compatible with both the Universal Render Pipeline (URP) and the Built-in Render Pipeline (BiRP).
@@ -184,6 +187,68 @@ General rendering, depth-handling, and simulation sampling properties.
 | Linear Clip Offset | A linear offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with close terrain or surfaces. |
 | Exponential Clip Offset | An exponential/depth-based offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with distant terrain or surfaces. |
 
+
+<a name="underwater-effect"></a>
+#### Underwater Effect
+
+The [Underwater Effect](#underwater-effect) module renders the visuals you see when the camera goes underwater. It is supported in all render pipelines.
+
+It uses the same simulation math as the water surface to ensure the underwater volume matches the waves perfectly. 
+However it has its own independent visual settings, allowing you to style the underwater atmosphere separately from the surface itself.
+
+This distinction is useful for gameplay as you can make the underwater view clearer or brighter than the surface to help players see further. 
+The effect handles features like light absorption, fog scattering, and directional lighting to create the underwater atmosphere.
+
+<video controls autoplay loop muted>
+  <source src="../../assets/images/underwater_intro.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+<a name="underwater-settings"></a>
+#### Underwater Settings
+
+Settings for all configurable visual parameters of the [Underwater Effect](#underwater-effect).
+This class defines how light interacts with the water volume, including absorption rates, scattering colors, and the appearance of the surface meniscus.
+
+#####  Absorption
+
+<video controls autoplay loop muted>
+  <source src="../../assets/images/underwater_absorption.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+| Property | Description |
+| :--- | :--- |
+| Water Color | The base transmission color of the water.<br/><br/>This defines the color of the water as light passes through it. Brighter colors make the water look clear while darker colors make the water look thick and deep. This works with the alpha value and the absorption depth scale to decide how much the scene behind the water is tinted. |
+| Depth Scale | Controls the rate at which light is absorbed as it travels through the water.<br/><br/>Higher values result in darker water where light cannot penetrate as deeply. This scaling factor applies to the exponential decay of the **Water Color**. |
+| Depth Limits | Clamps the calculated absorption to a specific range (Min, Max).<br/><br/>Useful for preventing the water from becoming completely black at extreme depths or ensuring a minimum amount of visibility. |
+
+#####  Meniscus(Water Line)
+
+<video controls autoplay loop muted>
+  <source src="../../assets/images/underwater_meniscus.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+| Property | Description |
+| :--- | :--- |
+| Thickness | The vertical thickness of the meniscus line (the water-air boundary) on the camera lens. |
+| Blur | The amount of blur applied to the meniscus line to soften the transition between underwater and above-water. |
+| Darkness | Controls the intensity/darkness of the meniscus line effect. |
+
+#####  Scattering (Fog)
+
+<video controls autoplay loop muted>
+  <source src="../../assets/images/underwater_scattering.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+| Property | Description |
+| :--- | :--- |
+| Scatter Color | The color of the light scattered within the water volume (subsurface scattering/fog color). |
+| Scatter Ambient | The base ambient contribution to the scattering effect, independent of direct lighting. |
+| Light Intensity | Scales the influence of the main directional light on the scattering effect. |
+| Total Intensity | A global multiplier for the overall scattering intensity. |
 
 <a name="water-planar-reflections"></a>
 #### Planar Reflections
