@@ -199,7 +199,7 @@ However it has its own independent visual settings, allowing you to style the un
 This distinction is useful for gameplay as you can make the underwater view clearer or brighter than the surface to help players see further. 
 The effect handles features like light absorption, fog scattering, and directional lighting to create the underwater atmosphere.
 
-<video controls autoplay loop muted>
+<video controls autoplay loop muted style="max-width: 100%; height: auto;">
   <source src="../../assets/images/underwater_intro.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
@@ -212,7 +212,7 @@ This class defines how light interacts with the water volume, including absorpti
 
 #####  Absorption
 
-<video controls autoplay loop muted>
+<video controls autoplay loop muted style="max-width: 100%; height: auto;">
   <source src="../../assets/images/underwater_absorption.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
@@ -225,7 +225,7 @@ This class defines how light interacts with the water volume, including absorpti
 
 #####  Meniscus(Water Line)
 
-<video controls autoplay loop muted>
+<video controls autoplay loop muted style="max-width: 100%; height: auto;">
   <source src="../../assets/images/underwater_meniscus.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
@@ -238,7 +238,7 @@ This class defines how light interacts with the water volume, including absorpti
 
 #####  Scattering (Fog)
 
-<video controls autoplay loop muted>
+<video controls autoplay loop muted style="max-width: 100%; height: auto;">
   <source src="../../assets/images/underwater_scattering.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
