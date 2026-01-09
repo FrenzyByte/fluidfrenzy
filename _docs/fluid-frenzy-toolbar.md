@@ -43,6 +43,11 @@ This mode provides a drag-and-drop palette for placing simulation and layout obj
 | <img src="../../assets/images/icons/icons-toolbar-obstacle-cube.png" width="40" /> | [Obstacle Cube](../fluid_simulation_components#fluid-simulation-obstacle) |
 | <img src="../../assets/images/icons/icons-toolbar-obstacle-sphere.png" width="40" /> | [Obstacle Sphere](../fluid_simulation_components#fluid-simulation-obstacle) |
 | <img src="../../assets/images/icons/icons-toolbar-obstacle-cylinder.png" width="40" /> | [Obstacle Cylinder](../fluid_simulation_components#fluid-simulation-obstacle) |
+| <img src="../../assets/images/icons/icons-toolbar-obstacle-elipse.png" width="40" /> | [Obstacle Elipse](../fluid_simulation_components#fluid-simulation-obstacle) |
+| <img src="../../assets/images/icons/icons-toolbar-obstacle-wedge.png" width="40" /> | [Obstacle Wedge](../fluid_simulation_components#fluid-simulation-obstacle) |
+| <img src="../../assets/images/icons/icons-toolbar-obstacle-hexprism.png" width="40" /> | [Obstacle HexPrism](../fluid_simulation_components#fluid-simulation-obstacle) |
+| <img src="../../assets/images/icons/icons-toolbar-obstacle-cone.png" width="40" /> | [Obstacle Cone](../fluid_simulation_components#fluid-simulation-obstacle) |
+| <img src="../../assets/images/icons/icons-toolbar-obstacle-capsule.png" width="40" /> | [Obstacle Capsule](../fluid_simulation_components#fluid-simulation-obstacle) |
 
 ### Shared Settings
 
