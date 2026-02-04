@@ -10,6 +10,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.7] - 2026-02-04
+
+### Fixed
+- Simulation: NullReference Exception when running FluxFluidSimulation in WebGL due to no compute shader support.
+
+## [1.3.6] - 2026-01-11
+
+### Added
+- Rendering: Underwater effect to WaterSurface the handle submerged camera effects.
+- Rendering: Underwater backface effect to `FluidFrenzy/Water` shader with physically correct Snell's Window when underwater looking up.
+- Samples: Enabled Underwater rendering on Pool, River and RiverFlow samples.
+- Editor: New obstacle shapes to the toolbar.
+
+### Changed
+- Rendering: Surface normals to Up vector when no fluid is in the cell.
+
+### Fixed
+- Simulation: Size of procedural shapes after new modes were added that broke some shape's default sizes.
+- Rendering: Scattering now correctly takes into account the amount the water is absorbing.
+
 ## [1.3.5] - 2025-12-25
 
 ### Added
