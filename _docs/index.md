@@ -34,10 +34,16 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
     ```Runtime\Rendering```
 3. <a name="keyfeatures-samples">Sample Scenes</a>
     1. River ```Samples~\River\River.unity```
-    2. Grand Canyon ```Samples~\GrandCanyon\GrandCanyon.unity```
-    3. Water Modifiers ```Samples~\WaterModifiers\WaterModifiers.unity```
-    4. Volcano ```Samples~\Volcano\Volcano.unity```
-    5. Terraform ```Samples~\Terraform\Terraform.unity```
+    2. RiverFlow ```Samples~\River\RiverFlow.unity```
+    3. Grand Canyon (HDRP) ```Samples~\HDRP_GrandCanyon\HDRP_GrandCanyon.unity```
+    4. Water Modifiers ```Samples~\WaterModifiers\WaterModifiers.unity```
+    5. Volcano ```Samples~\Volcano\Volcano.unity```
+    6. Terraform ```Samples~\Terraform\Terraform.unity```
+    7. TerraformFlow ```Samples~\Terraform\TerraformFlow.unity```
+    8. TerraformFlow Beams ```Samples~\Terraform\TerraformFlowBeams.unity```
+    9. FossilFinder ```Samples~\FossilFinder\FossilFinder.unity```
+    10. Pool ```Samples~\Pool\Pool.unity```
+    11. GPULODTerrain ```Samples~\GPULODTerrain\GPULODTerrain.unity```
 4. Documentation
     ```DOCUMENTATION.pdf```
     ```DOCUMENTATION.html```

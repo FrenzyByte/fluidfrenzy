@@ -557,7 +557,6 @@ This component generates two distinct types of particles by detecting areas of h
 
 ![Splash Particles](../../assets/images/fluidparticlegenerator_splash.png)
 
-
 | Property | Description |
 | :--- | :--- |
 | Breaking Wave Splashes | Toggles the emission of splash particles from cresting or breaking waves. |
@@ -618,7 +617,6 @@ The component performs geometry-to-fluid interaction using an optimized system t
  If Rigidbodies (e.g., a vehicle with a mass of 1500) sink when they should float, the fluid density is likely too low for that mass magnitude. A good starting point is to set the [Fluid Density](#fluid-density) value to be similar to the mass of an average-sized object you expect to float.  
 
 #### Interaction Calculation
-
   
 -  **Fluid to Solids Coupling (Forces)**   The component calculates and applies realistic forces to the object's [Rigidbody](#rigidbody). Forces are determined by analyzing the volume and state of the body's submerged **sub-triangulated geometry** against the fluid's state. These include:  `Buoyancy`: Calculated from the weight of the displaced fluid, based on the submerged volume. `Drag and Lift`: Applied based on the relative velocity of the body to the fluid.    
 -  **Solids to Fluid Coupling (Displacement)**   The object's movement displaces the fluid, generating wakes and splashes. This is calculated by applying the volume and velocity changes of the submerged sub-triangles to the fluid's closest `height field` and `velocity grid cells`. The effect is decayed exponentially with increasing distance from the surface.   

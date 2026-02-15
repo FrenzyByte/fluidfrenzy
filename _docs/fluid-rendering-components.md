@@ -78,6 +78,10 @@ It does this by assigning the active rendering layers to its surface material an
 | [Foam Layer](../fluid_simulation_components#foam-layer) | A FoamLayer component that provides the dynamically generated foam mask texture for water rendering effects.<br/><br/>The component's primary role is to update and supply the dynamic foam mask texture, ensuring foam is applied<br/>accurately to the water material. It also handles necessary adjustments to the mask's texture coordinates (UVs)<br/>to maintain alignment across different rendering setups. |
 | Under Water Enabled | Controls whether the [Underwater Effect](#underwater-effect) is currently enabled. |
 | [Under Water Settings](#underwater-settings) | Settings for all configurable visual parameters of the [Underwater Effect](#underwater-effect).<br/>This class defines how light interacts with the water volume, including absorption rates, scattering colors, and the appearance of the surface meniscus. |
+| Caustics Enabled | Controls whether the [Caustics Effect](#caustics-effect) is currently enabled. |
+| [Caustics Settings](#caustics-settings) | Settings for the [Caustics Effect](#caustics-effect), which renders animated light patterns projected onto the scene geometry underwater. |
+| Reflections Enabled | Controls whether real-time planar reflections are generated for this water surface. |
+| [Reflection Settings](#settings) | Settings for the [Surface Reflections](#surface-reflections) module (Planar Reflections). |
 
 <div style="page-break-after: always;"></div>
 
@@ -250,16 +254,86 @@ This class defines how light interacts with the water volume, including absorpti
 | Light Intensity | Scales the influence of the main directional light on the scattering effect. |
 | Total Intensity | A global multiplier for the overall scattering intensity. |
 
-<a name="water-planar-reflections"></a>
-#### Planar Reflections
+<a name="caustics-effect"></a>
+#### Caustics Effect
 
-[Planar Reflection](#planar-reflection) is a component that generates **real-time planar reflections** for the water surface to enhance rendering quality.
+**Caustics** is an option on the [Water Surface](#water-surface) that simulates the shifting light patterns projected onto the seafloor and submerged objects.
+
+![alt text](../../assets/images/caustics.png)
+
+To keep performance high, the system uses a fast approximation rather than trying to calculate physically accurate light paths. It combines an animated texture sequence with procedural highlights that are tied to the surface wave curvature, ensuring the light patterns always match the motion of the water above.
+
+The effect works directly with the [Fluid Simulation](../fluid_simulation_components#fluid-simulation), meaning it uses the same flow mapping as the surface itself. If the water is flowing or swirling, the caustics will follow that same movement. You can also enable triplanar projection to prevent the patterns from stretching or smearing on vertical surfaces like underwater cliffs or steep walls.
+
+It also accounts for surface conditions for example, **Foam Masking** can be used to soften or dim the light patterns in areas where thick foam would naturally scatter the light. To keep transitions smooth, the effect uses depth fading to blend the patterns in and out based on how far they are from the surface, preventing them from looking too sharp at the shoreline or in very deep water.
+
+<a name="caustics-settings"></a>
+#### Caustics Settings
+
+Settings for all configurable visual parameters of the [Caustics Effect](#caustics-effect).
+This class defines animated light patterns projected underwater, wave-driven highlights, and global visibility attenuation.
+
+##### Texture Projection
+You can use these settings to customize the look of the animated texture patterns, including how fast they move, how they warp with the waves, and whether they use triplanar mapping to stay consistent on vertical walls.
+
+<video controls autoplay loop muted style="max-width: 100%; height: auto;">
+  <source src="../../assets/images/caustics_texture_projection.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+| Property | Description |
+| :--- | :--- |
+| Animation FPS | The playback speed of the animated caustics texture sequence.<br/><br/>Defines how many frames per second the texture advances. Higher values result in faster, smoother motion. |
+| Tiling | Controls the scale of the projected caustics pattern.<br/><br/>Higher values increase the tiling frequency, making the pattern appear smaller and more dense across the environment. |
+| Triplanar Projection | Enables triplanar projection to prevent texture stretching on vertical surfaces.<br/><br/>Projects the texture from three orthogonal axes (X, Y, Z) instead of a single top-down projection. <br/>Essential for maintaining pattern consistency on cliffs, walls, and steep underwater terrain. |
+| Wave UV Distortion | The strength of the UV distortion applied to the caustics based on surface wave normals.<br/><br/>Simulates refractive warping by shifting the texture coordinates relative to the waves above. |
+| Texture Intensity | The brightness multiplier for the projected caustics texture.<br/><br/>An independent scalar specifically for the animated texture component of the effect. |
+| Channel Mask | Defines which texture color channels contribute to the final caustics pattern.<br/><br/>Useful for isolating specific channels in packed textures. |
+| Chromatic Aberration | The strength of the color splitting effect at the edges of the caustics.<br/><br/>Simulates light dispersion (prismatic effect), creating rainbow-like fringing around high-contrast areas of the pattern. |
+
+##### Wave Highlights
+These properties control procedural glints calculated directly from the surface waves, allowing you to adjust the intensity and sharpness of the light streaks hitting the seafloor.
+
+<video controls autoplay loop muted style="max-width: 100%; height: auto;">
+  <source src="../../assets/images/caustics_wave_highlights.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+| Property | Description |
+| :--- | :--- |
+| Wave Intensity | The brightness of the procedural glints generated by surface wave curvature.<br/><br/>Unlike the texture projection, these highlights are calculated analytically from wave refraction to provide a direct link between the surface and the seafloor. |
+| Wave Sharpness | Controls the focus and size of the procedural wave highlights.<br/><br/>Higher values result in sharper, thinner glints (lensing effect), while lower values create broader, softer highlights. |
+
+##### Global Settings
+This section handles the overall strength and blending of the effect, including how it reacts to shadows and foam, and how it fades out as the water depth increases.
+
+<video controls autoplay loop muted style="max-width: 100%; height: auto;">
+  <source src="../../assets/images/caustics_global.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+| Property | Description |
+| :--- | :--- |
+| Global Intensity | A multiplier for all caustic lighting contributions.<br/><br/>Scales both the texture projection and the procedural wave highlights simultaneously. |
+| Darkness | Controls how much the sea floor is darkened in the areas between light patterns.<br/><br/>Increasing this value darkens the *caustic shadows*, making the bright light patterns appear more high-contrast and prominent. |
+| Shadow Intensity | Controls the visibility of caustics within areas shadowed by external light sources.<br/><br/>A value of 0 makes caustics completely invisible in shadow, while a value of 1 allows them to remain fully visible. |
+| Surface Fade-In | Defines the depth range near the surface where the caustics begin to appear.<br/><br/>The X value represents the depth where the effect starts, and the Y value is where it reaches full intensity. This prevents visual "popping" at the water line. |
+| Depth Fade-Out | Defines the depth range where the caustics gradually disappear as light is absorbed.<br/><br/>The X value is the depth where fading begins, and the Y value is the depth where caustics are completely extinguished. |
+| Foam Masking | Controls how much surface foam occludes the caustics on the seafloor.<br/><br/>Simulates the diffusive nature of bubbles. Thick foam scatters light, preventing sharp caustics from forming and casting a soft shadow on the environment below. |
+
+
+<a name="surface-reflections"></a>
+#### Surface Reflections
+
+**Surface Reflections** are a set of settings on the [Water Surface](#water-surface) component that generate **real-time reflections** to enhance the rendering quality of the water.
 
 This is achieved by rendering the scene again from a mirrored perspective flipped around the water plane and capturing the result to a texture. This reflection texture is then applied to the water material.  
 
- The script reads the height of the fluid simulation to set the reflection plane as accurately as possible. It includes built-in smoothing (controlled by [Smooth Position](#m_smooth-position)) to prevent quick, jittering changes caused by small, rapid waves on the fluid surface.  
+The component reads the height of the fluid simulation to set the reflection plane as accurately as possible. It includes built-in smoothing (controlled by [Smooth Position](#m_smooth-position)) to prevent quick, jittering changes caused by small, rapid waves on the fluid surface.  
 
- **Note:** To see the results of the reflection, the water material (e.g., `FluidRenderer.fluidMaterial`) must have planar reflections enabled in its shader.
+**Note:** To see the results of the reflection, the water material (e.g., `FluidRenderer.fluidMaterial`) must have surface reflections enabled in its shader.
+
+**Note:** HDRP does not use Surface Reflections in the water shader, it uses the reflections directly rendered by the pipeline.
 
 ![planar_reflections](../../assets/images/planar_reflections.png)
 
@@ -267,14 +341,14 @@ The following settings can be configured to setup the Planar reflections:
 
 | Property | Description |
 | :--- | :--- |
-| Reflection Texture Size | Defines the resolution/size of the generated reflection texture. |
-| Renderer ID | SRP Renderer to use for the planar reflection pass. Use this to select a cheaper render pass for the reflection camera. |
+| Resolution | The quality/resolution of the generated planar reflection texture. |
 | Culling Mask | Which layers the planar reflection camera renders. |
 | Clear Flags | What to display in empty areas of the planar reflection's view (e.g., Skybox, Solid Color). |
-| Resolution | The quality/resolution of the generated planar reflection texture. |
 | Clip Plane | A vertical offset to apply to the reflection plane. This can be used to prevent clipping artifacts with the water surface. |
-| Height Sample Transform | Overrides the object whose position is used for sampling the water height, which defines the plane of reflection. If null, the component's GameObject position is used. |
 | Smooth Position | Smoothes the reflection plane's height and position over multiple frames to prevent jittering caused by rapid fluid simulation updates. |
+| Renderer ID | SRP Renderer to use for the planar reflection pass. Use this to select a cheaper render pass for the reflection camera. |
+| Shadow Quality | Controls shadow rendering in the reflection (BiRP Only). |
+
 
 ___
 <div style="page-break-after: always;"></div>

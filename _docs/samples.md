@@ -70,9 +70,9 @@ An alternative scene, **RiverFlow**, is also available and utilizes the `FlowFlu
 <a name="samples-grandcanyon"></a>
 ### Grand Canyon
 
-![Grand Canyon Sample](../../assets/images/sample_grandcanyon.png)
+![Grand Canyon (HDRP) Sample](../../assets/images/sample_grandcanyon.png)
 
-The Grand Canyon sample shows the use of [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) adding water from multiple sources on top of the canyon filling the canyon below. The camera starts a boat that can be driven across the scene. Water stays in the scene due to the *Open Borders* functionality of the fluid simulation being disabled causing the scene to eventually flood. This scene makes use of the Unity Terrain so modifying the terrain in real-time is not possible.
+The Grand Canyon (HDRP) sample demonstrates the [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) adding water from multiple sources to fill the canyon below. Built specifically for HDRP, this scene showcases fluid interaction with HDRP-native lighting, sky, and fog. It features a drivable boat and utilizes Unity Terrain. Because it uses standard Unity Terrain, modifying the landscape in real-time is not supported.
 
 <a name="samples-watermodifers"></a>
 ### Water Modifiers
@@ -95,7 +95,21 @@ The Volcano scene showcases that different fluids can be rendered like lava. Thi
 
 The Terraform scene showcases God Game simulation with two types of fluid interacting with each other and erosion of the top sand layer. Water and Lava are automatically added to the scene from different locations and when they touch they turn into rocky terrain and steam. Fluid and Terrain can be added using the mouse input as described in the controls section. This scene makes use of a custom terrain allowing modifications to be made to it in real-time by adding erodible sand, or non-erodible rock and vegetation.
 
-An alternative scene, **TerraformFlow**, is also available and utilizes the `FlowFluidSimulation` instead of the default `FluxFluidSimulation` for its fluid dynamics. The `FlowFluidSimulation` is an alternative fluid dynamics model that may offer different performance characteristics and simulation behavior compared to the `FluxFluidSimulation`.
+An alternative scene, **TerraformFlow**, utilizes the `FlowFluidSimulation` instead of the default `FluxFluidSimulation`. This model offers different performance characteristics and simulation behavior for its fluid dynamics.
+
+A third variant, **TerraformFlow Beams**, allows you to shoot energy beams to terraform the landscape. These beams can melt snow and rock into water and lava, or freeze lava and water back into rock and snow.
+
+### Fossil Finder
+
+![FossilFinder Sample](../../assets/images/sample_fossilfinder.png)
+
+The **FossilFinder** scene demonstrates erodible terrain mechanics featuring a dinosaur fossil buried beneath a thick layer of sand. By using the [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) to pour water onto the landscape, the sand is washed away to reveal the hidden remains. This scene utilizes the custom terrain system to allow for real-time erosion and sediment displacement as the water interacts with the surface.
+
+### Pool
+
+![Pool Sample](../../assets/images/sample_pool.png)
+
+The Pool sample demonstrates the Layers capture method, which uses a top-down orthographic capture to allow the fluid to interact with specific GameObject layers. This scene features advanced visual effects like underwater rendering and caustics, alongside Solid <---> Fluid interaction including buoyancy and ripples. It also includes a FluidTriggerEvent example, demonstrating how objects can react to being submerged—in this case, changing an object's color to red when it enters the water.
 
 <a name="samples-simpleterraform"></a>
 ### Simple Terraform
@@ -116,6 +130,12 @@ More information can be found [here](#8-tiled-simulations-beta)
 ### Runtime Setup
 
 Demonstrates how to setup a fluid simulation at runtime. This can be useful for when a game makes use of procedurally generated terrain that does not exist before entering playmode.
+
+### GPULOD Terrain
+
+![alt text](../../assets/images/sample_gpulodterrain.png)
+
+The GPULODTerrain sample showcases a custom GPU Quadtree terrain system designed to work seamlessly with the fluid and terraform systems. It provides a simple, extensible foundation for users who want to build their own terrain solutions on top of the simulation. This scene demonstrates how the GPU-driven geometry is used for Terrains.
 
 <a name="scene-configuration"></a>
 ### Scene Configuration
