@@ -21,18 +21,18 @@ These dates are based on when I believe implement these features but some may be
 | :--- | :--- | :--- | :--- |
 | 🟢&nbsp;**Implemented** | **Dynamic Light Caustics** | February 2026 | Project real-time light patterns onto the ground based on the surface waves of the fluid simulation. |
 | 🟡&nbsp;**Active** | **Aquarium Mode** | February 2026 | Support for side viewing of the water surface. |
-| 🟠&nbsp;**Planned** | **Hybrid Ocean System** | March 2026 | Integration of Gerstner or FFT wave math into the simulation for large open water visuals. |
+| 🟠&nbsp;**Planned** | **Hybrid Ocean System** | April 2026 | Integration of Gerstner or FFT wave math into the simulation for large open water visuals. |
 | 🟠&nbsp;**Planned** | **Volumetric Fluid Lighting** | April 2026 | Underwater god rays that react to surface turbulence and provide depth-based light scattering. |
-| 🟠&nbsp;**Planned** | **GPU Clipmaps** | April 2026 | Optimization system using nested grids to simulate massive areas with high-detail localized around the camera. |
-| 🟠&nbsp;**Planned** | **Custom SSR** | May 2026 | A dedicated Screen Space Reflection implementation for the water shader to provide high-quality reflections in URP. |
-| 🟠&nbsp;**Planned** | **Stylized & Toon Shaders** | June 2026 | Dedicated shaders for stylized looks, cel-shading, ink-outlines, and procedural toon foam patterns. |
-| 🟠&nbsp;**Planned** | **Surface Decals & Velocity Helper** | June 2026 | Render floating debris like lilypads that naturally follow the simulation's velocity field. |
-| 🟠&nbsp;**Planned** | **Dynamic Wetness Maps** | July 2026 | Global shader support to allow shoreline objects and terrain to appear wet and reflective based on disappearing fluids. |
-| 🟠&nbsp;**Planned** | **Dynamic Lens Wetness** | July 2026 | A post-process effect simulating droplets and wiping streaks on the camera lens after emerging from the fluid. |
-| 🟠&nbsp;**Planned** | **Subsurface Bubbles** | August 2026 | GPU-accelerated particles representing bubbles that spawn in turbulent areas and swirl with the flow. |
-| 🔴&nbsp;**Future** | **Editor-Time Simulation** | September 2026 | Support for running the simulation directly in the Scene View to preview behavior and erosion while designing levels. |
-| 🔴&nbsp;**Future** | **Terraform Sculpting Tools** | October 2026 | Manual sculpting brushes to carve and shape the Terraform Terrain system directly in the editor. |
-| 🔴&nbsp;**Future** | **Localized Moving Ripples** | November 2026 | High-detail ripples that follow the player for fine grained interaction that advects with the main flow. |
+| 🟠&nbsp;**Planned** | **GPU Clipmaps** | May 2026 | Optimization system using nested grids to simulate massive areas with high-detail localized around the camera. |
+| 🟠&nbsp;**Planned** | **Custom SSR** | June 2026 | A dedicated Screen Space Reflection implementation for the water shader to provide high-quality reflections in URP. |
+| 🟠&nbsp;**Planned** | **Stylized & Toon Shaders** | July 2026 | Dedicated shaders for stylized looks, cel-shading, ink-outlines, and procedural toon foam patterns. |
+| 🟠&nbsp;**Planned** | **Surface Decals & Velocity Helper** | July 2026 | Render floating debris like lilypads that naturally follow the simulation's velocity field. |
+| 🟠&nbsp;**Planned** | **Dynamic Wetness Maps** | August 2026 | Global shader support to allow shoreline objects and terrain to appear wet and reflective based on disappearing fluids. |
+| 🟠&nbsp;**Planned** | **Dynamic Lens Wetness** | August 2026 | A post-process effect simulating droplets and wiping streaks on the camera lens after emerging from the fluid. |
+| 🟠&nbsp;**Planned** | **Subsurface Bubbles** | September 2026 | GPU-accelerated particles representing bubbles that spawn in turbulent areas and swirl with the flow. |
+| 🔴&nbsp;**Future** | **Editor-Time Simulation** | October 2026 | Support for running the simulation directly in the Scene View to preview behavior and erosion while designing levels. |
+| 🔴&nbsp;**Future** | **Terraform Sculpting Tools** | November 2026 | Manual sculpting brushes to carve and shape the Terraform Terrain system directly in the editor. |
+| 🔴&nbsp;**Future** | **Localized Moving Ripples** | December 2026 | High-detail ripples that follow the player for fine grained interaction that advects with the main flow. |
 | 🔎&nbsp;**Research** | **Surface <> Particle Blending** | December 2026 | Secret tech. |
 | 🔎&nbsp;**Research** | **Simulation Baking (VATs)** | 2027 | Export simulations into Vertex Animation Textures for high-performance playback on mobile assets. |
 | 🔎&nbsp;**Research** | **Unity Terrain Terraforming** | 2027+ | Support for the native Unity Terrain system to be permanently eroded and terraformed by the fluid simulation. |
