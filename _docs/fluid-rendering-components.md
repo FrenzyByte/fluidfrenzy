@@ -21,6 +21,7 @@ The [Fluid Renderer](#fluid-renderer) component is responsible for rendering the
 | Fluid Material | The material to be used to render the fluid surface.<br/><br/>This material is internally instantiated at runtime. The component copies the properties from the original material to the new instance, and then overrides or injects any necessary rendering requirements (e.g., shader keywords or properties) for the fluid simulation effects to function correctly. |
 | [Simulation](../fluid_simulation_components#fluid-simulation) | The [Fluid Simulation](../fluid_simulation_components#fluid-simulation) component that this renderer will draw.<br/><br/>This is a mandatory dependency. The FluidRenderer will automatically adopt the world-space dimensions and position of the assigned Fluid Simulation, ensuring the rendered fluid surface matches the simulated area exactly. |
 | [Flow Mapping](#fluid-flow-mapping) | The [Fluid Flow Mapping](#fluid-flow-mapping) component that this [Fluid Renderer](#fluid-renderer) uses to visualize fluid currents and wakes.<br/><br/>This component provides the necessary data to the fluid shader, which can be either a dedicated flow map texture (for dynamic UV-offsetting) or material parameters derived directly from the simulation's velocity texture. This allows the fluid surface to depict accurate movement and flow. |
+| Render Skirts | Renders downward skirts at the edges of the fluid surface. |
 
 <a name="i-surface-renderer"></a>
 ### Surface Renderer
@@ -223,9 +224,21 @@ This class defines how light interacts with the water volume, including absorpti
 
 | Property | Description |
 | :--- | :--- |
-| Water Color | The base transmission color of the water.<br/><br/>This defines the color of the water as light passes through it. Brighter colors make the water look clear while darker colors make the water look thick and deep. This works with the alpha value and the absorption depth scale to decide how much the scene behind the water is tinted. |
-| Depth Transparency | Controls the rate at which light is absorbed as it travels through the water.<br/><br/>Higher values result in darker water where light cannot penetrate as deeply. This scaling factor applies to the exponential decay of the **Water Color**. |
+| Color | The base transmission color of the water.<br/><br/>This defines the color of the water as light passes through it. Brighter colors make the water look clear, while darker colors make the water look thick and deep. This works with the absorption depth scale to decide how much the scene behind the water is tinted. |
+| Depth Transparency | Controls the rate at which light is absorbed as it travels through the water.<br/><br/>Higher values result in darker water where light cannot penetrate as deeply. This scaling factor applies to the exponential decay of the [Water Color](#water-color). |
 | Depth Limits | Clamps the calculated absorption to a specific range (Min, Max).<br/><br/>Useful for preventing the water from becoming completely black at extreme depths or ensuring a minimum amount of visibility. |
+| Thickness (cm) | The vertical thickness of the meniscus line on the camera lens (in centimeters).<br/><br/>Simulates water clinging to the camera glass. Higher values create a thicker, more prominent droplet band at the waterline. Set to 0 to completely disable the meniscus effect. |
+| Darkness | Controls the intensity/darkness of the meniscus line effect.<br/><br/>Low values give the band a subtle, colorful tint matching the water color. High values simulate a physically thick droplet that blocks incoming light, creating a dark rim. |
+| Refraction Bulge | Controls the refraction strength (optical distortion) of the meniscus droplet.<br/><br/>Higher values bend the background pixels (Snell's Law), causing extreme lensing and total internal reflection at the edges. Lower values look like flat, undisrupted glass, Negative values intert the refraction. |
+| Reflectivity | The base reflectivity (Fresnel R0) of the wet meniscus lens.<br/><br/>Higher values make the droplet highly reflective (mirror-like), reflecting more of the skybox/environment probe. Lower values keep the droplet mostly transparent. |
+| Specular Intensity | Controls the brightness of the directional light specular glint on the meniscus.<br/><br/>Higher values create a bright sun highlight when the camera looks towards the directional light at the waterline. Lower values dull the highlight. |
+| Specular Power | Controls the sharpness and focus of the specular glint on the meniscus.<br/><br/>Lower values (e.g., 16-64) spread the sun's reflection out into a wide, wet smear across the lens. Higher values (e.g., 256-512) tighten the highlight into a microscopic, sharp pinpoint. |
+| Chromatic Dispersion | Splits the RGB light (chromatic aberration) when refracting through the meniscus droplet.<br/><br/>When enabled, the droplet samples three slightly different indices of refraction, causing a prismatic rainbow fringing effect at the edges of the water band. |
+| Color | The color of the light scattered within the water volume (subsurface scattering/fog color).<br/><br/>Defines the color of the fog when light illuminates the water. Usually a bright cyan or teal for tropical water, or a murky green/brown for swamps. |
+| Ambient Intensity | The base ambient contribution to the scattering effect, independent of direct lighting.<br/><br/>Higher values cause the underwater fog to glow brightly even in shadows or when facing away from the sun. Lower values rely purely on direct sunlight for illumination. |
+| Light Intensity | Scales the influence of the main directional light on the scattering effect.<br/><br/>Higher values cause the water to aggressively catch and scatter the sun's light, creating a bright halo when looking toward the sun. |
+| Total Intensity | A global multiplier for the overall scattering intensity.<br/><br/>Higher values create a dense, opaque volumetric fog. Lower values make the scattering very subtle, preserving the clarity of the absorption color. |
+
 
 #####  Meniscus(Water Line)
 
@@ -346,6 +359,8 @@ The following settings can be configured to setup the Planar reflections:
 | Clear Flags | What to display in empty areas of the planar reflection's view (e.g., Skybox, Solid Color). |
 | Clip Plane | A vertical offset to apply to the reflection plane. This can be used to prevent clipping artifacts with the water surface. |
 | Smooth Position | Smoothes the reflection plane's height and position over multiple frames to prevent jittering caused by rapid fluid simulation updates. |
+| Smooth Speed | How fast the reflection plane adapts to water height changes. Lower values result in smoother, slower transitions. |
+| Snap Threshold | The height difference threshold at which the reflection plane instantly snaps to the new height instead of smoothly transitioning. |
 | Renderer ID | SRP Renderer to use for the planar reflection pass. Use this to select a cheaper render pass for the reflection camera. |
 | Shadow Quality | Controls shadow rendering in the reflection (BiRP Only). |
 
@@ -435,8 +450,9 @@ Fluid Frenzy uses custom shaders to render its completely GPU-accelerated partic
 
 - ProceduralParticle (Lit): Includes PBR lighting with support for Normal Maps, Metallic, and Smoothness.
 - ProceduralParticleUnlit (Unlit): Does not perform lighting, offering a lower rendering cost.
+- FluidParticleSplash
 
-Both shaders share settings for **Blend Mode** and **Billboard Mode**. **Billboard Mode** controls particle orientation, including options for camera-facing or world-up normals to manage lighting.
+All shaders share settings for **Blend Mode** and **Billboard Mode**. **Billboard Mode** controls particle orientation, including options for camera-facing or world-up normals to manage lighting.
 
 **Compatibility**:
 For URP and BiRP, the shaders are *FluidFrenzy/ProceduralParticle* and *FluidFrenzy/ProceduralParticleUnlit*.
@@ -444,7 +460,7 @@ The High Definition Render Pipeline (HDRP) requires its own dedicated shaders: *
 
 ![Particle Shader](../../assets/images/particle_shader.png)
 
-##### Properties
+##### Procedural Particle (Unlit) Properties
 
 | Property | Description |
 | :--- | :--- |
@@ -459,8 +475,39 @@ The High Definition Render Pipeline (HDRP) requires its own dedicated shaders: *
 | Billboard Mode | Select which method to use for rendering the particle billboard.<br/><br/>• Camera: the billboard and world normal will face in the direction of the camera.<br/><br/>• Camera Normal Up: the billboard will face the camera and the normal will face in in the world space up direction.This can be useful to have more uniform lighting from every direction.<br/><br/>• Up: the billboard and normal will both face in the world space up direction.<br/><br/>• Normal: not yet implemented. |
 | Metallic | The metalness of this material. |
 | Smoothness | The smoothness of this material. |
-| Lighting |  |
-| Rendering |  |
+| Fade Submerged | Fades particles that fall below the fluid surface. |
+
+##### Procedural Particle Splash Properties
+
+Custom fluid rendering shader for water splashes.
+
+![Splash Particles](../../assets/images/procedural_splash_particles.png)
+
+| Property | Description |
+| :--- | :--- |
+| Atlas | Atlas texture driving the fluid shapes. R = Droplets, G = Specular Highlights, B = Aerated Foam, A = Dissolve Noise. |
+| Sprite Sheet Grid | The number of columns (X) and rows (Y) in the atlas. The shader will randomly assign a static frame to each particle at birth. |
+| Alpha Multiplier | Globally scales the overall opacity of the particles. Higher values make the fluid look thicker and more opaque. |
+| Alpha Threshold | Pixels with transparency below this value are discarded. Higher values increase performance but can make edges look jagged. |
+| Droplet Base Color | The baseline ambient color of the water droplets. |
+| 3D Normal Strength | Generates physical volume shading by calculating slopes from the Red channel. |
+| Edge Ring Threshold | Controls the internal thickness of the droplet. Lower values make the center thicker. |
+| Edge Ring Softness | Controls the blurriness of the droplet's outer edge. Higher values create a softer look. |
+| Highlight Color | The specular color of the light reflecting off the droplets. |
+| Highlight Intensity | How bright the specular highlights glow when hit by directional light. Higher values create a glaring, highly reflective surface. |
+| Highlight Focus | Controls the size and sharpness of the highlights. Higher values tighten the light into tiny, sharp pinpricks. |
+| White Water Color | The color of the internal aeration and foam (driven by the Blue channel). |
+| White Water Opacity | How strongly the foam channel blends into the droplet. Higher values fill the droplet, simulating thick, churning white water. |
+| Dissolve Speed | How fast the particle physically erodes over its lifetime. A value of 1.2 will fully dissolve the particle exactly as it dies. |
+| Enable Soft Particles | Smoothly fades the particle alpha where it intersects with scene geometry to prevent harsh clipping lines. |
+| Soft Particles Fade Distance | The physical distance over which the intersection fade occurs. Higher values create a longer, softer fade against walls and floors. |
+| Fade Submerged | Automatically fades out particles that fall beneath the surface level of the simulated fluid grid. |
+| Blend Mode | The mathematical blending operation used to draw the particle onto the screen. |
+| Source Blend | The source blend factor used for custom blend modes. |
+| Dest Blend | The destination blend factor used for custom blend modes. |
+| ZWrite | Whether the particle writes its depth to the Z-Buffer. Usually left off for transparent fluids. |
+| Billboard Mode | Controls how the particle faces the camera. 'Camera Normal Up' is recommended for proper directional lighting. |
+
 
 <a name="shadow-grabber"></a>
 ### Shadows

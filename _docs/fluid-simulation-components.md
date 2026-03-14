@@ -563,11 +563,8 @@ This component generates two distinct types of particles by detecting areas of h
 | Steepness Threshold | The minimum surface angle (steepness) required to trigger a splash.<br/><br/>Higher values restrict splashes to only the sharpest peaks of the waves. |
 | Rise Rate Threshold | The minimum vertical (upward) velocity required to trigger a splash.<br/><br/>Used to identify waves that are rising rapidly before they break. |
 | Wave Length Threshold | The minimum physical length a wave must have to emit particles.<br/><br/>Helps prevent small, high-frequency noise from generating excessive spray. |
-| Breaking Wave Grid Stagger | Optimization setting that spreads the sampling of grid cells for breaking waves across multiple frames.<br/><br/>A value of 2 means a specific cell is checked every 2nd frame. Increasing this value reduces the number of particles spawned and lowers performance cost, but may make emission look less responsive. |
-| Turbulence Splashes | Toggles the emission of spray particles from areas of high turbulence (diverging velocities). |
-| Turbulence Splash Grid Stagger | Optimization setting that spreads the sampling of grid cells for turbulence splashes across multiple frames. |
-| Spray Turbelence Threshold | The minimum turbulence value required to trigger a splash particle. |
-| [Splash Particle System](#fluid-particle-system) | Configuration settings for the ballistic splash particles (movement, rendering, and limits). |
+| [Breaking Wave Cascades](#cascade-definition) | Configures distance-based optimization levels (Cascades) for breaking wave sampling.<br/><br/>This system divides the view frustum into distance slices. Closer slices can differ in sampling frequency compared to distant slices.<br/><br/>By increasing the [Stagger](#stagger) value at greater distances, the simulation drastically reduces the number of grid cells checked per frame, saving GPU performance without noticeable visual degradation in the distance. |
+
 
 ##### Particle System
 | Property | Description |
@@ -576,6 +573,7 @@ This component generates two distinct types of particles by detecting areas of h
 | Max Particles | The maximum number of particles that can be active simultaneously in the simulation buffer.<br/><br/>This value determines the size of the GPU [Graphics Buffer](#graphics-buffer) allocated for the system. Increasing this allows for denser effects but increases VRAM usage and GPU processing cost. |
 | Material | The material used to render the particle geometry.<br/><br/>Requirement: The assigned material must use a shader capable of procedural instantiation, such as the included `ProceduralParticle` or `ProceduralParticleUnlit` shaders. |
 | Layer | The Unity Layer index assigned to the rendered particles.<br/><br/>This is used to control visibility via Camera Culling Masks, allowing specific cameras (e.g., UI or reflection probes) to ignore these particles. |
+| Cull Submerged | If enabled, particles that fall below the fluid surface are automatically culled.<br/><br/>When active, this prevents particles from being rendered while submerged, <br/>improving performance by terminating the lifetime of underwater particles. |
 
 #### Surface Particles
 
@@ -583,9 +581,13 @@ This component generates two distinct types of particles by detecting areas of h
 
 | Property | Description |
 | :--- | :--- |
+| Turbulence Splashes | Toggles the emission of spray particles from areas of high turbulence (diverging velocities). |
+| Spray Turbelence Threshold | The minimum turbulence value required to trigger a splash particle. |
+| [Turbulence Splash Cascades](#cascade-definition) | Configures distance-based optimization levels (Cascades) for turbulence spray sampling.<br/><br/>Similar to shadow cascades, this allows high-frequency sampling (stagger 1 or 2) near the camera for detailed spray, <br/>while falling back to low-frequency sampling (stagger 8 or 16) for distant turbulent areas. |
+| [Splash Particle System](#fluid-particle-system) | Configuration settings for the ballistic splash particles (movement, rendering, and limits). |
 | Turbulence Surface | Toggles the emission of surface particles (foam) in turbulent areas.<br/><br/>Unlike splashes, these particles stick to the fluid surface and move with the flow. |
 | Surface Turblence Threshold | The minimum turbulence value required to trigger a surface particle. |
-| Surface Grid Stagger | Optimization setting that spreads the sampling of grid cells for surface particles across multiple frames. |
+| [Surface Cascades](#cascade-definition) | Configures distance-based optimization levels (Cascades) for surface foam sampling.<br/><br/>Foam generation often requires checking many grid cells. Using cascades ensures that distant foam—which is often less visible—consumes significantly less processing time. |
 | [Surface Particles System](#fluid-particle-system) | Configuration settings for the advected surface particles (movement, rendering, and limits). |
 | Render Offscreen | If enabled, surface particles are rendered to a dedicated offscreen texture buffer instead of the main camera.<br/><br/>This generated texture is globally available to shaders (e.g., as a foam mask) to create effects like white water trails without drawing individual particle geometry to the screen. |
 
