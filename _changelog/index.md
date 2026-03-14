@@ -10,6 +10,64 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-03-14
+
+### Added
+- Simulation: Added frustum culling to the `FluidParticleGenerator` to improve performance and quality by focussing particle spawning to what is visible.
+- Simulation: Added support for culling and fading particles when they are submerged.
+- Simulation: New cascade logic to stagger particle emission based on distance.
+- Rendering: Added optional 'skirt' rendering to `FluidRender` to hide gaps between the water mesh and geometry, particularly useful for "aquarium" views.
+- Rendering: Added more granular controls for planar reflection smoothing.
+- Rendering: Added new splash particle shader that behaves more like actual splashes with droplets, highlights, foam, and dissolving.
+
+### Changed
+- Rendering: Optimized the underwater rendering prepass. The system now uses a simplified near-plane mask, replacing the previous, more complex skirt rendering and volume-based checks for a significant performance increase.
+- Rendering: Completely overhauled the waterline meniscus rendering for a more realistic and visually appealing effect. The new system includes improved refraction, reflection, specular highlights, and offers more granular artistic control.
+- Simulation: Significantly improved the particle splash system with better default effects, improved velocity calculations, and more convincing behavior.
+
+### Fixed
+- Rendering: Fixed normal rotation in the Built-in Render Pipeline (BiRP).
+- Particles: Corrected a padding offset in `FluidParticles` for more accurate particle positioning.
+- Particles: Fixed an issue with SDF readback timeslicing to ensure data is valid before use.
+
+## [1.4.0] - 2026-02-15
+
+### Added
+
+- Rendering: New Caustics system. Includes support for wave distortion, highlights, animated texture projection, flowmapping, triplanar mapping, and foam masking.
+- Editor: Option to indent headers in the inspector for better UI inspector layout.
+- Samples: Added HDRP version of the GrandCanyon scene and enabled caustics on the Pool sample.
+- Samples: New FluidEventExample script to demonstrate FluidEventTrigger in the Pool sample.
+
+### Changed
+
+- Rendering: Major refactor of the rendering architecture into a unified FluidRenderPipeline (supporting URP/HDRP/BiRP). This optimizes the prepass, improves performance by skipping unused passes, and streamlines reflection handling. More work to be done on this in future versions.
+
+### Fixed
+
+- Simulation: Fixed issue where using erosion layer and obstacles simultaneously would cause a simulation reset.
+- Simulation: Improved overshooting stability in the simulation loop.
+- Rendering: Fixed MSAA issues and general stability in URP 2022.
+- Rendering: Fixed flickering issues in the prepass mask.
+- Rendering: Fixed fog rendering issues on HDRP water surfaces.
+- Rendering: Fixed various compiler warnings related to GetTemporary and domain reloading.
+- Samples: Fixed Mouse3D input support in HDRP.
+- Editor: Improved header indentation logic and automatic formatting in the inspector.
+
+## [1.3.8] - 2026-02-09
+
+### Fixed
+- Simulation: FluidEventTrigger now correctly reports the intended layer.
+- Simulation: Fixed `conservativeRasterization` toggle functionality in FluidSimulationObstacle.
+- Simulation: Obstacles now correctly support simulations that have been translated, rotated, or scaled.
+- Simulation: Position, scale, and rotation support for MeshRenderer obstacles.
+- Simulation: Fluid input now supports rotated simulations.
+- Rendering: Resolved underwater rendering errors occurring in Unity 2022.
+- Rendering: Fixed various URP-specific errors in Unity 2022.
+- Rendering: Fixed `CopyMatchingPropertiesFromMaterial` compatibility for Unity 2021.3 versions prior to 2021.3.29.
+- Rendering: [Issues-54] Applied clip offset correctly when using orthographic camera mode.
+- Samples: Fixed compilation errors when the Input System plugin is not installed in the project.
+
 ## [1.3.7] - 2026-02-04
 
 ### Fixed
