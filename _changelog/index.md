@@ -10,6 +10,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.4] - 2026-03-28
+
+### Added
+- Rendering: New **Detail Wave** system. This adds high-frequency surface ripples to the fluid using three modes: Baked (static), Flipbook (animated texture array), and Dynamic (procedural GPU math).
+- Rendering: Support for **Simulation Time Scale**. The simulation can now be paused, slowed down, or fast-forwarded globally or per-simulation.
+- Simulation: Added adjustable **Readback Speed** controls. Users can now choose how often the GPU fluid data is sent back to the CPU to balance performance and responsiveness.
+- Editor: New **Detail Wave Generator** tool (Window > Fluid Frenzy > Detail Wave Generator). This allows you to design procedural wave patterns and export them as static textures or optimized Flipbook assets.
+
+### Changed
+- Rendering: Detail wave intensity can now be influenced by fluid velocity, making ripples calmer in still water and busier in fast-moving areas.
+
+### Fixed
+- Rendering: Moved prepass shader to the Resources folder to ensure the effect works correctly when the package is built.
+- Rendering: Fixed HDRP and URP compilation errors.
+- Rendering: Fixed an issue where the rendering scale didn't properly match the simulation scale in certain setups.
+- Editor: Fixed UI indentation for FoldoutHeaders in the inspector.
+- General: Cleaned up and shared code between the procedural and baked wave logic to reduce shader overhead.
+
 ## [1.4.3] - 2026-03-19
 
 ### Added
