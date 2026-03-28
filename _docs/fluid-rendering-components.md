@@ -49,6 +49,46 @@ Properties to be used to configure components that use [Surface Renderer](#i-sur
 | Lod Min Max | The range of allowable LOD levels, where X is the minimum level and Y is the maximum level. |
 | [Hdrp Water Surface](#hdrp-water-surface-properties) | Configuration settings for bridging this simulation's data to an external [HDRP Water Surface](#hdrp-water-surface). |
 
+<a name="detail-wave-effect"></a>
+### Detail Wave Effect
+
+This effect handles the small surface ripples (detail waves) for the fluid by managing GPU math for real-time waves or playing back pre-rendered textures.
+
+![detail wave effect](../../assets/images/detail-wave-effect.png)
+
+These ripples are purely visual and do not affect the actual fluid simulation, physics interactions, or buoyancy math. 
+To save on GPU performance, you can bake these waves into static textures or flipbooks using the generator tool found at **Window > Fluid Frenzy > Detail Wave Generator**.
+
+![detail wave generator](../../assets/images/detail-wave-generator.png)
+
+<a name="detail-wave-settings"></a>
+#### Detail Wave Settings
+
+| Property | Description |
+| :--- | :--- |
+| Mode | Determines the method used to generate or display detail waves on the fluid surface.<br/><br/>- **Baked** Uses a single static texture for maximum performance but lacks motion.<br/>- **Flipbook** Cycles through a pre-rendered texture array for smooth animation at a low GPU cost.<br/>- **Dynamic** Calculates procedural wave math in real-time for infinite variety at a higher performance cost. |
+| Resolution | The pixel dimensions of the generated wave texture.<br/><br/>High values (512) provide sharper ripples but increase VRAM usage and GPU rendering time. <br/>Low values (128) are much faster and softer. |
+| Min Frequency | Defines the scale of the largest waves in the generated spectrum.<br/><br/>Low values (1-2) create large, rolling swells. <br/>High values (5+) make the primary wave shapes much smaller and busier. |
+| Max Frequency | Defines the scale of the smallest ripples.<br/><br/>Low values result in a smoother surface. <br/>High values add high-frequency micro-fidget and "noise" to the water surface. |
+| Amplitude | A global multiplier for the internal wave height math.<br/><br/>This scales the wave spectrum before it is packed into the texture. <br/>Use this to push waves toward their maximum normalized height. |
+| Steepness | Determines the sharpness of the wave crests.<br/><br/>1.0 creates smooth, hilly waves. <br/>Higher values (up to 8.0) pinch the crests into sharp, aggressive peaks. |
+| Anisotropy | Stretches frequencies to create wind-streaks.<br/><br/>1 = Circular ripples, 10 = Long streaks |
+| Random Seed | The seed used to initialize the random layout of the wave pattern.<br/><br/>Change this to get a different visual layout using the same settings. |
+| Animation Type | Determines if the waves bob in place or travel in direction. |
+| Animation Speed | How fast the wave shapes change or travel.<br/><br/>Higher values make the water look more energetic and wind-swept. |
+| Direction | The direction the waves travel (Only applies to Drifting mode). |
+| Directional Spread | Controls the alignment of wave directions.<br/><br/>1.0 makes waves move in all directions (chaotic). <br/>0.1 forces waves into organized, parallel rows. |
+| Baked Texture | The texture asset used for displacement when in Baked mode.<br/><br/>Expected format: Alpha channel for Height, RGB channels for Normals. |
+| Baked Texture Array | A sequence of wave frames stored as a compressed Texture2DArray. |
+| Flipbook FPS | The speed at which the flipbook cycles through frames. |
+| Displacement Strength | The vertical scale of the displacement applied to the surface mesh.<br/><br/>Higher values make the waves physically taller in world space. |
+| Normal Strength | The intensity of the small-scale lighting details.<br/><br/>Controls the normal map strength. <br/>High values make ripples catch more light and appear rougher. |
+| Velocity Influence | X = Minimum strength at 0 velocity. Y = Maximum strength multiplier. |
+| Fade Distance | Distance (Start, End) in meters where detail waves fade out to prevent shimmering and tiling artifacts. |
+| Tiling | How many times the wave pattern repeats across the surface area. |
+| Offset | A manual offset to scroll or shift the wave pattern. |
+
+
 <a name="hdrp-water-surface-properties"></a>
 ### HDRP Water Surface Properties
 
@@ -156,13 +196,7 @@ Properties for adding detail to the water surface using normal mapping and proce
 | Property | Description |
 | :--- | :--- |
 | Normal Map | Texture used to add fine detail to the water's normals for lighting and PBR shading. |
-| Vertex Displacement | Enables small-scale, procedural vertex displacement for finer wave details, which is based on the fluid simulation's velocity field. |
-| Tiling | Scales the overall density/tiling of the procedural displacement waves. |
-| Wave Amplitude | Scales the maximum height (amplitude) of the displacement waves. |
-| Phase Speed | Scales the phase speed, which controls how fast the waves move up and down. |
-| Wave Speed | Scales the horizontal movement speed of the displacement waves. |
-| Wave Length | Scales the distance between the crests (wavelength) of the displacement waves. |
-| Wave Steepness | Scales the sharpness or smoothness (steepness) of the displacement waves. |
+| Velocity Influence | Min = Strength at resting water. Max = Max strength multiplier at high velocity. |
 
 ##### Foam
 
@@ -507,7 +541,6 @@ Custom fluid rendering shader for water splashes.
 | Dest Blend | The destination blend factor used for custom blend modes. |
 | ZWrite | Whether the particle writes its depth to the Z-Buffer. Usually left off for transparent fluids. |
 | Billboard Mode | Controls how the particle faces the camera. 'Camera Normal Up' is recommended for proper directional lighting. |
-
 
 <a name="shadow-grabber"></a>
 ### Shadows
