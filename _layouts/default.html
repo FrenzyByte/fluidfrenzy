@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="{{ page.lang | default: site.lang | default: "en" }}">
+{% comment %}Pagefind assets exist only after `npx pagefind --site _site` (CI does this). Local `jekyll serve` is development → no Pagefind tags → no 404. Use JEKYLL_ENV=production after indexing to test search locally.{% endcomment %}
+{% assign use_pagefind = false %}
+{% if jekyll.environment == 'production' %}
+  {% assign use_pagefind = true %}
+{% endif %}
 
-{% include head.html enable_pagefind=true %}
+{% include head.html enable_pagefind=use_pagefind %}
 
 <body>
 
-    {% include topnav.html %}
+    {% include topnav.html enable_pagefind=use_pagefind %}
 
     <div class="page-content">
         <div class="wrapper" data-pagefind-body>
@@ -14,7 +19,7 @@
     </div>
 
     {% include footer.html %}
-    {% include js_files.html enable_pagefind=true %}
+    {% include js_files.html enable_pagefind=use_pagefind %}
 </body>
 
 </html>

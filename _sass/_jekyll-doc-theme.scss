@@ -73,7 +73,7 @@ html {
     width: 100%;
   }
 
-  /* Docs sidebar: one expandable panel per doc page (Font Awesome chevrons, no Glyphicons) */
+  /* Docs sidebar: title links to page; chevron toggles section list (no duplicate "overview" row) */
   .doc-nav-panels {
     margin-bottom: 0;
   }
@@ -87,44 +87,64 @@ html {
     font-size: 14px;
   }
 
-  .doc-nav-panel-toggle {
+  .doc-nav-panel-heading-split {
     display: flex;
     align-items: flex-start;
-    gap: 8px;
-    padding: 10px 15px;
-    text-decoration: none;
+    justify-content: space-between;
+    gap: 4px;
+  }
+
+  .doc-nav-panel-page-link {
+    flex: 1;
+    min-width: 0;
+    display: block;
+    padding: 10px 8px 10px 15px;
     font-weight: 600;
     line-height: 1.35;
     color: $panel-default-text;
+    text-decoration: none;
+    word-wrap: break-word;
   }
 
-  .doc-nav-panel-toggle:hover,
-  .doc-nav-panel-toggle:focus {
+  .doc-nav-panel-page-link-only {
+    padding-right: 15px;
+  }
+
+  .doc-nav-panel-page-link:hover,
+  .doc-nav-panel-page-link:focus {
     text-decoration: none;
     color: $brand-primary;
     background-color: rgba(0, 0, 0, 0.04);
   }
 
-  .doc-nav-chevron {
+  .doc-nav-panel-current .doc-nav-panel-page-link {
+    color: $brand-primary;
+  }
+
+  .doc-nav-panel-expand {
     flex: 0 0 auto;
-    margin-top: 2px;
+    padding: 8px 12px;
+    margin: 0;
+    border: 0;
+    line-height: 1;
+    color: $panel-default-text;
+    opacity: 0.85;
+  }
+
+  .doc-nav-panel-expand:hover,
+  .doc-nav-panel-expand:focus {
+    opacity: 1;
+    color: $brand-primary;
+    text-decoration: none;
+  }
+
+  .doc-nav-chevron {
     font-size: 12px;
-    opacity: 0.75;
     transition: transform 0.15s ease;
   }
 
-  .doc-nav-panel-toggle:not(.collapsed) .doc-nav-chevron {
+  .doc-nav-panel-expand:not(.collapsed) .doc-nav-chevron {
     transform: rotate(90deg);
-  }
-
-  .doc-nav-panel-heading-text {
-    flex: 1;
-    min-width: 0;
-    word-wrap: break-word;
-  }
-
-  .doc-nav-panel-current > .panel-heading .doc-nav-panel-toggle {
-    color: $brand-primary;
   }
 
   .doc-nav-panel-body .list-group {
@@ -151,27 +171,6 @@ html {
     text-decoration: none;
     color: $brand-primary;
     background-color: rgba(0, 0, 0, 0.04);
-  }
-
-  .doc-nav-link.active {
-    color: #fff;
-    background-color: $component-active-bg;
-    border-color: $list-group-active-border;
-  }
-
-  .doc-nav-link.active:hover,
-  .doc-nav-link.active:focus {
-    color: #fff;
-    background-color: darken($component-active-bg, 6%);
-  }
-
-  .doc-nav-link-icon {
-    opacity: 0.7;
-    margin-right: 4px;
-  }
-
-  .doc-nav-link-top {
-    font-weight: 600;
   }
 
   .doc-nav-h2 { padding-left: 18px; }
