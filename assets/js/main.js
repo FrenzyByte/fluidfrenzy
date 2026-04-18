@@ -5,5 +5,6 @@ $(function () {
     $('#markdown-content-container img').addClass('img-responsive');
   }
 
+  $(document).on('docsContentLoaded', styleContentToMD);
   styleContentToMD();
 });

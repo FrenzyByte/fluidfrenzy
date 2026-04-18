@@ -5,3 +5,6 @@
 {% endif %}
 
 <script src="{{ "/assets/js/main.js" | relative_url }} "></script>
+{% if page.layout == 'docs' %}
+<script src="{{ "/assets/js/docs-spa.js" | relative_url }}"></script>
+{% endif %}
