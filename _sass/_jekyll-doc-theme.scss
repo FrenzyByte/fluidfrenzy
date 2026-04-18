@@ -73,6 +73,23 @@ html {
     width: 100%;
   }
 
+  /* Docs sidebar: stick under fixed navbar on wide screens; scroll if taller than viewport */
+  .doc-nav-sidebar-col {
+    @media (min-width: $screen-md-min) {
+      position: sticky;
+      top: $navbar-height + $navbar-margin-bottom;
+      max-height: calc(100vh - #{$navbar-height} - #{$navbar-margin-bottom} - 12px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; // Firefox
+      -ms-overflow-style: none; // IE / legacy Edge
+
+      &::-webkit-scrollbar {
+        display: none; // Chrome, Safari, Edge Chromium
+      }
+    }
+  }
+
   /* Docs sidebar: title links to page; chevron toggles section list (no duplicate "overview" row) */
   .doc-nav-panels {
     margin-bottom: 0;
