@@ -1,52 +1,43 @@
-<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+<div class="panel-group doc-nav-panels" id="doc-nav-accordion" role="tablist" aria-multiselectable="true">
+  {% assign nav_idx = 0 %}
   {% for section in site.data.docs %}
-    {% assign sec_idx = forloop.index %}
-    {% assign section_collapsed = true %}
     {% for item in section.docs %}
       {% assign item_url = item | prepend:"/docs/" | append:"/" %}
-      {% if item_url == page.url %}
-        {% assign section_collapsed = false %}
+      {% assign p = site.docs | where:"url", item_url | first %}
+      {% if p %}
+        {% assign nav_idx = nav_idx | plus: 1 %}
+        {% assign is_current = false %}
+        {% if item_url == page.url %}
+          {% assign is_current = true %}
+        {% endif %}
+        {% assign sec_count = 0 %}
+        {% if p.sidebar_sections %}
+          {% assign sec_count = p.sidebar_sections | size %}
+        {% endif %}
+        <div class="panel panel-default doc-nav-panel{% if is_current %} doc-nav-panel-current{% endif %}">
+          <div class="panel-heading">
+            <h4 class="panel-title doc-nav-panel-title">
+              <a role="button" class="doc-nav-panel-toggle{% unless is_current %} collapsed{% endunless %}" data-toggle="collapse" href="#collapse-doc-{{ nav_idx }}" aria-expanded="{% if is_current %}true{% else %}false{% endif %}" aria-controls="collapse-doc-{{ nav_idx }}">
+                <i class="fa-solid fa-chevron-right doc-nav-chevron" aria-hidden="true"></i>
+                <span class="doc-nav-panel-heading-text">{{ p.title }}</span>
+              </a>
+            </h4>
+          </div>
+          <div id="collapse-doc-{{ nav_idx }}" class="panel-collapse collapse doc-nav-panel-body{% if is_current %} in{% endif %}" role="tabpanel" aria-label="Sections for {{ p.title | escape }}">
+            <div class="list-group doc-nav-section-list">
+              <a class="list-group-item doc-nav-link doc-nav-link-top{% if is_current %} active{% endif %}" href="{{ p.url | relative_url }}" data-no-hoverflow>
+                <i class="fa-solid fa-book-open fa-fw doc-nav-link-icon" aria-hidden="true"></i>
+                Page overview
+              </a>
+              {% if sec_count > 0 %}
+                {% for s in p.sidebar_sections %}
+                  <a class="list-group-item doc-nav-link doc-nav-h{{ s.level }}" href="{{ p.url | relative_url }}#{{ s.anchor }}" data-no-hoverflow>{{ s.title }}</a>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
       {% endif %}
     {% endfor %}
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title">
-          <a role="button" class="doc-nav-panel-toggle{% if section_collapsed %} collapsed{% endif %}" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{ sec_idx }}" aria-expanded="{% if section_collapsed %}false{% else %}true{% endif %}" aria-controls="collapse-{{ sec_idx }}">
-            <span class="doc-nav-panel-chevron glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-            {{ section.title }}
-          </a>
-        </h4>
-      </div>
-      <div class="panel-collapse collapse{% unless section_collapsed %} in{% endunless %}" id="collapse-{{ sec_idx }}" role="tabpanel" aria-label="Side Navigation">
-        <div class="list-group doc-nav-page-list">
-          {% for item in section.docs %}
-            {% assign item_url = item | prepend:"/docs/" | append:"/" %}
-            {% assign p = site.docs | where:"url", item_url | first %}
-            {% if p %}
-              {% assign sec_count = p.sidebar_sections | size %}
-              <div class="list-group-item doc-nav-page-item{% if item_url == page.url %} active{% endif %}">
-                <div class="doc-nav-page-row">
-                  <a class="doc-nav-page-link" href="{{ p.url | relative_url }}" data-no-hoverflow>{{ p.title }}</a>
-                  {% if sec_count > 0 %}
-                    <button type="button" class="btn btn-link doc-nav-sections-toggle{% if item_url != page.url %} collapsed{% endif %}" data-toggle="collapse" data-target="#doc-nav-sections-{{ sec_idx }}-{{ forloop.index }}" aria-expanded="{% if item_url == page.url %}true{% else %}false{% endif %}" aria-controls="doc-nav-sections-{{ sec_idx }}-{{ forloop.index }}" title="Show sections on this page">
-                      <span class="glyphicon glyphicon-plus doc-nav-sections-icon-collapsed" aria-hidden="true"></span>
-                      <span class="glyphicon glyphicon-minus doc-nav-sections-icon-expanded" aria-hidden="true"></span>
-                      <span class="sr-only">Sections</span>
-                    </button>
-                  {% endif %}
-                </div>
-                {% if sec_count > 0 %}
-                  <div id="doc-nav-sections-{{ sec_idx }}-{{ forloop.index }}" class="collapse doc-nav-sections-list{% if item_url == page.url %} in{% endif %}">
-                    {% for s in p.sidebar_sections %}
-                      <a class="doc-nav-section-link doc-nav-h{{ s.level }}" href="{{ p.url | relative_url }}#{{ s.anchor }}" data-no-hoverflow>{{ s.title }}</a>
-                    {% endfor %}
-                  </div>
-                {% endif %}
-              </div>
-            {% endif %}
-          {% endfor %}
-        </div>
-      </div>
-    </div>
   {% endfor %}
 </div>
