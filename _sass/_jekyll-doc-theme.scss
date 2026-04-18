@@ -72,3 +72,116 @@ html {
     display: block;
     width: 100%;
   }
+
+  /* Docs sidebar: section panels + per-page TOC */
+  .doc-nav-panel-toggle {
+    display: block;
+    position: relative;
+    padding-left: 1.25em;
+    text-decoration: none;
+  }
+
+  .doc-nav-panel-toggle .doc-nav-panel-chevron {
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    font-size: 0.85em;
+    transition: transform 0.15s ease;
+  }
+
+  .doc-nav-panel-toggle:not(.collapsed) .doc-nav-panel-chevron {
+    transform: rotate(90deg);
+  }
+
+  .doc-nav-page-list .list-group-item {
+    padding: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .doc-nav-page-item.active {
+    border-color: $list-group-border;
+  }
+
+  .doc-nav-page-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    padding: 10px 15px;
+  }
+
+  .doc-nav-page-link {
+    flex: 1;
+    min-width: 0;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .doc-nav-page-item.active .doc-nav-page-link {
+    color: inherit;
+  }
+
+  .doc-nav-sections-toggle {
+    flex: 0 0 auto;
+    padding: 2px 6px;
+    border: 0;
+    min-width: 28px;
+    opacity: 0.75;
+  }
+
+  .doc-nav-sections-toggle:hover,
+  .doc-nav-sections-toggle:focus {
+    opacity: 1;
+    text-decoration: none;
+  }
+
+  .doc-nav-sections-toggle .glyphicon-minus,
+  .doc-nav-sections-toggle:not(.collapsed) .glyphicon-plus {
+    display: none;
+  }
+
+  .doc-nav-sections-toggle:not(.collapsed) .glyphicon-minus {
+    display: inline-block;
+  }
+
+  .doc-nav-sections-list {
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 4px 0 8px;
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+
+  .doc-nav-page-item.active .doc-nav-sections-list {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-top-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .doc-nav-section-link {
+    display: block;
+    padding: 4px 12px 4px 16px;
+    font-size: 0.92em;
+    line-height: 1.35;
+    color: $gray;
+    text-decoration: none;
+  }
+
+  .doc-nav-section-link:hover,
+  .doc-nav-section-link:focus {
+    color: $brand-primary;
+    background-color: rgba(0, 0, 0, 0.04);
+    text-decoration: none;
+  }
+
+  .doc-nav-page-item.active .doc-nav-section-link {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .doc-nav-page-item.active .doc-nav-section-link:hover,
+  .doc-nav-page-item.active .doc-nav-section-link:focus {
+    color: #fff;
+  }
+
+  .doc-nav-h2 { padding-left: 16px; }
+  .doc-nav-h3 { padding-left: 22px; font-size: 0.9em; }
+  .doc-nav-h4 { padding-left: 28px; font-size: 0.88em; opacity: 0.95; }
+

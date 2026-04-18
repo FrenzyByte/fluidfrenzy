@@ -1,26 +1,49 @@
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
   {% for section in site.data.docs %}
+    {% assign sec_idx = forloop.index %}
+    {% assign section_collapsed = true %}
+    {% for item in section.docs %}
+      {% assign item_url = item | prepend:"/docs/" | append:"/" %}
+      {% if item_url == page.url %}
+        {% assign section_collapsed = false %}
+      {% endif %}
+    {% endfor %}
     <div class="panel panel-default">
       <div class="panel-heading">
         <h4 class="panel-title">
-          <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{forloop.index}}" aria-expanded="false" aria-controls="collapse-{{forloop.index}}">
+          <a role="button" class="doc-nav-panel-toggle{% if section_collapsed %} collapsed{% endif %}" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{ sec_idx }}" aria-expanded="{% if section_collapsed %}false{% else %}true{% endif %}" aria-controls="collapse-{{ sec_idx }}">
+            <span class="doc-nav-panel-chevron glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
             {{ section.title }}
           </a>
         </h4>
       </div>
-      {% assign collapsed = true %}
-      {% for item in section.docs %}
-        {% assign item_url = item | prepend:"/docs/" | append:"/" %}
-        {% if item_url == page.url %}
-          {% assign collapsed = false %}
-        {% endif %}
-      {% endfor %}
-      <div class="panel-collapse{% if collapsed %} collapse{% endif %}" id="collapse-{{forloop.index}}" role="tabpanel" aria-label="Side Navigation">
-        <div class="list-group">
+      <div class="panel-collapse collapse{% unless section_collapsed %} in{% endunless %}" id="collapse-{{ sec_idx }}" role="tabpanel" aria-label="Side Navigation">
+        <div class="list-group doc-nav-page-list">
           {% for item in section.docs %}
             {% assign item_url = item | prepend:"/docs/" | append:"/" %}
             {% assign p = site.docs | where:"url", item_url | first %}
-            <a class="list-group-item {% if item_url == page.url %}active{% endif %}" href="{{ p.url  | relative_url }}" data-no-hoverflow>{{ p.title }}</a>
+            {% if p %}
+              {% assign sec_count = p.sidebar_sections | size %}
+              <div class="list-group-item doc-nav-page-item{% if item_url == page.url %} active{% endif %}">
+                <div class="doc-nav-page-row">
+                  <a class="doc-nav-page-link" href="{{ p.url | relative_url }}" data-no-hoverflow>{{ p.title }}</a>
+                  {% if sec_count > 0 %}
+                    <button type="button" class="btn btn-link doc-nav-sections-toggle{% if item_url != page.url %} collapsed{% endif %}" data-toggle="collapse" data-target="#doc-nav-sections-{{ sec_idx }}-{{ forloop.index }}" aria-expanded="{% if item_url == page.url %}true{% else %}false{% endif %}" aria-controls="doc-nav-sections-{{ sec_idx }}-{{ forloop.index }}" title="Show sections on this page">
+                      <span class="glyphicon glyphicon-plus doc-nav-sections-icon-collapsed" aria-hidden="true"></span>
+                      <span class="glyphicon glyphicon-minus doc-nav-sections-icon-expanded" aria-hidden="true"></span>
+                      <span class="sr-only">Sections</span>
+                    </button>
+                  {% endif %}
+                </div>
+                {% if sec_count > 0 %}
+                  <div id="doc-nav-sections-{{ sec_idx }}-{{ forloop.index }}" class="collapse doc-nav-sections-list{% if item_url == page.url %} in{% endif %}">
+                    {% for s in p.sidebar_sections %}
+                      <a class="doc-nav-section-link doc-nav-h{{ s.level }}" href="{{ p.url | relative_url }}#{{ s.anchor }}" data-no-hoverflow>{{ s.title }}</a>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
           {% endfor %}
         </div>
       </div>

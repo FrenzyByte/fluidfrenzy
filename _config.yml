@@ -22,6 +22,8 @@ discord_address: https://discord.gg/26QcnZ6Q9k
 bootwatch: slate # cerulean cosmo custom cyborg darkly flatly journal lumen readable sandstone simplex slate solar spacelab superhero united yeti
 
 # Build settings
+# github-pages defaults to safe mode, which skips _plugins. Custom generators need this off.
+safe: false
 markdown: kramdown
 highlighter: rouge
 # Plugins (previously gems:)
