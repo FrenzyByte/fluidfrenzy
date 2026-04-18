@@ -3,12 +3,6 @@ title: Fluid Rendering Components
 permalink: /docs/fluid_rendering_components/
 ---
 
-### Table of contents
-{:.no_toc}
-* this unordered seed list will be replaced by toc as unordered list
-{:toc}
----
-
 <a name="fluid-renderer"></a>
 ### Fluid Renderer
 

@@ -3,12 +3,6 @@ title: Using ShaderGraph
 permalink: /docs/using_shadergraph/
 ---
 
-### Table of contents
-{:.no_toc}
-* this unordered seed list will be replaced by toc as unordered list
-{:toc}
----
-
 Create your own shaders using ShaderGraph and the Fluid Frenzy ShaderGraph nodes. You can create custom shaders for the **Fluid Simulation**, **Terraform Terrain**, and **Procedural particles**. To get started it is recommended to look at the example shader found at `FluidFrenzy\Runtime\Rendering\Shaders\ShaderGraph\SampleFluidSimple`. This example demonstrates how to sample the fluid simulation's data like the height, depth. velocity, layer, normals and how to apply flowmapping.
 
 #### Fluid Simulation Nodes

@@ -3,12 +3,6 @@ title: Fluid Simulation Components
 permalink: /docs/fluid_simulation_components/
 ---
 
-### Table of contents
-{:.no_toc}
-* this unordered seed list will be replaced by toc as unordered list
-{:toc}
----
-
 This section covers all the simulations and the modification components Fluid Frenzy has to offer.
 
 There are two types of simulations: **Flux Fluid Simulation** and **Flow Fluid Simulation**. Both simulations handle the full simulation and the components attached to it using a different method. The user can choose which to simulation to use in their scene depending on which is more suitable for their needs. 

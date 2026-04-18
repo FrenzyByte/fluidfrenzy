@@ -3,11 +3,6 @@ title: C# Interaction & Scripting
 permalink: /docs/c_interaction_scripting/
 ---
 
-### Table of contents
-{:.no_toc}
-* this unordered seed list will be replaced by toc as unordered list
-{:toc}
----
 Fluid Frenzy offers several methods to interact with the Fluid Simulation on the C# side. It is recommended to use the functions available in FluidSimulationManager.cs
 <br>
 

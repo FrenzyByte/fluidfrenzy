@@ -3,12 +3,6 @@ title: Samples
 permalink: /docs/samples/
 ---
 
-### Table of contents
-{:.no_toc}
-* this unordered seed list will be replaced by toc as unordered list
-{:toc}
----
-
 **Important Info! To prevent project bloat the samples are not imported into your Assets folder by default. Follow the instructions below to import them.**
 
 Fluid Frenzy contains five sample scenes to showcase the functionality and help with understanding how to work with the fluid simulation. You can import the samples using the *Package Manager*. 

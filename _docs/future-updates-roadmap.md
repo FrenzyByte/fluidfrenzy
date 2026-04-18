@@ -3,12 +3,6 @@ title: Future Updates & Roadmap
 permalink: /docs/future_updates_roadmap/
 ---
 
-### Table of contents
-{:.no_toc}
-* this unordered seed list will be replaced by toc as unordered list
-{:toc}
----
-
 ### Fluid Frenzy: 2026 Development Roadmap
 
 The vision for 2026 is to push Fluid Frenzy beyond a standalone simulation and into a fully integrated environment fluid rendering system. Following the 1.4.0 release. I am shifting focus toward high-end rendering features and creating the fluid renderpipeline system where I create shared effects across all pipelines. 

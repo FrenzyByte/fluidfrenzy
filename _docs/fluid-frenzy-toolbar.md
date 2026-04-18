@@ -3,12 +3,6 @@ title: Fluid Frenzy Toolbar
 permalink: /docs/fluid_frenzy_toolbar/
 ---
 
-### Table of contents
-{:.no_toc}
-* this unordered seed list will be replaced by toc as unordered list
-{:toc}
----
-
 The **Fluid Frenzy Toolbar** is a dedicated overlay for the Unity Scene View, designed to streamline fluid simulation, terrain, terraform, and obstacle modifier placement. It features a responsive UI that adapts to both horizontal and vertical layouts depending on your Scene View dimensions.
 
 <video controls autoplay loop muted style="max-width: 100%; height: auto;">

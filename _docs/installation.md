@@ -3,12 +3,6 @@ title: Installation
 permalink: /docs/installation/
 ---
 
-### Table of contents
-{:.no_toc}
-* this unordered seed list will be replaced by toc as unordered list
-{:toc}
----
-
 <a name="installation-packagemanager"></a>
 ### Package Manager
 1. Open your Unity Project

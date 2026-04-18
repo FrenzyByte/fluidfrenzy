@@ -3,12 +3,6 @@ title: Tiled Simulations
 permalink: /docs/tiled_simulations/
 ---
 
-### Table of contents
-{:.no_toc}
-* this unordered seed list will be replaced by toc as unordered list
-{:toc}
----
-
 Tiled Simulations were introduced in Fluid Frenzy in version v1.0.6 as a beta feature. If you encounter any bugs, issues, or have suggestions, please report them [here](https://github.com/FrenzyByte/fluidfrenzy/issues). 
 
 #### Purpose
