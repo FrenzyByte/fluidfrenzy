@@ -1,44 +1,52 @@
 <div class="panel-group doc-nav-panels" id="doc-nav-accordion" role="tablist" aria-multiselectable="true">
   {% assign nav_idx = 0 %}
+  {% assign side = site.data.docs_sidebar_sections %}
   {% for section in site.data.docs %}
     {% for item in section.docs %}
       {% assign item_url = item | prepend:"/docs/" | append:"/" %}
       {% assign p = site.docs | where:"url", item_url | first %}
+      {% unless p %}
+        {% assign item_hyphen = item | replace: '_', '-' %}
+        {% for d in site.docs %}
+          {% assign dp = d.path | default: '' | append: '' %}
+          {% if dp != '' and dp contains item_hyphen %}
+            {% assign p = d %}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+      {% endunless %}
       {% if p %}
         {% assign nav_idx = nav_idx | plus: 1 %}
         {% assign is_current = false %}
         {% if item_url == page.url %}
           {% assign is_current = true %}
         {% endif %}
-        {% assign sec_count = 0 %}
-        {% if p.sidebar_sections %}
-          {% assign sec_count = p.sidebar_sections | size %}
+        {% comment %}Plugin stores sections under nav slug (item), url, and basename — Liquid reads site.data, not doc.data.{% endcomment %}
+        {% assign sections = side[item] | default: side[item_url] %}
+        {% assign sec_count = sections | size %}
+        {% if sec_count == 0 %}
+          {% assign sections = p.sidebar_sections %}
+          {% assign sec_count = sections | size %}
         {% endif %}
         <div class="panel panel-default doc-nav-panel{% if is_current %} doc-nav-panel-current{% endif %}">
           <div class="panel-heading">
-            {% if sec_count > 0 %}
-              <h4 class="panel-title doc-nav-panel-title doc-nav-panel-heading-split">
-                <a class="doc-nav-panel-page-link" href="{{ p.url | relative_url }}" data-no-hoverflow>{{ p.title }}</a>
-                <button type="button" class="btn btn-link doc-nav-panel-expand{% unless is_current %} collapsed{% endunless %}" data-toggle="collapse" data-target="#collapse-doc-{{ nav_idx }}" aria-expanded="{% if is_current %}true{% else %}false{% endif %}" aria-controls="collapse-doc-{{ nav_idx }}" title="Show sections on this page">
-                  <i class="fa-solid fa-chevron-right doc-nav-chevron" aria-hidden="true"></i>
-                  <span class="sr-only">Toggle sections</span>
-                </button>
-              </h4>
-            {% else %}
-              <h4 class="panel-title doc-nav-panel-title">
-                <a class="doc-nav-panel-page-link doc-nav-panel-page-link-only" href="{{ p.url | relative_url }}" data-no-hoverflow>{{ p.title }}</a>
-              </h4>
-            {% endif %}
+            <h4 class="panel-title doc-nav-panel-title doc-nav-panel-heading-split">
+              <a class="doc-nav-panel-page-link" href="{{ p.url | relative_url }}" data-no-hoverflow>{{ p.title }}</a>
+              <button type="button" class="btn btn-link doc-nav-panel-expand{% unless is_current %} collapsed{% endunless %}" data-toggle="collapse" data-target="#collapse-doc-{{ nav_idx }}" aria-expanded="{% if is_current %}true{% else %}false{% endif %}" aria-controls="collapse-doc-{{ nav_idx }}" title="Show sections on this page">
+                <i class="fa-solid fa-chevron-right doc-nav-chevron" aria-hidden="true"></i>
+                <span class="sr-only">Toggle sections</span>
+              </button>
+            </h4>
           </div>
-          {% if sec_count > 0 %}
-            <div id="collapse-doc-{{ nav_idx }}" class="panel-collapse collapse doc-nav-panel-body{% if is_current %} in{% endif %}" role="tabpanel" aria-label="Sections for {{ p.title | escape }}">
-              <div class="list-group doc-nav-section-list">
-                {% for s in p.sidebar_sections %}
+          <div id="collapse-doc-{{ nav_idx }}" class="panel-collapse collapse doc-nav-panel-body{% if is_current %} in{% endif %}" role="tabpanel" aria-label="Sections for {{ p.title | escape }}">
+            <div class="list-group doc-nav-section-list">
+              {% if sec_count > 0 %}
+                {% for s in sections %}
                   <a class="list-group-item doc-nav-link doc-nav-h{{ s.level }}" href="{{ p.url | relative_url }}#{{ s.anchor }}" data-no-hoverflow>{{ s.title }}</a>
                 {% endfor %}
-              </div>
+              {% endif %}
             </div>
-          {% endif %}
+          </div>
         </div>
       {% endif %}
     {% endfor %}
