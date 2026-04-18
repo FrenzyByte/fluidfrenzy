@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="{{ page.lang | default: site.lang | default: "en" }}">
 
-{% include head.html %}
+{% include head.html enable_pagefind=true %}
 
 <body>
 
     {% include topnav.html %}
 
     <div class="page-content">
-        <div class="wrapper">
+        <div class="wrapper" data-pagefind-body>
             {{ content }}
         </div>
     </div>
 
     {% include footer.html %}
-    {% include js_files.html %}
+    {% include js_files.html enable_pagefind=true %}
 </body>
 
 </html>

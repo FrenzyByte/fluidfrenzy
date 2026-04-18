@@ -4,7 +4,7 @@ ARG JEKYLL_BASEURL=''
 
 FROM ruby:alpine as builder
 
-RUN apk add --no-cache make build-base
+RUN apk add --no-cache make build-base nodejs npm
 RUN gem install bundler
 
 WORKDIR /jekyll
@@ -14,6 +14,7 @@ RUN bundle install
 ADD . .
 ARG JEKYLL_BASEURL
 RUN bundle exec jekyll build --baseurl $JEKYLL_BASEURL
+RUN npx --yes pagefind --site _site
 
 ####################################
 

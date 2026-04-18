@@ -20,12 +20,10 @@
                 <!--<li {% if page.sectionid=='blog' %} class="active" {% endif %}><a href="{{ site.posts.first.url | relative_url }}">Blog</a></li>-->
             </ul>
             <div class="navbar-right">
-                <form class="navbar-form navbar-left">
-                    <div class="form-group has-feedback">
-                        <input id="search-box" type="search" class="form-control" placeholder="Search...">
-                        <i class="fa-solid fa-magnifying-glass form-control-feedback"></i>
-                    </div>
-                </form>
+                <pagefind-config bundle-path="{{ '/pagefind/' | relative_url }}" base-url="{{ site.baseurl }}/"></pagefind-config>
+                <div class="navbar-form navbar-left navbar-pagefind-wrap">
+                    <pagefind-searchbox placeholder="Search docs…" show-sub-results></pagefind-searchbox>
+                </div>
                 <ul class="nav navbar-nav">
                     <li><a href="{{ site.unityasset_address }}"><i class="fa-brands fa-unity" aria-hidden="true"></i></a></li>
                     <li><a href="{{ site.discord_address }}"><i class="fa-brands fa-discord" aria-hidden="true"></i></a></li>

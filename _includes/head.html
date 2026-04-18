@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
+    {% if include.enable_pagefind %}
+    <link rel="stylesheet" href="{{ '/pagefind/pagefind-component-ui.css' | relative_url }}">
+    {% endif %}
     <link rel="stylesheet" href="{{ "/assets/fonts/fontawesome-free-6.5.2-web/css/fontawesome.min.css" | relative_url }}">
     <link rel="stylesheet" href="{{ "/assets/fonts/fontawesome-free-6.5.2-web/css/brands.css" | relative_url }}">
     <link rel="stylesheet" href="{{ "/assets/fonts/fontawesome-free-6.5.2-web/css/solid.css" | relative_url }}">

@@ -58,4 +58,17 @@ html {
   .navbar-form .has-feedback .form-control-feedback{
     top:10px
   }
-  
+
+  .navbar-pagefind-wrap {
+    border: 0;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+    min-width: 200px;
+    max-width: min(320px, 42vw);
+  }
+
+  .navbar-pagefind-wrap pagefind-searchbox {
+    display: block;
+    width: 100%;
+  }
