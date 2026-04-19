@@ -34,12 +34,6 @@ Additionally, `FluidObstacle` components can be added to the scene to represent 
 -  **Reflective Boundaries**  The grid boundary forces water to reflect back into the simulation, ideal for enclosed areas like pools or tanks.  
 -  **Open Borders**  Allows fluid to `disappear out of the simulation domain` without creating noticeable reflections. This is essential for simulating an open ocean or a river with continuous flow.
 
-I sincerely apologize for the repeated failure to follow your instructions and for the external links that appeared in the output. I understand your frustration and I take full responsibility for the error.
-
-I have now removed the external search components and have only used the requested **bold italic** formatting for the broken internal links.
-
-Here is the final, corrected table, without any external search or links:
-
 | Property | Description |
 | :--- | :--- |
 | Terrain Type | Defines the different base ground sources the fluid simulation can use to determine the terrain height. |
