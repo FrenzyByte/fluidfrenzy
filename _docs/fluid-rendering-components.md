@@ -3,6 +3,7 @@ title: Fluid Rendering Components
 permalink: /docs/fluid_rendering_components/
 ---
 
+
 <a name="fluid-renderer"></a>
 ### Fluid Renderer
 
@@ -411,8 +412,30 @@ This component adds specific lava rendering features, such as heat and emissive 
 
 | Property | Description |
 | :--- | :--- |
+| Under Lava Enabled | When enabled, the [Under Lava Effect](#under-lava-effect) applies a depth-based tint while the camera is inside this lava volume. |
+| [Under Lava Settings](#under-lava-settings) | Tunables for the under-lava volume tint (absorption only). |
 | Generate Heat Lut | If enabled, the **Heat** gradient will be used to procedurally generate a **Heat LUT** that overrides the existing LUT on the [Fluid Material](#fluid-material). |
 | Heat | The [Gradient](#gradient) used to define the heat/color transition for the lava. The color samples are mapped from Cold Lava (Left side of the gradient) to Hot Lava (Right side of the gradient). |
+
+#### Under Lava Effect
+
+Renders a depth-based tint when the camera is inside a [Lava Surface](#lava-surface) volume, using the same mask and depth data as the underwater effect, with an optional surface band (meniscus-style thickness).
+
+<a name="under-lava-settings"></a>
+##### Under Lava Settings
+
+| Property | Description |
+| :--- | :--- |
+| Composite Mode | Chooses how the under-lava pass blends the volume with the scene.<br/><br/>Options include:<br/>- **[Opacity](#opacity)** <br/> Linear blend toward [Volume Color](#volume-color) using [Opacity](#opacity); no depth-based extinction.<br/> <br/>- **[Absorption](#absorption)** <br/> Depth-varying absorption using [Volume Color](#volume-color), [Absorption Depth Scale](#absorption-depth-scale), [Absorption Limits](#absorption-limits), and optional [Absorption Ambient Color](#absorption-ambient-color) / [Absorption Ambient Strength](#absorption-ambient-strength). |
+| Volume Color | Tint color. In opacity mode, RGB is blended in; in absorption mode, it drives extinction (see absorption remarks). |
+| Opacity | Opacity mode only: blend strength between the scene and [Volume Color](#volume-color) (0 = scene only, 1 = full tint). |
+| Depth Transparency | Absorption mode only: scales how strongly absorption increases with optical depth.<br/><br/>RGB of [Volume Color](#volume-color) drives extinction; alpha scales strength with [Absorption Depth Scale](#absorption-depth-scale). |
+| Depth Limits | Absorption mode only: clamps the absorption luminance (Min, Max). |
+| Ambient Color | Absorption mode only: color the view fades toward through the volume (instead of black), mixed by [Absorption Ambient Strength](#absorption-ambient-strength). |
+| Ambient Strength | Absorption mode only: how much the ambient tint is added as transmittance drops (0 = multiply-only / fade to black, 1 = full blend toward [Absorption Ambient Color](#absorption-ambient-color)). |
+| Thickness (cm) | Thickness of the surface band at the lava line (centimeters), 0 disables. |
+| Rim Color | Hot-edge tint added in the surface band (HDR). |
+| Rim Intensity | Strength of the rim glow in the surface band. |
 
 
 <a name="lava-shader"></a>
@@ -465,6 +488,7 @@ General rendering, depth-handling, and simulation sampling properties.
 
 | Property | Description |
 | :--- | :--- |
+| Cull Mode | Which triangle faces to discard: Back (default, typical opaque surface), Front (invert), or Off (double-sided; both faces render and lighting uses the correct face normal). |
 | Layer | Selects which layer (e.g., Water or Lava, etc.) from the Fluid Simulation field to sample for effects. |
 | Fade Height | The world height at which the lava will be fully faded out.<br/>Used to soften edges or blend with geometry above a certain height. |
 | Linear Clip Offset | A linear offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with close terrain or surfaces. |

@@ -3,6 +3,7 @@ title: Setup
 permalink: /docs/setup/
 ---
 
+
 Fluid Frenzy is easy and quick to set up ready for use with just a few clicks. To set up a scene to use Fluid Frenzy follow the steps below:
 <sub>*Note that Fluid Frenzy has two Fluid Simulation methods called **Flux** and **Flow** and the is the users choice which version they wish to use.</sub>
 <a name="setup-water-simulation"></a>

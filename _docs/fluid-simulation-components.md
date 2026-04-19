@@ -3,6 +3,7 @@ title: Fluid Simulation Components
 permalink: /docs/fluid_simulation_components/
 ---
 
+
 This section covers all the simulations and the modification components Fluid Frenzy has to offer.
 
 There are two types of simulations: **Flux Fluid Simulation** and **Flow Fluid Simulation**. Both simulations handle the full simulation and the components attached to it using a different method. The user can choose which to simulation to use in their scene depending on which is more suitable for their needs. 
@@ -592,6 +593,7 @@ This component generates two distinct types of particles by detecting areas of h
 | [Surface Cascades](#cascade-definition) | Configures distance-based optimization levels (Cascades) for surface foam sampling.<br/><br/>Foam generation often requires checking many grid cells. Using cascades ensures that distant foam—which is often less visible—consumes significantly less processing time. |
 | [Surface Particles System](#fluid-particle-system) | Configuration settings for the advected surface particles (movement, rendering, and limits). |
 | Render Offscreen | If enabled, surface particles are rendered to a dedicated offscreen texture buffer instead of the main camera.<br/><br/>This generated texture is globally available to shaders (e.g., as a foam mask) to create effects like white water trails without drawing individual particle geometry to the screen. |
+| Frustum Culling | When enabled, skips particle spawn work for grid cells outside the (expanded) camera frustum past a short distance. |
 
 ##### Particle System
 | Property | Description |
