@@ -10,6 +10,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.5] - 2026-04-18
+
+### Added
+- Rendering: Added a toggle for **Frustum Culling** to allow for better control over rendering performance.
+
+### Changed
+- Editor: Added `RenderPipelineAutoUpgrader.prefab` to scenes to automatically manage shared materials, such as sphere effects.
+- Simulation: Optimized Fluid Particle Generator transform logic by calculating matrices in local space on the CPU once per frame, reducing overhead.
+
+### Fixed
+- Rendering: Fixed URP MSAA overbrighting issues caused by negative depth values.
+- Rendering: Fixed MSAA issues on the Built-in Render Pipeline (BRP).
+- Simulation: Fixed particle culling logic when the simulation is not positioned at the world origin.
+- Simulation: Fixed behavior of moving obstacles on terraform terrain.
+- Samples: Fixed a `Mouse3D` error that occurred when running the project in VR mode.
+- Samples: Added fallback pool materials for environments where ProBuilder is not installed.
+- Samples: Fixed shader compilation errors for spheres in URP when using the Resident Drawer.
+- Samples: Fixed various material issues for rocks in URP.
+- Editor: Fixed incorrect tooltips for volume blending settings.
+
 ## [1.4.4] - 2026-03-28
 
 ### Added
