@@ -10,6 +10,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.7] - 2026-05-13
+
+### Fixed
+- Rendering: Unity 6.4 URP compile fixes.
+- Rendering: Default detail waves to dynamic so newly added simulations do not look broken due to missing normalmap.
 
 ## [1.4.6] - 2026-04-19
 
