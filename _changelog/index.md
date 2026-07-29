@@ -14,13 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Rendering: New **World Rendering** via `FluidWorldRenderer`. Multiple matching `FluidSimulation` tiles are packed into GPU atlases and drawn as one continuous GPULOD surface, so open water, coasts, and rivers can share a single water mesh.
-- Rendering: New `WaterWorldRenderer` with underwater, caustics, and planar reflections for world surfaces (mirrors `WaterSurface` on single-tile renderers). Create via **GameObject → Fluid Frenzy → Water World Simulation**.
+- Rendering: New `WaterWorldRenderer` with underwater, caustics, and planar reflections for world surfaces (mirrors `WaterSurface` on single-tile renderers). Create via **GameObject > Fluid Frenzy > Water World Simulation**.
 - Rendering: Cascaded **Ocean FFT** (JONSWAP) on world surfaces, with presets, multi-cascade displacement/choppiness, Jacobian foam, and distance fades.
-- Simulation: **FFT → SWE coupling** on `FlowFluidSimulation` so ocean swell can drive local flow and height near shorelines (flow/height influence, coupling noise, depth and elevation fade bands).
+- Simulation: **Ocean FFT coupling** on `FlowFluidSimulation` so ocean swell can drive local flow and height near shorelines (flow/height influence, coupling noise, depth and elevation fade bands).
 - Simulation: New **per-side border** system. Each edge can be Closed, Open (Velocity), Open (Surface Level), or Neighbour, with optional absorb bands and per-edge velocity/level controls. Legacy `openBorders` migrates automatically.
 - Simulation: Optional **simulation culling** to pause sims that are out of view or beyond a max distance (layers can keep updating when culled, e.g. flow mapping).
 - Simulation: GPU `FluidBuoyancySampler` for combined SWE + FFT surface sampling (used by `FluidRigidBody` and gameplay such as swimming).
-- Simulation: **Fluid Channels** so simulations and world renderers can be filtered independently (e.g. water vs lava worlds). Configure under Project Settings → Fluid Frenzy → Channels.
+- Simulation: **Fluid Channels** so simulations and world renderers can be filtered independently (e.g. water vs lava worlds). Configure under Project Settings > Fluid Frenzy > Channels.
 - Simulation: Foam **diffusion** based on neighbouring cells.
 - Rendering: Separate **FFT foam** path (whitecaps from ocean Jacobian) composited with SWE foam, plus foam smoothness and water specular suppress on the water material.
 - Rendering: **World UV Space** option on Water and Lava materials (tiling as repeats-per-meter, independent of simulation size).
@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Editor: Fluid Frenzy Window menu consistency; Water World setup defaults tuned for open water.
 
 ### Fixed
-- Rendering: HDRP terraform terrain ShadowCaster compile error (`unity_ObjectToWorld` → `UNITY_MATRIX_M`).
+- Rendering: HDRP terraform terrain ShadowCaster compile error (uses `UNITY_MATRIX_M` instead of `unity_ObjectToWorld`).
 - Simulation: Fluid no longer stalls after moving from a Flux simulation into a Flow simulation.
 - Simulation: Dynamic flow mapping with world-space UVs and when GPULOD is enabled on `FluidRenderer`.
 - Simulation: Particle system bounds/culling and submerge checks when the simulation is offset from the origin.
