@@ -6,7 +6,7 @@ permalink: /docs/future_updates_roadmap/
 
 ### Fluid Frenzy: 2026 Development Roadmap
 
-The vision for 2026 is to push Fluid Frenzy beyond a standalone simulation and into a fully integrated environment fluid rendering system. Following the 1.4.0 release. I am shifting focus toward high-end rendering features and creating the fluid renderpipeline system where I create shared effects across all pipelines. 
+The vision for 2026 is to push Fluid Frenzy beyond a standalone simulation and into a fully integrated environment fluid rendering system. Following the 2.0.0 release. I am shifting focus toward high-end rendering features and creating the fluid renderpipeline system where I create shared effects across all pipelines. 
 
 These dates are based on when I believe implement these features but some may be sooner or later depending on what comes up. They may also be re-prioritized based on requests of users.
 
@@ -15,39 +15,27 @@ These dates are based on when I believe implement these features but some may be
 | Status | Feature | Target | Description |
 | :--- | :--- | :--- | :--- |
 | 🟢&nbsp;**Implemented** | **Dynamic Light Caustics** | February 2026 | Project real-time light patterns onto the ground based on the surface waves of the fluid simulation. |
-| 🟡&nbsp;**Active** | **Aquarium Mode** | February 2026 | Support for side viewing of the water surface. |
-| 🟠&nbsp;**Planned** | **Hybrid Ocean System** | April 2026 | Integration of Gerstner or FFT wave math into the simulation for large open water visuals. |
-| 🟠&nbsp;**Planned** | **Volumetric Fluid Lighting** | April 2026 | Underwater god rays that react to surface turbulence and provide depth-based light scattering. |
-| 🟠&nbsp;**Planned** | **GPU Clipmaps** | May 2026 | Optimization system using nested grids to simulate massive areas with high-detail localized around the camera. |
-| 🟠&nbsp;**Planned** | **Custom SSR** | June 2026 | A dedicated Screen Space Reflection implementation for the water shader to provide high-quality reflections in URP. |
-| 🟠&nbsp;**Planned** | **Stylized & Toon Shaders** | July 2026 | Dedicated shaders for stylized looks, cel-shading, ink-outlines, and procedural toon foam patterns. |
-| 🟠&nbsp;**Planned** | **Surface Decals & Velocity Helper** | July 2026 | Render floating debris like lilypads that naturally follow the simulation's velocity field. |
-| 🟠&nbsp;**Planned** | **Dynamic Wetness Maps** | August 2026 | Global shader support to allow shoreline objects and terrain to appear wet and reflective based on disappearing fluids. |
-| 🟠&nbsp;**Planned** | **Dynamic Lens Wetness** | August 2026 | A post-process effect simulating droplets and wiping streaks on the camera lens after emerging from the fluid. |
-| 🟠&nbsp;**Planned** | **Subsurface Bubbles** | September 2026 | GPU-accelerated particles representing bubbles that spawn in turbulent areas and swirl with the flow. |
-| 🔴&nbsp;**Future** | **Editor-Time Simulation** | October 2026 | Support for running the simulation directly in the Scene View to preview behavior and erosion while designing levels. |
-| 🔴&nbsp;**Future** | **Terraform Sculpting Tools** | November 2026 | Manual sculpting brushes to carve and shape the Terraform Terrain system directly in the editor. |
-| 🔴&nbsp;**Future** | **Localized Moving Ripples** | December 2026 | High-detail ripples that follow the player for fine grained interaction that advects with the main flow. |
-| 🔎&nbsp;**Research** | **Surface <> Particle Blending** | December 2026 | Secret tech. |
+| 🟢&nbsp;**Implemented** | **Aquarium Mode** | February 2026 | Support for side viewing of the water surface. ***Added in v1.4.1*** |
+| 🟢&nbsp;**Implemented** | **Hybrid Ocean System** | April 2026 | Integration of Gerstner or FFT wave math into the simulation for large open water visuals. ***Added in v2.0.0*** |
+| 🟢&nbsp;**Implemented** | **GPU Clipmaps** | May 2026 | Optimization system using nested grids to simulate massive areas with high-detail localized around the camera. ***Improved and made more standard with the World Renderer in v2.0.0*** |
+| 🟡&nbsp;**Active** | **Volumetric Fluid Lighting** | August 2026 | Underwater god rays that react to surface turbulence and provide depth-based light scattering. |
+| 🟠&nbsp;**Planned** | **Custom SSR** | September 2026 | A dedicated Screen Space Reflection implementation for the water shader to provide high-quality reflections in URP. |
+| 🟠&nbsp;**Planned** | **Stylized & Toon Shaders** | October 2026 | Dedicated shaders for stylized looks, cel-shading, ink-outlines, and procedural toon foam patterns. |
+| 🟠&nbsp;**Planned** | **Surface Decals & Velocity Helper** | October 2026 | Render floating debris like lilypads that naturally follow the simulation's velocity field. |
+| 🟠&nbsp;**Planned** | **Dynamic Wetness Maps** | November 2026 | Global shader support to allow shoreline objects and terrain to appear wet and reflective based on disappearing fluids. |
+| 🟠&nbsp;**Planned** | **Dynamic Lens Wetness** | November 2026 | A post-process effect simulating droplets and wiping streaks on the camera lens after emerging from the fluid. |
+| 🟠&nbsp;**Planned** | **Subsurface Bubbles** | December 2026 | GPU-accelerated particles representing bubbles that spawn in turbulent areas and swirl with the flow. |
+| 🔴&nbsp;**Future** | **Editor-Time Simulation** | January 2027 | Support for running the simulation directly in the Scene View to preview behavior and erosion while designing levels. |
+| 🔴&nbsp;**Future** | **Terraform Sculpting Tools** | February 2027 | Manual sculpting brushes to carve and shape the Terraform Terrain system directly in the editor. |
+| 🔴&nbsp;**Future** | **Localized Moving Ripples** | March 2027 | High-detail ripples that follow the player for fine grained interaction that advects with the main flow. |
+| 🔎&nbsp;**Research** | **Surface <> Particle Blending** | March 2027 | Secret tech. |
 | 🔎&nbsp;**Research** | **Simulation Baking (VATs)** | 2027 | Export simulations into Vertex Animation Textures for high-performance playback on mobile assets. |
 | 🔎&nbsp;**Research** | **Unity Terrain Terraforming** | 2027+ | Support for the native Unity Terrain system to be permanently eroded and terraformed by the fluid simulation. |
 
 #### Upcoming Feature Breakdown
 
-**Dynamic Light Caustics**
-I am finishing up a system that allows you to project light patterns onto the terrain and objects beneath the fluid. It samples the fluid simulation data and projects textures and waves based on the depth, velocity and surface normals, creating sharp dancing patterns that move in sync with the waves.
-
-**Aquarium Mode**
-This mode is specifically for side-on viewing. I am adding support for the fluid profile, ensuring that when you look at the fluid from the side you still see water.
-
-**Hybrid Ocean System**
-I am integrating Gerstner or FFT wave functions into the existing simulation. This allows for deep-sea visuals on a massive scale. The waves aren't just visual, I plan to make them work with the shallow water equations so that waves that go over terrain will leave water to flow away naturally.
-
 **Volumetric Fluid Lighting**
 I want to enhance the underwater experience by adding volumetric light shafts. These rays shimmer and break apart as they pass through the surface waves, creating a realistic god ray effect that reacts to the fluid's motion.
-
-**GPU Clipmaps**
-To support larger environments, I am implementing a new surface rendering system that will allow multiple simulations to be in one rendering surface. This ensures the simulation is always highest resolution near the camera. As you move, the detail follows you, while distant fluid is simulated at a lower frequency to save performance. Currently there is already the GPU-LOD system but this system is not as good for streaming in simulation data like clipmaps are. Some research needs to be done to see what is possible and if this is viable.
 
 **Custom Screen Space Reflections (SSR)**
 Since URP lacks a native SSR solution, I am building one directly into the Fluid Frenzy water surface. This will allow for high-quality, dynamic reflections of the scene geometry on the water surface without the heavy cost of rendering extra Planar Reflection cameras.
@@ -95,3 +83,6 @@ My long term goal is to bring the terraforming, erosion, and liquification featu
 Allow only parts of the terrain to interact with the simulation, creating smaller simulations within a terrain instead of the full terrain being used by automatically grabbing the correct area of the source terrains. ***Feature added in v1.2.1***
 - **HDRP Support:** Beta support for HDRP haas been  Shaders for HDRP have been added and a special mode for using it with the [HDRP Water System](../fluid_rendering_components#hdrp-water-system). ***Feature added in v1.2.8.***
 - **Underwater Rendering:** Enable rendering features like underwater rendering when the player/camera goes below the water. ***Feature added in v1.3.6***
+- **Aquarium Mode:** Support for side viewing of the water surface. ***Feature added in v1.4.1***
+- **Hybrid Ocean System:** Integration of Gerstner or FFT wave math into the simulation for large open water visuals. ***Feature added in v2.0.0***
+- **GPU Clipmaps:** Optimization system using nested grids to simulate massive areas with high-detail localized around the camera. ***Improved and made more standard with the World Renderer in v2.0.0***
