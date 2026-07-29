@@ -10,6 +10,54 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-07-28
+
+### Added
+- Rendering: New **World Rendering** via `FluidWorldRenderer`. Multiple matching `FluidSimulation` tiles are packed into GPU atlases and drawn as one continuous GPULOD surface, so open water, coasts, and rivers can share a single water mesh.
+- Rendering: New `WaterWorldRenderer` with underwater, caustics, and planar reflections for world surfaces (mirrors `WaterSurface` on single-tile renderers). Create via **GameObject → Fluid Frenzy → Water World Simulation**.
+- Rendering: Cascaded **Ocean FFT** (JONSWAP) on world surfaces, with presets, multi-cascade displacement/choppiness, Jacobian foam, and distance fades.
+- Simulation: **FFT → SWE coupling** on `FlowFluidSimulation` so ocean swell can drive local flow and height near shorelines (flow/height influence, coupling noise, depth and elevation fade bands).
+- Simulation: New **per-side border** system. Each edge can be Closed, Open (Velocity), Open (Surface Level), or Neighbour, with optional absorb bands and per-edge velocity/level controls. Legacy `openBorders` migrates automatically.
+- Simulation: Optional **simulation culling** to pause sims that are out of view or beyond a max distance (layers can keep updating when culled, e.g. flow mapping).
+- Simulation: GPU `FluidBuoyancySampler` for combined SWE + FFT surface sampling (used by `FluidRigidBody` and gameplay such as swimming).
+- Simulation: **Fluid Channels** so simulations and world renderers can be filtered independently (e.g. water vs lava worlds). Configure under Project Settings → Fluid Frenzy → Channels.
+- Simulation: Foam **diffusion** based on neighbouring cells.
+- Rendering: Separate **FFT foam** path (whitecaps from ocean Jacobian) composited with SWE foam, plus foam smoothness and water specular suppress on the water material.
+- Rendering: **World UV Space** option on Water and Lava materials (tiling as repeats-per-meter, independent of simulation size).
+- Rendering: Higher-quality subsurface scattering with fewer samples; underwater SSS matched to the water shader (including HDRP parity improvements).
+- Particles: Ocean FFT awareness for spawn height/velocity on wave crests, with world-tile and elevation fade support.
+- Particles: Start/end size over lifetime on fluid particle emitters.
+- Flow mapping: `StaticFast` (2-phase) mode alongside the existing 3-phase `Static` mode; dynamic flow max-velocity clamp.
+- Editor: Optional **Shader Stripper** project settings to strip unused world-atlas, ocean FFT, UV, flow, and related variants.
+- Samples: New **World** sample with open ocean, coastal/river tiles, `WaterWorldRenderer`, FFT coupling, and foam/flow setup.
+- Samples: Shared **FirstPersonCharacter** controller with swimming support for users to look at (used in the World sample).
+- Rendering: Shadow support on the splash particle shader.
+- Rendering: Water surface roughness control.
+
+### Changed
+- General: Minimum Unity version raised to **2022.3**.
+- Simulation: Fluid mesh edge and normal packing improved to reduce sawtoothing along walls, coasts, and wet/dry boundaries; better handling when combining SWE tiles with ocean FFT rest height.
+- Simulation: `FluidRigidBody` improved for open ocean, slam resistance, predictive sampling, advection controls, and FFT-aware SolidToFluid (less hull pop-through, relative vertical velocity with FFT).
+- Simulation: SolidToFluid displacement scaled in m/s for more consistent boat wakes across timesteps.
+- Foam: Generation and decay reworked for clearer FFT vs SWE control, exponential decay, and less jitter when updating per macro step.
+- Rendering: Planar reflections use a more accurate oblique projection (higher quality, slightly more expensive); reflection resolution up to 2048.
+- Rendering: Caustics support open-ocean/FFT sampling, half-resolution pass option, and no longer draw above the water surface.
+- Rendering: Reduced shader keyword cost by removing foam, aquarium, and Unity-terrain keyword doublings where a cheap runtime check is enough.
+- Rendering: HDRP world/GPULOD path aligned with URP (custom traverse pass, prepass offsets, particle/mesh rendering fixes).
+- Editor: Fluid Frenzy Window menu consistency; Water World setup defaults tuned for open water.
+
+### Fixed
+- Rendering: HDRP terraform terrain ShadowCaster compile error (`unity_ObjectToWorld` → `UNITY_MATRIX_M`).
+- Simulation: Fluid no longer stalls after moving from a Flux simulation into a Flow simulation.
+- Simulation: Dynamic flow mapping with world-space UVs and when GPULOD is enabled on `FluidRenderer`.
+- Simulation: Particle system bounds/culling and submerge checks when the simulation is offset from the origin.
+- Simulation: More accurate `FluidSimulationObstacle` heightmap capture (cleaner obstacle footprints in the simulation).
+- Simulation: Channels project settings no longer error on a fresh package import.
+- Rendering: Displacement waves matching the prepass; debug shader mismatch with displacement waves.
+- Rendering: Scene-view planar reflection and clip-plane errors.
+- Rendering: Absorption path hue shift; foam binding when flow is toggled at runtime.
+- Samples: River sample lighting/texture cleanup; sandbox lava surface and lava sphere material fixes.
+
 ## [1.4.7] - 2026-05-13
 
 ### Fixed
