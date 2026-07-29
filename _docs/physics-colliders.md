@@ -28,6 +28,8 @@ This optional feature enables physical interaction between standard Unity physic
 
 Encapsulates settings used for configuring and initializing [Surface Collider](#surface-collider).
 
+![Fluid Simulation Create Collider](../../assets/images/flow_fluidsimulation_slice_collider.png)
+
 | Property | Description |
 | :--- | :--- |
 | Create Collider | Toggles the generation of a [Terrain Collider](https://docs.unity3d.com/ScriptReference/TerrainCollider.html) to handle physical interactions with the fluid surface. |

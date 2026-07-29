@@ -104,7 +104,7 @@ The **FossilFinder** scene demonstrates erodible terrain mechanics featuring a d
 
 ![Pool Sample](../../assets/images/sample_pool.png)
 
-The Pool sample demonstrates the Layers capture method, which uses a top-down orthographic capture to allow the fluid to interact with specific GameObject layers. This scene features advanced visual effects like underwater rendering and caustics, alongside Solid <---> Fluid interaction including buoyancy and ripples. It also includes a FluidTriggerEvent example, demonstrating how objects can react to being submerged—in this case, changing an object's color to red when it enters the water.
+The Pool sample demonstrates the Layers capture method, which uses a top-down orthographic capture to allow the fluid to interact with specific GameObject layers. This scene features advanced visual effects like underwater rendering and caustics, alongside Solid <---> Fluid interaction including buoyancy and ripples. It also includes a FluidTriggerEvent example, demonstrating how objects can react to being submerged; in this case, changing an object's color to red when it enters the water.
 
 <a name="samples-simpleterraform"></a>
 ### Simple Terraform

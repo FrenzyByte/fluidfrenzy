@@ -6,6 +6,18 @@ permalink: /docs/setup/
 
 Fluid Frenzy is easy and quick to set up ready for use with just a few clicks. To set up a scene to use Fluid Frenzy follow the steps below:
 <sub>*Note that Fluid Frenzy has two Fluid Simulation methods called **Flux** and **Flow** and the is the users choice which version they wish to use.</sub>
+
+<a name="setup-simulation-timestep"></a>
+### Simulation Time Step
+
+The fluid simulation always advances in small, fixed steps of **60 per second** (one step every `0.01667` seconds). This keeps the water stable. Your game's frame rate can be higher or lower. The simulation will skip or repeat steps as needed to stay on that 60 Hz clock.
+
+By default, the simulation is tied to Unity's **Fixed Timestep** setting (Edit → Project Settings → Time). Unity's default is `0.02` (50 updates per second). If that value does not match the simulation's 60 Hz rate, the water can look choppy or fall behind real time.
+
+**Recommended:** Set **Fixed Timestep** to `0.0166667` in Project Settings → Time. Use this when your whole project can run physics at 60 Hz. It is the simplest setup and keeps the simulation in sync with Unity physics.
+
+**If you need a different Fixed Timestep** (for example `0.02` because the rest of your game already relies on it): add the scripting define symbol `FLUIDFRENZY_RUN_UPDATE`. Go to Edit → Project Settings → Player → Other Settings → Scripting Define Symbols, add `FLUIDFRENZY_RUN_UPDATE`, and apply. The fluid simulation will then update on the normal render loop instead of Fixed Update, so it keeps its own 60 Hz clock without changing your physics settings.
+
 <a name="setup-water-simulation"></a>
 ### Water Simulation
 
@@ -57,6 +69,77 @@ It is recommended to set the **Dimension Mode** to *CellSize* and scale the **di
 is possible but not recommended as the aspect ratio correction code might not match at all configurations.</sub>
 
 <sub> Note: Non square simulation regions are currently only officially supported on the **Unity Terrain** mode of the fluid simulation, support for other modes is not guaranteed but will be added in the future.</sub>
+
+<a name="fluid-channels"></a>
+<a name="fluid-frenzy-settings"></a>
+### Fluid Channels
+
+Fluid channels are bitmask tags, similar to Unity layers, that identify what kind of fluid a simulation represents and which [Fluid World Renderer](../fluid_rendering_components#fluid-world-renderer) should include it.
+
+Configure the display names at **Edit → Project Settings → Fluid Frenzy → Channels**. Names are stored in [Fluid Frenzy Settings](#fluid-frenzy-settings) (`Assets/FluidFrenzy/Resources/FluidFrenzySettings.asset`) so they are available at runtime and in builds.
+
+Each [Fluid Simulation](../fluid_simulation_components#fluid-simulation) and [Fluid World Renderer](../fluid_rendering_components#fluid-world-renderer) exposes a **Fluid Channels** mask. A simulation is included in the composited world surface when `(renderer mask & simulation.fluidChannels) != 0`. Use `~0` on both sides to include all channels, or assign disjoint masks so separate world renderers draw water, lava, or other fluid types independently.
+
+New projects start with these default names for the first five bits:
+
+| Bit | Default name |
+| :--- | :--- |
+| 0 | Default |
+| 1 | River |
+| 2 | Ocean |
+| 3 | Lake |
+| 4 | Lava |
+
+Bits 5–31 default to `Channel N` until renamed. Up to 32 channels are supported.
+
+<a name="fluid-shader-stripper-settings"></a>
+### Shader Stripper
+
+Fluid Frenzy strips unused shader variants from its water, lava, terraform, and prepass shaders during player builds. This reduces build size and shader load time. The build callback lives in `FluidFrenzyShaderStripper`; project toggles live under **Edit → Project Settings → Fluid Frenzy → Shader Stripper** and are stored in `ProjectSettings/Packages/com.frenzybyte.fluidfrenzy/FluidFrenzyShaderStripperSettings.asset`.
+
+Only the active render pipeline subshader is kept for each FluidFrenzy shader (HDRP, URP, or Built-in, depending on project defines). Additional variants are removed automatically (for example incompatible instancing combinations, unused fog keywords, and WebGL GPULOD limits).
+
+Use **Auto Optimize** to scan enabled build scenes and FluidFrenzy materials, then enable only the keyword combinations your project needs. Use **Enable All** to reset every toggle before testing a smaller strip profile.
+
+#### GPULOD
+
+| Property | Description |
+| :--- | :--- |
+| Fluid Frenzy Instancing | Keep GPULOD / Fluid Frenzy instancing shader variants.<br/><br/>Used by [Fluid Renderer](../fluid_rendering_components#fluid-renderer) and [Fluid World Renderer](../fluid_rendering_components#fluid-world-renderer) when render mode is GPULOD. |
+| World Atlas | Keep world-atlas shader variants.<br/><br/>Requires Fluid Frenzy Instancing. Used by [Fluid World Renderer](../fluid_rendering_components#fluid-world-renderer). |
+
+#### Displacement Waves
+
+| Property | Description |
+| :--- | :--- |
+| 2D Waves | Keep 2D detail-wave displacement variants.<br/><br/>Used when [Detail Wave Settings](../fluid_rendering_components#detail-wave-settings) use baked, dynamic, or non-flipbook modes. |
+| Flipbook Array | Keep flipbook detail-wave displacement variants.<br/><br/>Used when [Detail Wave Settings](../fluid_rendering_components#detail-wave-settings) animation mode is Flipbook. |
+
+#### Flow Mapping
+
+| Property | Description |
+| :--- | :--- |
+| Off | Keep flow-mapping variants with flow disabled.<br/><br/>Used when [Fluid Flow Mapping](#fluid-flow-mapping) is off or missing. |
+| Static Fast | Keep static-fast flow-mapping variants. |
+| Static | Keep static flow-mapping variants. |
+| Dynamic | Keep dynamic flow-mapping variants. |
+
+#### Ocean FFT Cascades
+
+| Property | Description |
+| :--- | :--- |
+| Off | Keep ocean FFT disabled variants.<br/><br/>Used on tile [Fluid Renderer](../fluid_rendering_components#fluid-renderer) surfaces and when [Fluid World Renderer](../fluid_rendering_components#fluid-world-renderer) has Ocean Fft Enabled off. |
+| Cascade 1 | Keep ocean FFT cascade 1 variants. |
+| Cascade 2 | Keep ocean FFT cascade 2 variants. |
+| Cascade 3 | Keep ocean FFT cascade 3 variants. |
+| Cascade 4 | Keep ocean FFT cascade 4 variants. |
+
+#### Sampling
+
+| Property | Description |
+| :--- | :--- |
+| Non-Tiled Sampling | Keep non-tiled fluid sampling variants. |
+| World UV Space | Keep world UV space variants. |
 
 <a name="setup-urp"></a>
 ### Universal Render Pipeline

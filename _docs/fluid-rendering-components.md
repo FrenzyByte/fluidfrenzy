@@ -12,11 +12,154 @@ The [Fluid Renderer](#fluid-renderer) component is responsible for rendering the
 | Property | Description |
 | :--- | :--- |
 | Debug Mode | Different fluid debugging modes that can be used in the editor. |
-| [Surface Properties](#render-properties) | Properties that determine the mesh quality and the specific drawing mode of the fluid surface.<br/><br/>This structure holds settings that control the visual fidelity and performance of the fluid surface mesh. This includes the specific method used to render the mesh, such as standard MeshRenderer, procedural drawing, GPULOD, or a specialized HDRP mode. |
-| Fluid Material | The material to be used to render the fluid surface.<br/><br/>This material is internally instantiated at runtime. The component copies the properties from the original material to the new instance, and then overrides or injects any necessary rendering requirements (e.g., shader keywords or properties) for the fluid simulation effects to function correctly. |
-| [Simulation](../fluid_simulation_components#fluid-simulation) | The [Fluid Simulation](../fluid_simulation_components#fluid-simulation) component that this renderer will draw.<br/><br/>This is a mandatory dependency. The FluidRenderer will automatically adopt the world-space dimensions and position of the assigned Fluid Simulation, ensuring the rendered fluid surface matches the simulated area exactly. |
-| [Flow Mapping](#fluid-flow-mapping) | The [Fluid Flow Mapping](#fluid-flow-mapping) component that this [Fluid Renderer](#fluid-renderer) uses to visualize fluid currents and wakes.<br/><br/>This component provides the necessary data to the fluid shader, which can be either a dedicated flow map texture (for dynamic UV-offsetting) or material parameters derived directly from the simulation's velocity texture. This allows the fluid surface to depict accurate movement and flow. |
+| [Surface Properties](#render-properties) | Properties that determine the mesh quality and the specific drawing mode of the fluid surface.<br/><br/>This structure holds settings that control the visual fidelity and performance of the fluid surface mesh. <br/>This includes the specific method used to render the mesh, such as standard MeshRenderer, procedural drawing, GPULOD, or a specialized HDRP mode. |
+| Fluid Material | The material to be used to render the fluid surface.<br/><br/>This material is internally instantiated at runtime. The component copies the properties from the original material to the new instance, <br/>and then overrides or injects any necessary rendering requirements (e.g., shader keywords or properties) for the fluid simulation effects <br/>to function correctly. |
+| [Simulation](../fluid_simulation_components#fluid-simulation) | The [Fluid Simulation](../fluid_simulation_components#fluid-simulation) component that this renderer will draw.<br/><br/>This is a mandatory dependency. The FluidRenderer will automatically adopt the world-space dimensions and position of the assigned Fluid Simulation,<br/>ensuring the rendered fluid surface matches the simulated area exactly. |
+| [Flow Mapping](#fluid-flow-mapping) | The [Fluid Flow Mapping](#fluid-flow-mapping) component that this [Fluid Renderer](#fluid-renderer) uses to visualize fluid currents and wakes.<br/><br/>This component provides the necessary data to the fluid shader, which can be either a dedicated flow map texture (for dynamic UV-offsetting) <br/>or material parameters derived directly from the simulation's velocity texture. This allows the fluid surface to depict accurate movement and flow. |
 | Render Skirts | Renders downward skirts at the edges of the fluid surface. |
+
+<a name="fluid-world-renderer"></a>
+### Fluid World Renderer
+
+[Fluid World Renderer](#fluid-world-renderer) draws multiple [Fluid Simulation](../fluid_simulation_components#fluid-simulation) tiles as one continuous surface. Use it for open oceans, large lakes, and any scene where simulation is split across several domains but should look and behave like a single body of water (or other fluid type).
+
+The component always renders with `GPULOD`. Each frame it gathers matching simulation tiles in the scene, composites their height, normal, terrain, foam, and flow data, and draws one world-scale surface from that combined result. You configure the footprint, material, channels, and optional ocean/detail-wave layers in the Inspector on this one object.
+
+For water-specific rendering (underwater, caustics, reflections, foam on the world surface), use [Water World Renderer](#water-world-renderer) instead. It extends this component with the same features as [Water Surface](#water-surface) on a per-tile [Fluid Renderer](#fluid-renderer).
+
+#### Fluid Renderer vs Fluid World Renderer
+
+Each [Fluid Simulation](../fluid_simulation_components#fluid-simulation) can still have its own [Fluid Renderer](#fluid-renderer) or [Water Surface](#water-surface) for local effects, debugging, or single-tile scenes. In a tiled open-world setup you typically rely on the world renderer for the visible surface and disable or omit per-tile renderers to avoid drawing the same water twice.
+
+| Use [Fluid Renderer](#fluid-renderer) | Use [Fluid World Renderer](#fluid-world-renderer) |
+| :--- | :--- |
+| One simulation domain | Many simulation tiles in one view |
+| Any [Render Mode](#render-properties) (`MeshRenderer`, `DrawMesh`, `GPULOD`, HDRP Water) | `GPULOD` only |
+| Per-tile underwater, caustics, reflections via [Water Surface](#water-surface) | Multi-tile water features via [Water World Renderer](#water-world-renderer) |
+
+#### Setting up a tiled world
+
+A typical multi-tile workflow looks like this:
+
+1. Place one [Fluid Simulation](../fluid_simulation_components#fluid-simulation) per region. Align tiles in the scene so their domains meet edge to edge.
+2. On shared edges, set [Side Border Settings](../fluid_simulation_components#fluid-side-border) to **Neighbour** and use the same **Group ID** so simulations stay connected. **Grid Pos** helps neighbour discovery; compositing itself follows each tile's position and size in the scene.
+3. Add a **Fluid World Renderer** (or **Water World Renderer**) to the scene. Set [Surface Properties](#render-properties) **Dimension** to the XZ area you want the world surface to cover.
+4. Match [Fluid Channels](../setup#fluid-channels) on the renderer and on each simulation you want included. See [Fluid Channels](../setup#fluid-channels) in Setup for naming and masking.
+5. Enable **Ocean Fft Enabled** and tune [Ocean FFT Settings](#fft-generator-settings) for large open-water swell. On [Flow Fluid Simulation](../fluid_simulation_components#flow-fluid-simulation) tiles, configure [Ocean FFT Coupling](../fluid_simulation_components#flow-fluid-simulation) so local shallow-water flow follows the ocean motion near coastlines.
+6. Optionally enable **Detail Waves Enabled** for small ripples on top of the composited surface. These are visual only and do not affect simulation or [Fluid RigidBody](../fluid_simulation_components#fluid-rigidbody) physics.
+
+Up to 32 simulation tiles can be composited at once. [Fluid RigidBody](../fluid_simulation_components#fluid-rigidbody) buoyancy works across the combined surface when a world renderer is present; single-tile setups still use [Read Back Height](#read-back-height) on the simulation instead.
+
+#### Which simulations are included
+
+The renderer does not reference simulation objects directly. Any [Fluid Simulation](../fluid_simulation_components#fluid-simulation) in the scene whose [Fluid Channels](../setup#fluid-channels) overlap the renderer mask is drawn:
+
+`(renderer mask & simulation.fluidChannels) != 0`
+
+Use `~0` on both sides to include every channel. Use separate channel masks and separate world renderers when you want independent surfaces (for example one renderer for ocean water and another for lava).
+
+#### General
+
+![Fluid World Renderer General](../../assets/images/worldrenderer_general.png)
+
+| Property | Description |
+| :--- | :--- |
+| [Fluid Channels](../setup#fluid-channels) | Bitmask of simulation channels included in the world atlas.<br/><br/>A [Fluid Simulation](../fluid_simulation_components#fluid-simulation) is packed when `(renderer mask & simulation.fluidChannels) != 0`.<br/>Use ~0 to include all channels, or 0 to pack nothing. |
+| Fluid Material | The material to be used to render the fluid surface.<br/><br/>This material is internally instantiated at runtime. The component copies the properties from the original material to the new instance,<br/>and then overrides or injects any necessary rendering requirements (e.g., shader keywords or world-atlas textures) for the fluid simulation effects<br/>to function correctly. |
+
+#### Mesh Rendering
+
+![Fluid World Renderer Mesh Rendering](../../assets/images/worldrenderer_rendering.png)
+
+| Property | Description |
+| :--- | :--- |
+| [Surface Properties](#render-properties) | Properties that determine the mesh quality and the specific drawing mode of the fluid surface.<br/><br/>This structure holds settings that control the visual fidelity and performance of the fluid surface mesh.<br/>World rendering uses `GPULOD`; set [Render Properties](#render-properties) to the XZ footprint used for GPULOD and shader sampling (see Mesh Rendering in the Inspector). |
+| Tile Id Grid Resolution | Resolution of the world-space tile index texture (XZ) used by GPULOD and shaders to map positions to atlas tiles.<br/><br/>Higher values improve lookup precision for large worlds at the cost of memory and sampling cost. |
+| Debug Visualization | Different fluid debugging modes that can be used in the editor.<br/><br/>Play Mode only. Uses shader `FluidFrenzy/Debug/SimulationData` (same family as [Fluid Renderer](#fluid-renderer)).<br/>Height, normals, velocity (from the height/velocity atlas), UV, and LOD modes are supported for world-atlas rendering. |
+
+#### Detail Waves & Displacement
+
+![Fluid World Renderer Detail Waves](../../assets/images/worldrenderer_detailwaves.png)
+
+| Property | Description |
+| :--- | :--- |
+| Detail Waves Enabled | Enables procedural or baked detail waves on the world surface.<br/><br/>These ripples are purely visual and do not affect the fluid simulation, physics, or buoyancy.<br/>Configure the wave shape and motion in [Detail Wave Settings](#detail-wave-settings). |
+| [Detail Wave Settings](#detail-wave-settings) | Settings for procedural or baked detail waves on the fluid surface.<br/><br/>See [Detail Wave Effect](#detail-wave-effect) and the Detail Wave Generator at `Window > Fluid Frenzy > Detail Wave Generator` for baking static textures or flipbooks. |
+
+#### Ocean FFT (cascaded)
+
+![Fluid World Renderer Ocean FFT](../../assets/images/worldrenderer_fft.png)
+
+| Property | Description |
+| :--- | :--- |
+| Ocean Fft Enabled | Enables cascaded ocean FFT displacement (JONSWAP spectrum) on the world surface.<br/><br/>When enabled, the renderer selects global cascade-count shader keywords and binds FFT data via shader globals.<br/>Tune spectrum and cascades in `Ocean Fft Settings`. |
+| [Ocean Fft Settings](#fft-generator-settings) | Settings for the cascaded ocean FFT generator used when `Ocean Fft Enabled` is true.<br/><br/>Authoring data for [FFT Generator](#fft-generator); mirrors the ocean FFT fields used on sample open-water content. |
+
+<a name="water-world-renderer"></a>
+### Water World Renderer
+
+Extension of [Fluid World Renderer](#fluid-world-renderer) for multi-tile water: foam, underwater, caustics, and planar reflections, mirroring [Water Surface](#water-surface) on [Fluid Renderer](#fluid-renderer).
+
+#### Underwater Effects
+
+![Water World Renderer Underwater](../../assets/images/water_worldrenderer_underwater.png)
+
+| Property | Description |
+| :--- | :--- |
+| Under Water Enabled | Controls whether the [Underwater Effect](#underwater-effect) is currently enabled. |
+| [Under Water Settings](#underwater-settings) | Settings for all configurable visual parameters of the [Underwater Effect](#underwater-effect).<br/><br/>Defines how light interacts with the water volume, including absorption rates, scattering colors, and the appearance of the surface meniscus. |
+
+#### Caustics
+
+![Water World Renderer Caustics](../../assets/images/water_worldrenderer_caustics.png)
+
+| Property | Description |
+| :--- | :--- |
+| Caustics Enabled | Controls whether the [Caustics Effect](#caustics-effect) is currently enabled. |
+| [Caustics Settings](#caustics-effect) | Settings for the [Caustics Effect](#caustics-effect), which renders animated light patterns projected onto the scene geometry underwater. |
+
+#### Surface Reflections
+
+![Water World Renderer Surface Reflections](../../assets/images/water_worldrenderer_surface_reflections.png)
+
+| Property | Description |
+| :--- | :--- |
+| Reflections Enabled | Controls whether real-time planar reflections are generated for this water surface. |
+| [Reflection Settings](#surface-reflections) | Settings for the [Surface Reflections](#surface-reflections) module (Planar Reflections). |
+
+<a name="fft-generator"></a>
+<a name="fft-generator-settings"></a>
+#### Ocean FFT Settings
+
+Settings for the cascaded ocean FFT on [Fluid World Renderer](#fluid-world-renderer) when `Ocean Fft Enabled` is true. These control the JONSWAP spectrum, cascade layers, and distance fades used for large-scale open-water displacement. To apply that motion on the shallow-water solver, configure [Ocean FFT Coupling](../fluid_simulation_components#flow-fluid-simulation) on each [Flow Fluid Simulation](../fluid_simulation_components#flow-fluid-simulation) tile.
+
+![Fluid World Renderer Ocean FFT](../../assets/images/worldrenderer_fft.png)
+
+| Property | Description |
+| :--- | :--- |
+| Water Preset | A starting profile for the ocean waves.<br/><br/>Pick a preset for quick results, or choose Custom and tune the fields yourself. Changing spectrum or cascade values switches back to Custom. |
+| Resolution | Internal resolution of each wave layer.<br/><br/>Higher values look sharper but use more GPU memory and time. |
+| Cascade Count | How many wave size layers are active.<br/><br/>C1 is the largest, longest waves. More layers add detail but cost more. Inactive layers are ignored at runtime. |
+| Wind Speed | Wind speed in meters per second.<br/><br/>Stronger wind builds taller, faster-moving waves. |
+| Scales | World size in meters for each wave layer (C1-C4).<br/><br/>C1 covers the largest area (open-ocean swell). Smaller values on later cascades add nearby chop and ripples. |
+| Choppiness | Horizontal curling of each wave layer.<br/><br/>Higher values make crests sharper and more displaced. Values are capped to avoid broken-looking folds. |
+| Intensities | Height of each wave layer.<br/><br/>Scales how tall each cascade moves the surface up and down. |
+| Speeds | Animation speed of each wave layer.<br/><br/>Multiplier on how fast each cascade moves over time. |
+| Wind Direction | Wind direction in degrees.<br/><br/>Controls which way the generated waves prefer to travel. |
+| Fetch | How far the wind has blown over open water, in meters.<br/><br/>Larger fetch builds longer, more developed swell. Use smaller values for bays, lakes, and rivers. |
+| Spread Blend | Blend between wind chop and organized swell direction.<br/><br/>Lower values spread waves in more directions. Higher values align waves with the wind. |
+| Swell | Amount of long, rolling swell.<br/><br/>Adds slower, larger motion on top of wind-driven waves. |
+| Peak Enhancement | How peaked the largest waves are.<br/><br/>Higher values sharpen wave crests in the spectrum. |
+| Short Waves Fade | Softening of the smallest ripples.<br/><br/>Reduces high-frequency shimmer. Raise slightly if the surface looks too noisy. |
+| Depth | Average water depth in meters.<br/><br/>Shallow water shortens wavelengths and changes wave shape. Use a low value near shores and rivers. |
+| Generation Threshold | How much wave folding is needed before whitecaps appear.<br/><br/>Lower values show foam on milder crests. Higher values require stronger breaking. |
+| Generation Amount | Strength of fresh foam at breaking crests.<br/><br/>Higher values inject foam faster where waves are actively breaking. |
+| Dissipation Speed | How quickly existing foam fades away.<br/><br/>Higher values remove foam faster once waves stop breaking. |
+| Falloff Speed | How much leftover foam blends into neighboring texels.<br/><br/>Higher values keep tighter streaks along crests. Lower values smear foam trails wider. This controls spatial spread, not fade over time. |
+| Displacement Fade | Distance range where FFT waves fade out near the camera.<br/><br/>X = start fading, Y = fully faded. Uses cascade distance units (not meters); finer layers fade closer than large swell. |
+| Normal Mip Fade | Distance range where wave normals soften far from the camera.<br/><br/>X = begin softening (meters), Y = full softening (meters). Helps distant ocean look smoother. |
+| Normal Mip Max | Maximum softening applied to far-away wave normals.<br/><br/>Works with Normal Mip Fade to reduce sparkly detail in the distance. |
+| Vertical Bias | Vertical offset of the FFT ocean surface in world space.<br/><br/>Raises or lowers the rendered ocean without moving the fluid simulation mesh. Also used when deciding if thin sim water should be hidden in favor of the ocean look. |
 
 <a name="i-surface-renderer"></a>
 ### Surface Renderer
@@ -35,14 +178,14 @@ Properties to be used to configure components that use [Surface Renderer](#i-sur
 
 | Property | Description |
 | :--- | :--- |
-| Render Mode | The method used for generating and rendering the fluid surface geometry.<br/><br/>-  **`MeshRenderer`**  Uses standard GameObjects with [Mesh Renderer](https://docs.unity3d.com/ScriptReference/MeshRenderer.html) components. Best for simple setups where standard object culling is sufficient.  <br/>-  **`DrawMesh`**  Uses [Render Mesh](#render-mesh) to avoid GameObject overhead. Supports GPU Instancing.  <br/>-  **`GPULOD`**  Draws the surface using a GPU-accelerated LOD system. Best for large-scale oceans or lakes.  <br/>-  **`HDRPWaterSurface`**  Bridges the simulation data to a Unity [HDRP Water Surface](#hdrp-water-surface) component (Requires HDRP). |
+| Render Mode | The method used for generating and rendering the fluid surface geometry.<br/><br/>- **`MeshRenderer`** <br/> Uses standard GameObjects with `Mesh Renderer` components. Best for simple setups where standard object culling is sufficient.<br/> <br/>- **`DrawMesh`** <br/> Uses `Render Mesh` to avoid GameObject overhead. Supports GPU Instancing.<br/> <br/>- **`GPULOD`** <br/> Draws the surface using a GPU-accelerated LOD system. Best for large-scale oceans or lakes.<br/> <br/>- **`HDRPWaterSurface`** <br/> Bridges the simulation data to a Unity `HDRP Water Surface` component (Requires HDRP). |
 | Dimension | The total world-space size (X and Z) of the rendered surface. |
 | Mesh Resolution | The vertex resolution of the surface's base grid mesh.<br/><br/>For the most accurate visualization, it is recommended to match this value to the source heightmap resolution. |
 | Mesh Blocks | The number of subdivisions (blocks) to split the rendering mesh into along the X and Z axes.<br/><br/>Subdividing the mesh improves GPU performance by allowing the camera to cull blocks that are outside the view frustum. |
-| Lod Resolution | The vertex resolution of individual LOD patches when using **GPULOD**. |
-| Traverse Iterations | The number of iterations the Quadtree traversal algorithm performs per frame when using **GPULOD**.<br/><br/>Higher values resolve the surface quality faster during camera movement but may reduce performance. |
+| Lod Resolution | The vertex resolution of individual LOD patches when using `GPULOD`. |
+| Traverse Iterations | The number of iterations the Quadtree traversal algorithm performs per frame when using `GPULOD`.<br/><br/>Higher values resolve the surface quality faster during camera movement but may reduce performance. |
 | Lod Min Max | The range of allowable LOD levels, where X is the minimum level and Y is the maximum level. |
-| [Hdrp Water Surface](#hdrp-water-surface-properties) | Configuration settings for bridging this simulation's data to an external [HDRP Water Surface](#hdrp-water-surface). |
+| [Hdrp Water Surface](#hdrp-water-surface-properties) | Configuration settings for bridging this simulation's data to an external `HDRP Water Surface`. |
 
 <a name="detail-wave-effect"></a>
 ### Detail Wave Effect
@@ -59,10 +202,12 @@ To save on GPU performance, you can bake these waves into static textures or fli
 <a name="detail-wave-settings"></a>
 #### Detail Wave Settings
 
+![Fluid World Renderer Detail Waves](../../assets/images/worldrenderer_detailwaves.png)
+
 | Property | Description |
 | :--- | :--- |
 | Mode | Determines the method used to generate or display detail waves on the fluid surface.<br/><br/>- **Baked** Uses a single static texture for maximum performance but lacks motion.<br/>- **Flipbook** Cycles through a pre-rendered texture array for smooth animation at a low GPU cost.<br/>- **Dynamic** Calculates procedural wave math in real-time for infinite variety at a higher performance cost. |
-| Resolution | The pixel dimensions of the generated wave texture.<br/><br/>High values (512) provide sharper ripples but increase VRAM usage and GPU rendering time. <br/>Low values (128) are much faster and softer. |
+| Resolution | The pixel dimensions of the generated wave texture.<br/><br/>Gerstner supports any power-of-two up to 1024 for bakes / dynamic. FFT snaps to 64-512 only. |
 | Min Frequency | Defines the scale of the largest waves in the generated spectrum.<br/><br/>Low values (1-2) create large, rolling swells. <br/>High values (5+) make the primary wave shapes much smaller and busier. |
 | Max Frequency | Defines the scale of the smallest ripples.<br/><br/>Low values result in a smoother surface. <br/>High values add high-frequency micro-fidget and "noise" to the water surface. |
 | Amplitude | A global multiplier for the internal wave height math.<br/><br/>This scales the wave spectrum before it is packed into the texture. <br/>Use this to push waves toward their maximum normalized height. |
@@ -71,8 +216,8 @@ To save on GPU performance, you can bake these waves into static textures or fli
 | Random Seed | The seed used to initialize the random layout of the wave pattern.<br/><br/>Change this to get a different visual layout using the same settings. |
 | Animation Type | Determines if the waves bob in place or travel in direction. |
 | Animation Speed | How fast the wave shapes change or travel.<br/><br/>Higher values make the water look more energetic and wind-swept. |
-| Direction | The direction the waves travel (Only applies to Drifting mode). |
-| Directional Spread | Controls the alignment of wave directions.<br/><br/>1.0 makes waves move in all directions (chaotic). <br/>0.1 forces waves into organized, parallel rows. |
+| Spectrum | Gerstner sum vs JONSWAP FFT (same packed height/normal texture). FFT requires a compute shader. |
+| Wind Direction | The direction the waves travel (Only applies to Drifting mode). || Directional Spread | Controls the alignment of wave directions.<br/><br/>1.0 makes waves move in all directions (chaotic). <br/>0.1 forces waves into organized, parallel rows. |
 | Baked Texture | The texture asset used for displacement when in Baked mode.<br/><br/>Expected format: Alpha channel for Height, RGB channels for Normals. |
 | Baked Texture Array | A sequence of wave frames stored as a compressed Texture2DArray. |
 | Flipbook FPS | The speed at which the flipbook cycles through frames. |
@@ -82,6 +227,7 @@ To save on GPU performance, you can bake these waves into static textures or fli
 | Fade Distance | Distance (Start, End) in meters where detail waves fade out to prevent shimmering and tiling artifacts. |
 | Tiling | How many times the wave pattern repeats across the surface area. |
 | Offset | A manual offset to scroll or shift the wave pattern. |
+| Directional Spread | Controls the alignment of wave directions.<br/><br/>1.0 makes waves move in all directions (chaotic). <br/>0.1 forces waves into organized, parallel rows. |
 
 
 <a name="hdrp-water-surface-properties"></a>
@@ -95,6 +241,12 @@ Contains settings used to bridge the fluid simulation data to the Unity HDRP Wat
 | Amplitude | Controls the maximum amplitude of the Fluid Simulation used to encode/decode the height to/from 0-1 range |
 | Large Current | Controls the weight that the Fluid Simulation's velocity should be applied to the Large Current waves of the HDRP Water System. |
 | Ripples | Controls the weight that the Fluid Simulation's velocity should be applied to the Rupples of the HDRP Water System. |
+| Mesh Resolution | The vertex resolution of the surface's base grid mesh. |
+| Dimension | The total world-space size (X and Z) of the rendered surface. |
+| Height Scale | The scale that will be applied to the height value in the surface's height field. |
+| Max Height | The maximum height the surface will be. This is used for the culling bounds of the meshes. |
+| Heightmap Mask | Specifies which channels of the heightmap to read 1 is read, 0 is ignore. <br/>The result is accumulated with the following formula: dot(heightTexel, heightmapMask) |
+| Lod Min Max | The minimum and maximum LOD levels that can be selected for the surface. lodMinMax.x(min) lodMinMax.y(max) |
 
 ___
 
@@ -111,7 +263,6 @@ It does this by assigning the active rendering layers to its surface material an
 
 | Property | Description |
 | :--- | :--- |
-| [Foam Layer](../fluid_simulation_components#foam-layer) | A FoamLayer component that provides the dynamically generated foam mask texture for water rendering effects.<br/><br/>The component's primary role is to update and supply the dynamic foam mask texture, ensuring foam is applied<br/>accurately to the water material. It also handles necessary adjustments to the mask's texture coordinates (UVs)<br/>to maintain alignment across different rendering setups. |
 | Under Water Enabled | Controls whether the [Underwater Effect](#underwater-effect) is currently enabled. |
 | [Under Water Settings](#underwater-settings) | Settings for all configurable visual parameters of the [Underwater Effect](#underwater-effect).<br/>This class defines how light interacts with the water volume, including absorption rates, scattering colors, and the appearance of the surface meniscus. |
 | Caustics Enabled | Controls whether the [Caustics Effect](#caustics-effect) is currently enabled. |
@@ -140,6 +291,7 @@ Properties controlling the illumination and shading effects.
 | Property | Description |
 | :--- | :--- |
 | Specular Intensity | Scales the brightness of specular highlights from the main directional light. |
+| Sun Roughness | Controls the roughness of direct specular highlights from lights (lower = sharper highlight, higher = broader highlight). |
 | Shadows | Enables or disables whether the water surface receives shadows. |
 
 ##### Reflection
@@ -150,6 +302,7 @@ Properties controlling the water surface's reflection of the environment.
 
 | Property | Description |
 | :--- | :--- |
+| Reflection Roughness | Controls how blurry reflection probes (and HDRP smoothness) appear (lower = sharper reflections, higher = blurrier reflections). |
 | Planar Reflection | Enables or disables the use of planar reflections instead of only reflection probes. |
 | Reflectivity Offset | Offsets the base reflectiveness of the water surface.<br/>Use this to ensure the water is reflective even at sharp viewing angles. |
 | Distortion | Scales the distortion applied to planar reflections. |
@@ -163,8 +316,8 @@ Properties controlling depth-based color, transparency, and refraction effects.
 | Property | Description |
 | :--- | :--- |
 | Color | RGB sets the color of the water at maximum depth. Alpha (A) is the base transparency of the water.<br/>If 'Refraction Mode' is 'Screenspace Absorb', RGB is a color multiplier where White (1.0) is fully transparent.<br/>For 'Alpha' or 'Screenspace Tint', RGB is the final color tint the water reaches at maximum depth/opacity. |
-| Depth Transparency | Scales the rate at which the water's color changes and transparency fades based on depth. Lower values make the water more transparent across its depth. |
-| Refraction Mode | Selects the method for rendering water transparency and refraction:<br/><br/>• Alpha: Simple alpha blending transparency.<br/>• Opaque: Water is rendered as a solid, non-transparent surface.<br/>• Screenspace Tint: Uses screen-space refraction (GrabPass). Color interpolates from clear to the set color based on depth. Use for a single water color tint.<br/>• Screenspace Absorb: Uses screen-space refraction (GrabPass). Scene color is multiplied by water color, allowing for a color gradient (e.g., clear to turquoise to blue). |
+| Depth Transparency | Scales the rate at which the water's color changes and transparency fades based on depth. Lower values make the water more transparent at a faster rate. |
+| Refraction Mode | Selects the method for rendering water transparency and refraction:<br/><br/>- Alpha: Simple alpha blending transparency.<br/>- Opaque: Water is rendered as a solid, non-transparent surface.<br/>- Screenspace Tint: Uses screen-space refraction (GrabPass). Color interpolates from clear to the set color based on depth. Use for a single water color tint.<br/>- Screenspace Absorb: Uses screen-space refraction (GrabPass). Scene color is multiplied by water color, allowing for a color gradient (e.g., clear to turquoise to blue). |
 | Distortion | Scales the amount of distortion applied to the screenspace refraction effect ('Screenspace Tint' or 'Screenspace Absorb' modes). |
 
 ##### Subsurface Scattering
@@ -175,11 +328,14 @@ Properties controlling the diffusion of light and subsurface scattering effect b
 
 | Property | Description |
 | :--- | :--- |
-| Color | The color the water will transition to when subsurface scattering occurs. |
-| Intensity | Scales the base intensity of the subsurface scattering effect. |
-| Ambient | Scales the base contribution, ensuring some subsurface scattering is visible regardless of other parameters. |
-| Light Contribution | Scales the contribution of subsurface scattering when the water surface faces away from the main light. |
-| View Contribution | Scales the contribution of subsurface scattering when the water surface faces toward the observer/camera. |
+| Color | The tint of light scattered inside the water, like underwater fog or sun through shallow waves. |
+| Intensity | Master multiplier on all scatter terms below. |
+| Ambient Scattering | Constant glow from ambient light across the whole surface. Needs baked GI to show on BiRP. |
+| Height Scattering | Adds ambient glow on wave crests where the water is raised. |
+| Displacement Scattering | Adds ambient glow where the surface is choppy or horizontally displaced. |
+| Scattering Wave Height | Typical wave height used to scale Height and Displacement scattering. Lower values make those sliders more sensitive. |
+| Body Scattering | How much the sun glows through flat areas and wave troughs. |
+| Tip Scattering | How much the sun glows through wave crests. Usually the most visible of the two. |
 | Foam Contribution | Scales the subsurface scattering contribution in areas covered by foam. |
 
 ##### Waves
@@ -207,6 +363,9 @@ Properties controlling the appearance and masking of the foam effect.
 | Foam Visibility Range | Sets the minimum and maximum threshold values for when the foam becomes visible and reaches its maximum strength. Foam visibility is interpolated between these values using a smoothstep function. |
 | Screenspace Particles | Enables the use of the screenspace particles (from the FluidParticles component) as an additional mask to generate foam. |
 | Foam Mode | Selects the blending method for the foam:<br/><br/>• Albedo: Soft foam using the Foam Map for color and mask.<br/>• Clip: Hard-edged foam using the Foam Map's red channel as a clip value for sharp borders.<br/>• Mask: Uses the Foam Layer Mask's value to select one of the Foam Map's RGB channels as an extra mask for blending the foam color, allowing for varied intensity: 0-0.334 uses Blue, 0.334-0.667 uses Green, and 0.667-1 uses Red. |
+| Foam Smoothness | Controls how glossy the foam appears. Lower values produce matte, chalky whitecaps. |
+| Water Specular Suppress | Lowers water smoothness (sun spec + reflections) on visible foam. 1 = matte foam smoothness, 0 = no change. |
+| Foam Ambient Floor | Minimum brightness for foam in shadowed areas. |
 
 ##### Rendering
 
@@ -220,6 +379,8 @@ General rendering, depth-handling, and simulation sampling properties.
 | Fade Height | The world height at which the water will be fully faded out.<br/>Used to soften edges or blend with geometry above a certain height. |
 | Linear Clip Offset | A linear offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with close terrain or surfaces. |
 | Exponential Clip Offset | An exponential/depth-based offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with distant terrain or surfaces. |
+| UV Space | Controls which coordinate space is used for sampling Wave Normal / Foam / Detail Waves.<br/><br/>- Normalized UV Space: uses simulation UVs in 0..1.<br/>- World UV Space: uses world XZ planar UVs. In this mode the texture tiling values are interpreted as repeats per meter (1,1 repeats every meter). |
+| Non-Tiled Sampling | Hides texture tiling artifacts on the wave normal, detail waves and foam by sampling a noise key once and offsetting samples. Slight extra cost. |
 
 
 <a name="underwater-effect"></a>
@@ -241,6 +402,8 @@ The effect handles features like light absorption, fog scattering, and direction
 <a name="underwater-settings"></a>
 #### Underwater Settings
 
+![Water World Renderer Underwater](../../assets/images/water_worldrenderer_underwater.png)
+
 Settings for all configurable visual parameters of the [Underwater Effect](#underwater-effect).
 This class defines how light interacts with the water volume, including absorption rates, scattering colors, and the appearance of the surface meniscus.
 
@@ -254,18 +417,10 @@ This class defines how light interacts with the water volume, including absorpti
 | Property | Description |
 | :--- | :--- |
 | Color | The base transmission color of the water.<br/><br/>This defines the color of the water as light passes through it. Brighter colors make the water look clear, while darker colors make the water look thick and deep. This works with the absorption depth scale to decide how much the scene behind the water is tinted. |
-| Depth Transparency | Controls the rate at which light is absorbed as it travels through the water.<br/><br/>Higher values result in darker water where light cannot penetrate as deeply. This scaling factor applies to the exponential decay of the [Water Color](#water-color). |
-| Depth Limits | Clamps the calculated absorption to a specific range (Min, Max).<br/><br/>Useful for preventing the water from becoming completely black at extreme depths or ensuring a minimum amount of visibility. |
-| Thickness (cm) | The vertical thickness of the meniscus line on the camera lens (in centimeters).<br/><br/>Simulates water clinging to the camera glass. Higher values create a thicker, more prominent droplet band at the waterline. Set to 0 to completely disable the meniscus effect. |
-| Darkness | Controls the intensity/darkness of the meniscus line effect.<br/><br/>Low values give the band a subtle, colorful tint matching the water color. High values simulate a physically thick droplet that blocks incoming light, creating a dark rim. |
-| Refraction Bulge | Controls the refraction strength (optical distortion) of the meniscus droplet.<br/><br/>Higher values bend the background pixels (Snell's Law), causing extreme lensing and total internal reflection at the edges. Lower values look like flat, undisrupted glass, Negative values intert the refraction. |
-| Reflectivity | The base reflectivity (Fresnel R0) of the wet meniscus lens.<br/><br/>Higher values make the droplet highly reflective (mirror-like), reflecting more of the skybox/environment probe. Lower values keep the droplet mostly transparent. |
-| Specular Intensity | Controls the brightness of the directional light specular glint on the meniscus.<br/><br/>Higher values create a bright sun highlight when the camera looks towards the directional light at the waterline. Lower values dull the highlight. |
-| Specular Power | Controls the sharpness and focus of the specular glint on the meniscus.<br/><br/>Lower values (e.g., 16-64) spread the sun's reflection out into a wide, wet smear across the lens. Higher values (e.g., 256-512) tighten the highlight into a microscopic, sharp pinpoint. |
-| Chromatic Dispersion | Splits the RGB light (chromatic aberration) when refracting through the meniscus droplet.<br/><br/>When enabled, the droplet samples three slightly different indices of refraction, causing a prismatic rainbow fringing effect at the edges of the water band. |
+| Absorption Depth Scale | Controls the rate at which light is absorbed as it travels through the water.<br/><br/>Higher values result in darker water where light cannot penetrate as deeply. This scaling factor applies to the exponential decay of the `Water Color`. |
+| Absorption Limits | Clamps the calculated absorption to a specific range (Min, Max).<br/><br/>Useful for preventing the water from becoming completely black at extreme depths or ensuring a minimum amount of visibility. |
 | Color | The color of the light scattered within the water volume (subsurface scattering/fog color).<br/><br/>Defines the color of the fog when light illuminates the water. Usually a bright cyan or teal for tropical water, or a murky green/brown for swamps. |
 | Ambient Intensity | The base ambient contribution to the scattering effect, independent of direct lighting.<br/><br/>Higher values cause the underwater fog to glow brightly even in shadows or when facing away from the sun. Lower values rely purely on direct sunlight for illumination. |
-| Light Intensity | Scales the influence of the main directional light on the scattering effect.<br/><br/>Higher values cause the water to aggressively catch and scatter the sun's light, creating a bright halo when looking toward the sun. |
 | Total Intensity | A global multiplier for the overall scattering intensity.<br/><br/>Higher values create a dense, opaque volumetric fog. Lower values make the scattering very subtle, preserving the clarity of the absorption color. |
 
 
@@ -278,9 +433,13 @@ This class defines how light interacts with the water volume, including absorpti
 
 | Property | Description |
 | :--- | :--- |
-| Thickness | The vertical thickness of the meniscus line (the water-air boundary) on the camera lens. |
-| Blur | The amount of blur applied to the meniscus line to soften the transition between underwater and above-water. |
-| Darkness | Controls the intensity/darkness of the meniscus line effect. |
+| Meniscus Thickness | The vertical thickness of the meniscus line on the camera lens (in centimeters).<br/><br/>Simulates water clinging to the camera glass. Higher values create a thicker, more prominent droplet band at the waterline. Set to 0 to completely disable the meniscus effect. |
+| Darkness | Controls the intensity/darkness of the meniscus line effect.<br/><br/>Low values give the band a subtle, colorful tint matching the water color. High values simulate a physically thick droplet that blocks incoming light, creating a dark rim. |
+| Refraction Bulge | Controls the refraction strength (optical distortion) of the meniscus droplet.<br/><br/>Higher values bend the background pixels (Snell's Law), causing extreme lensing and total internal reflection at the edges. Lower values look like flat, undisrupted glass, Negative values intert the refraction. |
+| Reflectivity | The base reflectivity (Fresnel R0) of the wet meniscus lens.<br/><br/>Higher values make the droplet highly reflective (mirror-like), reflecting more of the skybox/environment probe. Lower values keep the droplet mostly transparent. |
+| Specular Intensity | Controls the brightness of the directional light specular glint on the meniscus.<br/><br/>Higher values create a bright sun highlight when the camera looks towards the directional light at the waterline. Lower values dull the highlight. |
+| Specular Power | Controls the sharpness and focus of the specular glint on the meniscus.<br/><br/>Lower values (e.g., 16-64) spread the sun's reflection out into a wide, wet smear across the lens. Higher values (e.g., 256-512) tighten the highlight into a microscopic, sharp pinpoint. |
+| Chromatic Dispersion | Splits the RGB light (chromatic aberration) when refracting through the meniscus droplet.<br/><br/>When enabled, the droplet samples three slightly different indices of refraction, causing a prismatic rainbow fringing effect at the edges of the water band. |
 
 #####  Scattering (Fog)
 
@@ -291,10 +450,11 @@ This class defines how light interacts with the water volume, including absorpti
 
 | Property | Description |
 | :--- | :--- |
-| Scatter Color | The color of the light scattered within the water volume (subsurface scattering/fog color). |
-| Scatter Ambient | The base ambient contribution to the scattering effect, independent of direct lighting. |
-| Light Intensity | Scales the influence of the main directional light on the scattering effect. |
-| Total Intensity | A global multiplier for the overall scattering intensity. |
+| Body Scattering | Sun scatter on flat wave troughs. |
+| Tip Scattering | Sun scatter on wave crests. |
+| Height Scattering | Ambient height term scale (matches surface Height Scattering). |
+| Displacement Scattering | Ambient chop term scale (matches surface Displacement Scattering). |
+| Scattering Wave Height | Reference wave height for ambient scatter terms (matches surface Scattering Wave Height). |
 
 <a name="caustics-effect"></a>
 #### Caustics Effect
@@ -311,6 +471,8 @@ It also accounts for surface conditions for example, **Foam Masking** can be use
 
 <a name="caustics-settings"></a>
 #### Caustics Settings
+
+![Water World Renderer Caustics](../../assets/images/water_worldrenderer_caustics.png)
 
 Settings for all configurable visual parameters of the [Caustics Effect](#caustics-effect).
 This class defines animated light patterns projected underwater, wave-driven highlights, and global visibility attenuation.
@@ -329,7 +491,7 @@ You can use these settings to customize the look of the animated texture pattern
 | Tiling | Controls the scale of the projected caustics pattern.<br/><br/>Higher values increase the tiling frequency, making the pattern appear smaller and more dense across the environment. |
 | Triplanar Projection | Enables triplanar projection to prevent texture stretching on vertical surfaces.<br/><br/>Projects the texture from three orthogonal axes (X, Y, Z) instead of a single top-down projection. <br/>Essential for maintaining pattern consistency on cliffs, walls, and steep underwater terrain. |
 | Wave UV Distortion | The strength of the UV distortion applied to the caustics based on surface wave normals.<br/><br/>Simulates refractive warping by shifting the texture coordinates relative to the waves above. |
-| Texture Intensity | The brightness multiplier for the projected caustics texture.<br/><br/>An independent scalar specifically for the animated texture component of the effect. |
+| Texture Intensity | The brightness multiplier for the projected caustics texture.<br/><br/>An independent scalar specifically for the animated texture component of the effect.<br/>Zero disables the [Fluid Render Pipeline](#fluid-render-pipeline) shader variant (no flipbook samples). |
 | Channel Mask | Defines which texture color channels contribute to the final caustics pattern.<br/><br/>Useful for isolating specific channels in packed textures. |
 | Chromatic Aberration | The strength of the color splitting effect at the edges of the caustics.<br/><br/>Simulates light dispersion (prismatic effect), creating rainbow-like fringing around high-contrast areas of the pattern. |
 
@@ -357,11 +519,12 @@ This section handles the overall strength and blending of the effect, including 
 | Property | Description |
 | :--- | :--- |
 | Global Intensity | A multiplier for all caustic lighting contributions.<br/><br/>Scales both the texture projection and the procedural wave highlights simultaneously. |
-| Darkness | Controls how much the sea floor is darkened in the areas between light patterns.<br/><br/>Increasing this value darkens the *caustic shadows*, making the bright light patterns appear more high-contrast and prominent. |
+| Darkness | Controls how much the sea floor is darkened in the areas between light patterns.<br/><br/>Increasing this value darkens the "caustic shadows," making the bright light patterns appear more high-contrast and prominent. |
 | Shadow Intensity | Controls the visibility of caustics within areas shadowed by external light sources.<br/><br/>A value of 0 makes caustics completely invisible in shadow, while a value of 1 allows them to remain fully visible. |
 | Surface Fade-In | Defines the depth range near the surface where the caustics begin to appear.<br/><br/>The X value represents the depth where the effect starts, and the Y value is where it reaches full intensity. This prevents visual "popping" at the water line. |
 | Depth Fade-Out | Defines the depth range where the caustics gradually disappear as light is absorbed.<br/><br/>The X value is the depth where fading begins, and the Y value is the depth where caustics are completely extinguished. |
 | Foam Masking | Controls how much surface foam occludes the caustics on the seafloor.<br/><br/>Simulates the diffusive nature of bubbles. Thick foam scatters light, preventing sharp caustics from forming and casting a soft shadow on the environment below. |
+| Half Resolution | Renders caustics at half screen resolution and upsamples before compositing. Large GPU win; slightly softer patterns. |
 
 
 <a name="surface-reflections"></a>
@@ -379,6 +542,8 @@ The component reads the height of the fluid simulation to set the reflection pla
 
 ![planar_reflections](../../assets/images/planar_reflections.png)
 
+![Water World Renderer Surface Reflections](../../assets/images/water_worldrenderer_surface_reflections.png)
+
 The following settings can be configured to setup the Planar reflections:
 
 | Property | Description |
@@ -392,6 +557,7 @@ The following settings can be configured to setup the Planar reflections:
 | Snap Threshold | The height difference threshold at which the reflection plane instantly snaps to the new height instead of smoothly transitioning. |
 | Renderer ID | SRP Renderer to use for the planar reflection pass. Use this to select a cheaper render pass for the reflection camera. |
 | Shadow Quality | Controls shadow rendering in the reflection (BiRP Only). |
+| Reflection Texture Size | Defines the resolution/size of the generated reflection texture. |
 
 
 ___
@@ -414,9 +580,10 @@ This component adds specific lava rendering features, such as heat and emissive 
 | :--- | :--- |
 | Under Lava Enabled | When enabled, the [Under Lava Effect](#under-lava-effect) applies a depth-based tint while the camera is inside this lava volume. |
 | [Under Lava Settings](#under-lava-settings) | Tunables for the under-lava volume tint (absorption only). |
-| Generate Heat Lut | If enabled, the **Heat** gradient will be used to procedurally generate a **Heat LUT** that overrides the existing LUT on the [Fluid Material](#fluid-material). |
-| Heat | The [Gradient](#gradient) used to define the heat/color transition for the lava. The color samples are mapped from Cold Lava (Left side of the gradient) to Hot Lava (Right side of the gradient). |
+| Generate Heat Lut | If enabled, the `Heat` gradient will be used to procedurally generate a **Heat LUT** that overrides the existing LUT on the [Fluid Renderer](#fluid-renderer). |
+| Heat | The `Gradient` used to define the heat/color transition for the lava. The color samples are mapped from Cold Lava (Left side of the gradient) to Hot Lava (Right side of the gradient). |
 
+<a name="under-lava-effect"></a>
 #### Under Lava Effect
 
 Renders a depth-based tint when the camera is inside a [Lava Surface](#lava-surface) volume, using the same mask and depth data as the underwater effect, with an optional surface band (meniscus-style thickness).
@@ -426,13 +593,13 @@ Renders a depth-based tint when the camera is inside a [Lava Surface](#lava-surf
 
 | Property | Description |
 | :--- | :--- |
-| Composite Mode | Chooses how the under-lava pass blends the volume with the scene.<br/><br/>Options include:<br/>- **[Opacity](#opacity)** <br/> Linear blend toward [Volume Color](#volume-color) using [Opacity](#opacity); no depth-based extinction.<br/> <br/>- **[Absorption](#absorption)** <br/> Depth-varying absorption using [Volume Color](#volume-color), [Absorption Depth Scale](#absorption-depth-scale), [Absorption Limits](#absorption-limits), and optional [Absorption Ambient Color](#absorption-ambient-color) / [Absorption Ambient Strength](#absorption-ambient-strength). |
+| Composite Mode | Chooses how the under-lava pass blends the volume with the scene.<br/><br/>Options include:<br/>- **`Opacity`** <br/> Linear blend toward `Volume Color` using `Opacity`; no depth-based extinction.<br/> <br/>- **`Absorption`** <br/> Depth-varying absorption using `Volume Color`, `Absorption Depth Scale`, `Absorption Limits`, and optional `Absorption Ambient Color` / `Absorption Ambient Strength`. |
 | Volume Color | Tint color. In opacity mode, RGB is blended in; in absorption mode, it drives extinction (see absorption remarks). |
-| Opacity | Opacity mode only: blend strength between the scene and [Volume Color](#volume-color) (0 = scene only, 1 = full tint). |
-| Depth Transparency | Absorption mode only: scales how strongly absorption increases with optical depth.<br/><br/>RGB of [Volume Color](#volume-color) drives extinction; alpha scales strength with [Absorption Depth Scale](#absorption-depth-scale). |
+| Opacity | Opacity mode only: blend strength between the scene and `Volume Color` (0 = scene only, 1 = full tint). |
+| Depth Transparency | Absorption mode only: scales how strongly absorption increases with optical depth.<br/><br/>RGB of `Volume Color` drives extinction; alpha scales strength with `Absorption Depth Scale`. |
 | Depth Limits | Absorption mode only: clamps the absorption luminance (Min, Max). |
-| Ambient Color | Absorption mode only: color the view fades toward through the volume (instead of black), mixed by [Absorption Ambient Strength](#absorption-ambient-strength). |
-| Ambient Strength | Absorption mode only: how much the ambient tint is added as transmittance drops (0 = multiply-only / fade to black, 1 = full blend toward [Absorption Ambient Color](#absorption-ambient-color)). |
+| Ambient Color | Absorption mode only: color the view fades toward through the volume (instead of black), mixed by `Absorption Ambient Strength`. |
+| Ambient Strength | Absorption mode only: how much the ambient tint is added as transmittance drops (0 = multiply-only / fade to black, 1 = full blend toward `Absorption Ambient Color`). |
 | Thickness (cm) | Thickness of the surface band at the lava line (centimeters), 0 disables. |
 | Rim Color | Hot-edge tint added in the surface band (HDR). |
 | Rim Intensity | Strength of the rim glow in the surface band. |
@@ -480,7 +647,6 @@ Properties controlling the cold lava surface's visual and PBR shading characteri
 | Albedo | Sets the base Albedo color and texture of the lava. This represents the appearance of cold (non-emissive) lava. |
 | Smoothness Scale | Scales the PBR smoothness of the cold lava surface, affecting its specular reflections. |
 | Normal Map | Normal map texture used to add detailed lighting to the cold lava surface. |
-| Noise | Noise texture used to eliminate noticeable tiling and repetition from the lava textures. |
 
 ##### Rendering
 
@@ -493,6 +659,7 @@ General rendering, depth-handling, and simulation sampling properties.
 | Fade Height | The world height at which the lava will be fully faded out.<br/>Used to soften edges or blend with geometry above a certain height. |
 | Linear Clip Offset | A linear offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with close terrain or surfaces. |
 | Exponential Clip Offset | An exponential/depth-based offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with distant terrain or surfaces. |
+| Non-Tiled Sampling | Hides texture tiling artifacts on the lava albedo, normal and emission by sampling a noise key once and offsetting samples. Slight extra cost. |
 
 ___
 
@@ -507,11 +674,11 @@ Fluid Frenzy uses custom shaders to render its completely GPU-accelerated partic
 All shaders share settings for **Blend Mode** and **Billboard Mode**. **Billboard Mode** controls particle orientation, including options for camera-facing or world-up normals to manage lighting.
 
 **Compatibility**:
-For URP and BiRP, the shaders are *FluidFrenzy/ProceduralParticle* and *FluidFrenzy/ProceduralParticleUnlit*.
+| Alpha Threshold | Alpha below this value will be clipped. |
 The High Definition Render Pipeline (HDRP) requires its own dedicated shaders: *FluidFrenzy/HDRP/ProceduralParticle* and *FluidFrenzy/HDRP/ProceduralParticleUnlit*.
 
 ![Particle Shader](../../assets/images/particle_shader.png)
-
+| Fade Submerged | Automatically fades out particles that fall beneath the surface level of the simulated fluid grid. |
 ##### Procedural Particle (Unlit) Properties
 
 | Property | Description |
@@ -520,12 +687,12 @@ The High Definition Render Pipeline (HDRP) requires its own dedicated shaders: *
 | Color | albedo color and transparency of the particle. |
 | Normal Map | can be used to add extra lighting details. |
 | Alpha Threshold | Alpha below this value will be clipped. |
+| Fade Submerged | Fades particles that fall below the fluid surface. |
 | Blend Mode | select which to use for the particles. |
 | Source Blend | Source Blend. |
 | Dest Blend | Dest Blend. |
 | ZWrite | Write particle to the depth buffer. |
 | Billboard Mode | Select which method to use for rendering the particle billboard.<br/><br/>• Camera: the billboard and world normal will face in the direction of the camera.<br/><br/>• Camera Normal Up: the billboard will face the camera and the normal will face in in the world space up direction.This can be useful to have more uniform lighting from every direction.<br/><br/>• Up: the billboard and normal will both face in the world space up direction.<br/><br/>• Normal: not yet implemented. |
-| Metallic | The metalness of this material. |
 | Smoothness | The smoothness of this material. |
 | Fade Submerged | Fades particles that fall below the fluid surface. |
 
