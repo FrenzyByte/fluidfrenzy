@@ -45,8 +45,8 @@ A typical multi-tile workflow looks like this:
 2. On shared edges, set [Side Border Settings](../fluid_simulation_components#fluid-side-border) to **Neighbour** and use the same **Group ID** so simulations stay connected. **Grid Pos** helps neighbour discovery; compositing itself follows each tile's position and size in the scene.
 3. Add a **Fluid World Renderer** (or **Water World Renderer**) to the scene. Set [Surface Properties](#render-properties) **Dimension** to the XZ area you want the world surface to cover.
 4. Match [Fluid Channels](../setup#fluid-channels) on the renderer and on each simulation you want included. See [Fluid Channels](../setup#fluid-channels) in Setup for naming and masking.
-5. Enable **Ocean Fft Enabled** and tune [Ocean FFT Settings](#fft-generator-settings) for large open-water swell. On [Flow Fluid Simulation](../fluid_simulation_components#flow-fluid-simulation) tiles, configure [Ocean FFT Coupling](../fluid_simulation_components#flow-fluid-simulation) so local shallow-water flow follows the ocean motion near coastlines.
-6. Optionally enable **Detail Waves Enabled** for small ripples on top of the composited surface. These are visual only and do not affect simulation or [Fluid RigidBody](../fluid_simulation_components#fluid-rigidbody) physics.
+5. Enable ocean FFT in [Ocean FFT Settings](#fft-generator-settings) for large open-water swell. On [Flow Fluid Simulation](../fluid_simulation_components#flow-fluid-simulation) tiles, configure [Ocean FFT Coupling](../fluid_simulation_components#flow-fluid-simulation) so local shallow-water flow follows the ocean motion near coastlines.
+6. Optionally enable detail waves in [Detail Wave Settings](#detail-wave-settings) for small ripples on top of the composited surface. These are visual only and do not affect simulation or [Fluid RigidBody](../fluid_simulation_components#fluid-rigidbody) physics.
 
 Up to 32 simulation tiles can be composited at once. [Fluid RigidBody](../fluid_simulation_components#fluid-rigidbody) buoyancy works across the combined surface when a world renderer is present; single-tile setups still use [Read Back Height](#read-back-height) on the simulation instead.
 
@@ -77,66 +77,22 @@ Use `~0` on both sides to include every channel. Use separate channel masks and 
 | Tile Id Grid Resolution | Resolution of the world-space tile index texture (XZ) used by GPULOD and shaders to map positions to atlas tiles.<br/><br/>Higher values improve lookup precision for large worlds at the cost of memory and sampling cost. |
 | Debug Visualization | Different fluid debugging modes that can be used in the editor.<br/><br/>Play Mode only. Uses shader `FluidFrenzy/Debug/SimulationData` (same family as [Fluid Renderer](#fluid-renderer)).<br/>Height, normals, velocity (from the height/velocity atlas), UV, and LOD modes are supported for world-atlas rendering. |
 
-#### Detail Waves & Displacement
-
-![Fluid World Renderer Detail Waves](../../assets/images/worldrenderer_detailwaves.png)
-
-| Property | Description |
-| :--- | :--- |
-| Detail Waves Enabled | Enables procedural or baked detail waves on the world surface.<br/><br/>These ripples are purely visual and do not affect the fluid simulation, physics, or buoyancy.<br/>Configure the wave shape and motion in [Detail Wave Settings](#detail-wave-settings). |
-| [Detail Wave Settings](#detail-wave-settings) | Settings for procedural or baked detail waves on the fluid surface.<br/><br/>See [Detail Wave Effect](#detail-wave-effect) and the Detail Wave Generator at `Window > Fluid Frenzy > Detail Wave Generator` for baking static textures or flipbooks. |
-
-#### Ocean FFT (cascaded)
-
-![Fluid World Renderer Ocean FFT](../../assets/images/worldrenderer_fft.png)
-
-| Property | Description |
-| :--- | :--- |
-| Ocean Fft Enabled | Enables cascaded ocean FFT displacement (JONSWAP spectrum) on the world surface.<br/><br/>When enabled, the renderer selects global cascade-count shader keywords and binds FFT data via shader globals.<br/>Tune spectrum and cascades in `Ocean Fft Settings`. |
-| [Ocean Fft Settings](#fft-generator-settings) | Settings for the cascaded ocean FFT generator used when `Ocean Fft Enabled` is true.<br/><br/>Authoring data for [FFT Generator](#fft-generator); mirrors the ocean FFT fields used on sample open-water content. |
-
 <a name="water-world-renderer"></a>
 ### Water World Renderer
 
-Extension of [Fluid World Renderer](#fluid-world-renderer) for multi-tile water: foam, underwater, caustics, and planar reflections, mirroring [Water Surface](#water-surface) on [Fluid Renderer](#fluid-renderer).
-
-#### Underwater Effects
-
-![Water World Renderer Underwater](../../assets/images/water_worldrenderer_underwater.png)
-
-| Property | Description |
-| :--- | :--- |
-| Under Water Enabled | Controls whether the [Underwater Effect](#underwater-effect) is currently enabled. |
-| [Under Water Settings](#underwater-settings) | Settings for all configurable visual parameters of the [Underwater Effect](#underwater-effect).<br/><br/>Defines how light interacts with the water volume, including absorption rates, scattering colors, and the appearance of the surface meniscus. |
-
-#### Caustics
-
-![Water World Renderer Caustics](../../assets/images/water_worldrenderer_caustics.png)
-
-| Property | Description |
-| :--- | :--- |
-| Caustics Enabled | Controls whether the [Caustics Effect](#caustics-effect) is currently enabled. |
-| [Caustics Settings](#caustics-effect) | Settings for the [Caustics Effect](#caustics-effect), which renders animated light patterns projected onto the scene geometry underwater. |
-
-#### Surface Reflections
-
-![Water World Renderer Surface Reflections](../../assets/images/water_worldrenderer_surface_reflections.png)
-
-| Property | Description |
-| :--- | :--- |
-| Reflections Enabled | Controls whether real-time planar reflections are generated for this water surface. |
-| [Reflection Settings](#surface-reflections) | Settings for the [Surface Reflections](#surface-reflections) module (Planar Reflections). |
+Extension of [Fluid World Renderer](#fluid-world-renderer) for multi-tile water: foam, underwater, caustics, and planar reflections, mirroring [Water Surface](#water-surface) on [Fluid Renderer](#fluid-renderer). Configure underwater, caustics, and surface reflections in the [Water Rendering](#water-rendering) sections below.
 
 <a name="fft-generator"></a>
 <a name="fft-generator-settings"></a>
 #### Ocean FFT Settings
 
-Settings for the cascaded ocean FFT on [Fluid World Renderer](#fluid-world-renderer) when `Ocean Fft Enabled` is true. These control the JONSWAP spectrum, cascade layers, and distance fades used for large-scale open-water displacement. To apply that motion on the shallow-water solver, configure [Ocean FFT Coupling](../fluid_simulation_components#flow-fluid-simulation) on each [Flow Fluid Simulation](../fluid_simulation_components#flow-fluid-simulation) tile.
+Settings for the cascaded ocean FFT on [Fluid World Renderer](#fluid-world-renderer). These control the JONSWAP spectrum, cascade layers, and distance fades used for large-scale open-water displacement. To apply that motion on the shallow-water solver, configure [Ocean FFT Coupling](../fluid_simulation_components#flow-fluid-simulation) on each [Flow Fluid Simulation](../fluid_simulation_components#flow-fluid-simulation) tile.
 
 ![Fluid World Renderer Ocean FFT](../../assets/images/worldrenderer_fft.png)
 
 | Property | Description |
 | :--- | :--- |
+| Ocean Fft Enabled | Enables cascaded ocean FFT displacement (JONSWAP spectrum) on the world surface.<br/><br/>When enabled, the renderer selects global cascade-count shader keywords and binds FFT data via shader globals. |
 | Water Preset | A starting profile for the ocean waves.<br/><br/>Pick a preset for quick results, or choose Custom and tune the fields yourself. Changing spectrum or cascade values switches back to Custom. |
 | Resolution | Internal resolution of each wave layer.<br/><br/>Higher values look sharper but use more GPU memory and time. |
 | Cascade Count | How many wave size layers are active.<br/><br/>C1 is the largest, longest waves. More layers add detail but cost more. Inactive layers are ignored at runtime. |
@@ -206,6 +162,7 @@ To save on GPU performance, you can bake these waves into static textures or fli
 
 | Property | Description |
 | :--- | :--- |
+| Detail Waves Enabled | Enables procedural or baked detail waves on the world surface.<br/><br/>These ripples are purely visual and do not affect the fluid simulation, physics, or buoyancy. |
 | Mode | Determines the method used to generate or display detail waves on the fluid surface.<br/><br/>- **Baked** Uses a single static texture for maximum performance but lacks motion.<br/>- **Flipbook** Cycles through a pre-rendered texture array for smooth animation at a low GPU cost.<br/>- **Dynamic** Calculates procedural wave math in real-time for infinite variety at a higher performance cost. |
 | Resolution | The pixel dimensions of the generated wave texture.<br/><br/>Gerstner supports any power-of-two up to 1024 for bakes / dynamic. FFT snaps to 64-512 only. |
 | Min Frequency | Defines the scale of the largest waves in the generated spectrum.<br/><br/>Low values (1-2) create large, rolling swells. <br/>High values (5+) make the primary wave shapes much smaller and busier. |
@@ -261,14 +218,7 @@ ___
 The [Water Surface](#water-surface) is an extension of the [Fluid Renderer](#fluid-renderer) component that renders all things water like [Foam Layer](../fluid_simulation_components#foam-layer), [Underwater Effect](#underwater-effect) visuals, absorption, and scattering.
 It does this by assigning the active rendering layers to its surface material and using the underwater settings.
 
-| Property | Description |
-| :--- | :--- |
-| Under Water Enabled | Controls whether the [Underwater Effect](#underwater-effect) is currently enabled. |
-| [Under Water Settings](#underwater-settings) | Settings for all configurable visual parameters of the [Underwater Effect](#underwater-effect).<br/>This class defines how light interacts with the water volume, including absorption rates, scattering colors, and the appearance of the surface meniscus. |
-| Caustics Enabled | Controls whether the [Caustics Effect](#caustics-effect) is currently enabled. |
-| [Caustics Settings](#caustics-settings) | Settings for the [Caustics Effect](#caustics-effect), which renders animated light patterns projected onto the scene geometry underwater. |
-| Reflections Enabled | Controls whether real-time planar reflections are generated for this water surface. |
-| [Reflection Settings](#settings) | Settings for the [Surface Reflections](#surface-reflections) module (Planar Reflections). |
+Underwater, caustics, and surface reflections use the same settings on [Water Surface](#water-surface) and [Water World Renderer](#water-world-renderer). See [Underwater Settings](#underwater-settings), [Caustics Settings](#caustics-settings), and [Surface Reflections](#surface-reflections) below.
 
 <a name="underwater-effect"></a>
 #### Underwater Effect
@@ -289,10 +239,12 @@ The effect handles features like light absorption, fog scattering, and direction
 <a name="underwater-settings"></a>
 #### Underwater Settings
 
-![Water World Renderer Underwater](../../assets/images/water_worldrenderer_underwater.png)
-
 Settings for all configurable visual parameters of the [Underwater Effect](#underwater-effect).
 This class defines how light interacts with the water volume, including absorption rates, scattering colors, and the appearance of the surface meniscus.
+
+| Property | Description |
+| :--- | :--- |
+| Under Water Enabled | Controls whether the [Underwater Effect](#underwater-effect) is currently enabled. |
 
 #####  Absorption
 
@@ -350,6 +302,11 @@ Screen-space underwater volumetric light shafts (godrays) for URP and Built-in. 
 
 The effect follows the main directional light and can be modulated by shadow casters, temporal denoise, caustics-driven shaft breakup, and a post-resolve blur. Tune quality with sample count and buffer resolution.
 
+<video controls autoplay loop muted style="max-width: 100%; height: auto;">
+  <source src="../../assets/images/underwater_volumetric.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
 | Property | Description |
 | :--- | :--- |
 | Enable | Raymarches the underwater volume with the main light to create godrays / light shafts. |
@@ -382,10 +339,12 @@ It also accounts for surface conditions for example, **Foam Masking** can be use
 <a name="caustics-settings"></a>
 #### Caustics Settings
 
-![Water World Renderer Caustics](../../assets/images/water_worldrenderer_caustics.png)
-
 Settings for all configurable visual parameters of the [Caustics Effect](#caustics-effect).
 This class defines animated light patterns projected underwater, wave-driven highlights, and global visibility attenuation.
+
+| Property | Description |
+| :--- | :--- |
+| Caustics Enabled | Controls whether the [Caustics Effect](#caustics-effect) is currently enabled. |
 
 ##### Texture Projection
 You can use these settings to customize the look of the animated texture patterns, including how fast they move, how they warp with the waves, and whether they use triplanar mapping to stay consistent on vertical walls.
@@ -452,12 +411,11 @@ The component reads the height of the fluid simulation to set the reflection pla
 
 ![planar_reflections](../../assets/images/planar_reflections.png)
 
-![Water World Renderer Surface Reflections](../../assets/images/water_worldrenderer_surface_reflections.png)
-
 The following settings can be configured to setup the Planar reflections:
 
 | Property | Description |
 | :--- | :--- |
+| Reflections Enabled | Controls whether real-time planar reflections are generated for this water surface. |
 | Resolution | The quality/resolution of the generated planar reflection texture. |
 | Culling Mask | Which layers the planar reflection camera renders. |
 | Clear Flags | What to display in empty areas of the planar reflection's view (e.g., Skybox, Solid Color). |
