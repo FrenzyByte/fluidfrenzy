@@ -6,7 +6,7 @@ permalink: /docs/future_updates_roadmap/
 
 ### Fluid Frenzy: 2026 Development Roadmap
 
-The vision for 2026 is to push Fluid Frenzy beyond a standalone simulation and into a fully integrated environment fluid rendering system. Following the 2.0.0 release. I am shifting focus toward high-end rendering features and creating the fluid renderpipeline system where I create shared effects across all pipelines. 
+The vision for 2026 is to push Fluid Frenzy beyond a standalone simulation and into a fully integrated environment fluid rendering system. Following the 1.4.0 release. I am shifting focus toward high-end rendering features and creating the fluid renderpipeline system where I create shared effects across all pipelines. 
 
 These dates are based on when I believe implement these features but some may be sooner or later depending on what comes up. They may also be re-prioritized based on requests of users.
 
@@ -34,8 +34,20 @@ These dates are based on when I believe implement these features but some may be
 
 #### Upcoming Feature Breakdown
 
+**Dynamic Light Caustics**
+I am finishing up a system that allows you to project light patterns onto the terrain and objects beneath the fluid. It samples the fluid simulation data and projects textures and waves based on the depth, velocity and surface normals, creating sharp dancing patterns that move in sync with the waves.
+
+**Aquarium Mode**
+This mode is specifically for side-on viewing. I am adding support for the fluid profile, ensuring that when you look at the fluid from the side you still see water.
+
+**Hybrid Ocean System**
+I am integrating Gerstner or FFT wave functions into the existing simulation. This allows for deep-sea visuals on a massive scale. The waves aren't just visual, I plan to make them work with the shallow water equations so that waves that go over terrain will leave water to flow away naturally.
+
 **Volumetric Fluid Lighting**
 I want to enhance the underwater experience by adding volumetric light shafts. These rays shimmer and break apart as they pass through the surface waves, creating a realistic god ray effect that reacts to the fluid's motion.
+
+**GPU Clipmaps**
+To support larger environments, I am implementing a new surface rendering system that will allow multiple simulations to be in one rendering surface. This ensures the simulation is always highest resolution near the camera. As you move, the detail follows you, while distant fluid is simulated at a lower frequency to save performance. Currently there is already the GPU-LOD system but this system is not as good for streaming in simulation data like clipmaps are. Some research needs to be done to see what is possible and if this is viable.
 
 **Custom Screen Space Reflections (SSR)**
 Since URP lacks a native SSR solution, I am building one directly into the Fluid Frenzy water surface. This will allow for high-quality, dynamic reflections of the scene geometry on the water surface without the heavy cost of rendering extra Planar Reflection cameras.

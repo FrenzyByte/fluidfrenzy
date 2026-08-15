@@ -7,8 +7,9 @@
   - fluid_frenzy_toolbar
   - fluid_simulation_components
   - fluid_rendering_components
-  - fluid_modifiers
+  - fluid_shaders
   - terrain
+  - fluid_modifiers
   - c_interaction_scripting
   - using_shadergraph
   - tiled_simulations

@@ -270,119 +270,6 @@ It does this by assigning the active rendering layers to its surface material an
 | Reflections Enabled | Controls whether real-time planar reflections are generated for this water surface. |
 | [Reflection Settings](#settings) | Settings for the [Surface Reflections](#surface-reflections) module (Planar Reflections). |
 
-<div style="page-break-after: always;"></div>
-
-<a name="water-shader"></a>
-#### Water Shader
-
-The `FluidFrenzy/Water` shader is applied to the material used by the Water Surface component. It provides a comprehensive set of material properties for creating visually appealing water.
-
-**Compatibility:**
-This shader is compatible with both the Universal Render Pipeline (URP) and the Built-in Render Pipeline (BiRP).
-
-Note: The High Definition Render Pipeline (HDRP) requires a separate, dedicated shader: *FluidFrenzy/HDRP/Water*.
-
-##### Lighting
-
-Properties controlling the illumination and shading effects.
-
-![Water Shader](../../assets/images/watershader_slice_0_0.png)
-
-| Property | Description |
-| :--- | :--- |
-| Specular Intensity | Scales the brightness of specular highlights from the main directional light. |
-| Sun Roughness | Controls the roughness of direct specular highlights from lights (lower = sharper highlight, higher = broader highlight). |
-| Shadows | Enables or disables whether the water surface receives shadows. |
-
-##### Reflection
-
-Properties controlling the water surface's reflection of the environment.
-
-![Water Shader](../../assets/images/watershader_slice_1_0.png)
-
-| Property | Description |
-| :--- | :--- |
-| Reflection Roughness | Controls how blurry reflection probes (and HDRP smoothness) appear (lower = sharper reflections, higher = blurrier reflections). |
-| Planar Reflection | Enables or disables the use of planar reflections instead of only reflection probes. |
-| Reflectivity Offset | Offsets the base reflectiveness of the water surface.<br/>Use this to ensure the water is reflective even at sharp viewing angles. |
-| Distortion | Scales the distortion applied to planar reflections. |
-
-##### Absorption
-
-Properties controlling depth-based color, transparency, and refraction effects.
-
-![Water Shader](../../assets/images/watershader_slice_2_0.png)
-
-| Property | Description |
-| :--- | :--- |
-| Color | RGB sets the color of the water at maximum depth. Alpha (A) is the base transparency of the water.<br/>If 'Refraction Mode' is 'Screenspace Absorb', RGB is a color multiplier where White (1.0) is fully transparent.<br/>For 'Alpha' or 'Screenspace Tint', RGB is the final color tint the water reaches at maximum depth/opacity. |
-| Depth Transparency | Scales the rate at which the water's color changes and transparency fades based on depth. Lower values make the water more transparent at a faster rate. |
-| Refraction Mode | Selects the method for rendering water transparency and refraction:<br/><br/>- Alpha: Simple alpha blending transparency.<br/>- Opaque: Water is rendered as a solid, non-transparent surface.<br/>- Screenspace Tint: Uses screen-space refraction (GrabPass). Color interpolates from clear to the set color based on depth. Use for a single water color tint.<br/>- Screenspace Absorb: Uses screen-space refraction (GrabPass). Scene color is multiplied by water color, allowing for a color gradient (e.g., clear to turquoise to blue). |
-| Distortion | Scales the amount of distortion applied to the screenspace refraction effect ('Screenspace Tint' or 'Screenspace Absorb' modes). |
-
-##### Subsurface Scattering
-
-Properties controlling the diffusion of light and subsurface scattering effect beneath the water surface.
-
-![Water Shader](../../assets/images/watershader_slice_3_0.png)
-
-| Property | Description |
-| :--- | :--- |
-| Color | The tint of light scattered inside the water, like underwater fog or sun through shallow waves. |
-| Intensity | Master multiplier on all scatter terms below. |
-| Ambient Scattering | Constant glow from ambient light across the whole surface. Needs baked GI to show on BiRP. |
-| Height Scattering | Adds ambient glow on wave crests where the water is raised. |
-| Displacement Scattering | Adds ambient glow where the surface is choppy or horizontally displaced. |
-| Scattering Wave Height | Typical wave height used to scale Height and Displacement scattering. Lower values make those sliders more sensitive. |
-| Body Scattering | How much the sun glows through flat areas and wave troughs. |
-| Tip Scattering | How much the sun glows through wave crests. Usually the most visible of the two. |
-| Foam Contribution | Scales the subsurface scattering contribution in areas covered by foam. |
-
-##### Waves
-
-Properties for adding detail to the water surface using normal mapping and procedural vertex displacement.
-
-![Water Shader](../../assets/images/watershader_slice_4_0.png)
-
-| Property | Description |
-| :--- | :--- |
-| Normal Map | Texture used to add fine detail to the water's normals for lighting and PBR shading. |
-| Velocity Influence | Min = Strength at resting water. Max = Max strength multiplier at high velocity. |
-
-##### Foam
-
-Properties controlling the appearance and masking of the foam effect.
-
-![Water Shader](../../assets/images/watershader_slice_5_0.png)
-
-| Property | Description |
-| :--- | :--- |
-| Foam Color | Sets the Foam Color (RGB) and acts as a multiplier/mask (A) for the Foam Map's transparency. |
-| Foam Map | Texture used for the foam's diffuse color (RGB) and its base mask/transparency (A). |
-| Foam Normal Map | Normal map texture used to add PBR lighting detail to the foam. |
-| Foam Visibility Range | Sets the minimum and maximum threshold values for when the foam becomes visible and reaches its maximum strength. Foam visibility is interpolated between these values using a smoothstep function. |
-| Screenspace Particles | Enables the use of the screenspace particles (from the FluidParticles component) as an additional mask to generate foam. |
-| Foam Mode | Selects the blending method for the foam:<br/><br/>• Albedo: Soft foam using the Foam Map for color and mask.<br/>• Clip: Hard-edged foam using the Foam Map's red channel as a clip value for sharp borders.<br/>• Mask: Uses the Foam Layer Mask's value to select one of the Foam Map's RGB channels as an extra mask for blending the foam color, allowing for varied intensity: 0-0.334 uses Blue, 0.334-0.667 uses Green, and 0.667-1 uses Red. |
-| Foam Smoothness | Controls how glossy the foam appears. Lower values produce matte, chalky whitecaps. |
-| Water Specular Suppress | Lowers water smoothness (sun spec + reflections) on visible foam. 1 = matte foam smoothness, 0 = no change. |
-| Foam Ambient Floor | Minimum brightness for foam in shadowed areas. |
-
-##### Rendering
-
-General rendering, depth-handling, and simulation sampling properties.
-
-![Water Shader](../../assets/images/watershader_slice_6_0.png)
-
-| Property | Description |
-| :--- | :--- |
-| Layer | Selects which layer (e.g., Water or Lava, etc.) from the Fluid Simulation field to sample for effects. |
-| Fade Height | The world height at which the water will be fully faded out.<br/>Used to soften edges or blend with geometry above a certain height. |
-| Linear Clip Offset | A linear offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with close terrain or surfaces. |
-| Exponential Clip Offset | An exponential/depth-based offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with distant terrain or surfaces. |
-| UV Space | Controls which coordinate space is used for sampling Wave Normal / Foam / Detail Waves.<br/><br/>- Normalized UV Space: uses simulation UVs in 0..1.<br/>- World UV Space: uses world XZ planar UVs. In this mode the texture tiling values are interpreted as repeats per meter (1,1 repeats every meter). |
-| Non-Tiled Sampling | Hides texture tiling artifacts on the wave normal, detail waves and foam by sampling a noise key once and offsetting samples. Slight extra cost. |
-
-
 <a name="underwater-effect"></a>
 #### Underwater Effect
 
@@ -416,8 +303,8 @@ This class defines how light interacts with the water volume, including absorpti
 
 | Property | Description |
 | :--- | :--- |
-| Color | The base transmission color of the water.<br/><br/>This defines the color of the water as light passes through it. Brighter colors make the water look clear, while darker colors make the water look thick and deep. This works with the absorption depth scale to decide how much the scene behind the water is tinted. |
-| Absorption Depth Scale | Controls the rate at which light is absorbed as it travels through the water.<br/><br/>Higher values result in darker water where light cannot penetrate as deeply. This scaling factor applies to the exponential decay of the `Water Color`. |
+| Color | The base transmission color of the water (Physical mode).<br/><br/>This defines the color of the water as light passes through it. Brighter colors make the water look clear, while darker colors make the water look thick and deep. This works with the absorption depth scale to decide how much the scene behind the water is tinted. |
+| Absorption Depth Scale | Controls the rate at which light is absorbed as it travels through the water.<br/><br/>Higher values result in darker water where light cannot penetrate as deeply. This scaling factor applies to the exponential decay of the absorption color. |
 | Absorption Limits | Clamps the calculated absorption to a specific range (Min, Max).<br/><br/>Useful for preventing the water from becoming completely black at extreme depths or ensuring a minimum amount of visibility. |
 | Color | The color of the light scattered within the water volume (subsurface scattering/fog color).<br/><br/>Defines the color of the fog when light illuminates the water. Usually a bright cyan or teal for tropical water, or a murky green/brown for swamps. |
 | Ambient Intensity | The base ambient contribution to the scattering effect, independent of direct lighting.<br/><br/>Higher values cause the underwater fog to glow brightly even in shadows or when facing away from the sun. Lower values rely purely on direct sunlight for illumination. |
@@ -455,6 +342,29 @@ This class defines how light interacts with the water volume, including absorpti
 | Height Scattering | Ambient height term scale (matches surface Height Scattering). |
 | Displacement Scattering | Ambient chop term scale (matches surface Displacement Scattering). |
 | Scattering Wave Height | Reference wave height for ambient scatter terms (matches surface Scattering Wave Height). |
+
+<a name="volumetric-lighting-settings"></a>
+##### Volumetric Lighting
+
+Screen-space underwater volumetric light shafts (godrays) for URP and Built-in. When enabled on [Under Water Settings](#underwater-settings), the system raymarches the water column into a low-resolution buffer that [Underwater Effect](#underwater-effect) composites over the scene.
+
+The effect follows the main directional light and can be modulated by shadow casters, temporal denoise, caustics-driven shaft breakup, and a post-resolve blur. Tune quality with sample count and buffer resolution.
+
+| Property | Description |
+| :--- | :--- |
+| Enable | Raymarches the underwater volume with the main light to create godrays / light shafts. |
+| Intensity | Brightness of the volumetric light shafts. |
+| Anisotropy | How tightly the shafts concentrate toward the sun.<br/><br/>Higher values make sharper godrays. Lower values spread the glow more widely. |
+| Density | How much light scatters along each raymarch sample. |
+| Sample Count | Number of raymarch steps.<br/><br/>Higher is smoother but more expensive. Compiled as a shader keyword so the march loop can unroll. |
+| Resolution | Buffer size relative to the screen.<br/><br/>Quarter is cheapest. Half is sharper. Full matches the screen and costs the most. |
+| Use Shadows | Modulate the shafts with the main light shadow map so occluders cast volumetric shadows. |
+| Temporal Denoise | How much of the previous frame to reuse when cleaning up dither noise from the low sample count.<br/><br/>Higher values look smoother but take longer to catch up when the lighting changes. Set to 0 to disable temporal reuse. |
+| Shaft Strength | Carves wave-driven beams out of the shafts instead of a smooth glow.<br/><br/>Reuses this surface's caustics texture and tiling, projected up the light direction, so the beams in the water and the caustics on the seafloor are the same pattern. Set to 0 to leave the shafts shaped only by shadow casters. |
+| Shadow Breakup | How strongly geometric shadow shafts break into filaments near occluder edges.<br/><br/>Set to 0 for clean shadow-map shafts. |
+| Breakup Scale | World scale of the breakup pattern.<br/><br/>Higher values make finer filaments. |
+| Breakup Speed | How fast the breakup pattern scrolls. |
+| Blur Radius | Gaussian blur radius in texels, applied after resolve for display only.<br/><br/>Softens leftover sparkle from the low sample count without smearing the temporal history. Set to 0 to disable. |
 
 <a name="caustics-effect"></a>
 #### Caustics Effect
@@ -604,128 +514,7 @@ Renders a depth-based tint when the camera is inside a [Lava Surface](#lava-surf
 | Rim Color | Hot-edge tint added in the surface band (HDR). |
 | Rim Intensity | Strength of the rim glow in the surface band. |
 
-
-<a name="lava-shader"></a>
-#### Lava Shader
-
-The *FluidFrenzy/Lava* shader is applied to the material used by the Lava Surface component. It creates realistic, flowing lava visuals where the 'heat' and resulting glow are dynamically driven by the **length of the fluid's velocity vector** in the simulation.
-
-The shader uses textures for the base 'cold' lava surface (Albedo, Smoothness, Normal Map) and employs a specialized **Heat Look-Up Table (LUT)** alongside an **Emission Map** to control the vibrant colors and intensity of the glowing, 'hot' lava. A separate **Noise** texture is used to break up tiling patterns.
-
-**Compatibility:**
-The *FluidFrenzy/Lava* shader is for URP and BiRP. The High Definition Render Pipeline (HDRP) requires a separate, dedicated shader: *FluidFrenzy/HDRP/Lava*.
-
-
-![Lava Shader](../../assets/images/lavashader.png)
-
-##### Lighting
-
-Properties controlling the illumination and shading effects.
-
-| Property | Description |
-| :--- | :--- |
-| Light Intensity | Scales the influence of the main directional light on the lava surface (e.g., specular highlights). |
-| Shadows | Enables or disables if the lava surface receives shadows from other scene objects. |
-
-##### Heat & Emission
-
-Properties controlling the lava's color and emission, driven by the fluid's 'heat' (usually fluid velocity/movement).
-
-| Property | Description |
-| :--- | :--- |
-| Heat LUT | Gradient Lookup Texture (LUT) used to determine the lava's color and emission based on the fluid's 'heat'. |
-| Heat Scale | Scales the fluid 'heat' value when sampling the Heat LUT gradient. Lower values increase the effective range of the lookup. |
-| Emission Map | Texture used for the emission color of the lava. A sample of this texture is multiplied by the fluid's 'heat'. |
-| Emission | Scales the overall intensity of the emission determined by the Heat LUT and the Emission Map. |
-
-##### Material Properties
-
-Properties controlling the cold lava surface's visual and PBR shading characteristics.
-
-| Property | Description |
-| :--- | :--- |
-| Albedo | Sets the base Albedo color and texture of the lava. This represents the appearance of cold (non-emissive) lava. |
-| Smoothness Scale | Scales the PBR smoothness of the cold lava surface, affecting its specular reflections. |
-| Normal Map | Normal map texture used to add detailed lighting to the cold lava surface. |
-
-##### Rendering
-
-General rendering, depth-handling, and simulation sampling properties.
-
-| Property | Description |
-| :--- | :--- |
-| Cull Mode | Which triangle faces to discard: Back (default, typical opaque surface), Front (invert), or Off (double-sided; both faces render and lighting uses the correct face normal). |
-| Layer | Selects which layer (e.g., Water or Lava, etc.) from the Fluid Simulation field to sample for effects. |
-| Fade Height | The world height at which the lava will be fully faded out.<br/>Used to soften edges or blend with geometry above a certain height. |
-| Linear Clip Offset | A linear offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with close terrain or surfaces. |
-| Exponential Clip Offset | An exponential/depth-based offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with distant terrain or surfaces. |
-| Non-Tiled Sampling | Hides texture tiling artifacts on the lava albedo, normal and emission by sampling a noise key once and offsetting samples. Slight extra cost. |
-
 ___
-
-<a name="particle-shaders"></a>
-### Particles Shaders
-Fluid Frenzy uses custom shaders to render its completely GPU-accelerated particle system. Two shaders are available: *ProceduralParticle* (Lit) and *ProceduralParticleUnlit*. Both render particles as billboards.
-
-- ProceduralParticle (Lit): Includes PBR lighting with support for Normal Maps, Metallic, and Smoothness.
-- ProceduralParticleUnlit (Unlit): Does not perform lighting, offering a lower rendering cost.
-- FluidParticleSplash
-
-All shaders share settings for **Blend Mode** and **Billboard Mode**. **Billboard Mode** controls particle orientation, including options for camera-facing or world-up normals to manage lighting.
-
-**Compatibility**:
-| Alpha Threshold | Alpha below this value will be clipped. |
-The High Definition Render Pipeline (HDRP) requires its own dedicated shaders: *FluidFrenzy/HDRP/ProceduralParticle* and *FluidFrenzy/HDRP/ProceduralParticleUnlit*.
-
-![Particle Shader](../../assets/images/particle_shader.png)
-| Fade Submerged | Automatically fades out particles that fall beneath the surface level of the simulated fluid grid. |
-##### Procedural Particle (Unlit) Properties
-
-| Property | Description |
-| :--- | :--- |
-| Albedo | albedo color and transparency of the particle. |
-| Color | albedo color and transparency of the particle. |
-| Normal Map | can be used to add extra lighting details. |
-| Alpha Threshold | Alpha below this value will be clipped. |
-| Fade Submerged | Fades particles that fall below the fluid surface. |
-| Blend Mode | select which to use for the particles. |
-| Source Blend | Source Blend. |
-| Dest Blend | Dest Blend. |
-| ZWrite | Write particle to the depth buffer. |
-| Billboard Mode | Select which method to use for rendering the particle billboard.<br/><br/>• Camera: the billboard and world normal will face in the direction of the camera.<br/><br/>• Camera Normal Up: the billboard will face the camera and the normal will face in in the world space up direction.This can be useful to have more uniform lighting from every direction.<br/><br/>• Up: the billboard and normal will both face in the world space up direction.<br/><br/>• Normal: not yet implemented. |
-| Smoothness | The smoothness of this material. |
-| Fade Submerged | Fades particles that fall below the fluid surface. |
-
-##### Procedural Particle Splash Properties
-
-Custom fluid rendering shader for water splashes.
-
-![Splash Particles](../../assets/images/procedural_splash_particles.png)
-
-| Property | Description |
-| :--- | :--- |
-| Atlas | Atlas texture driving the fluid shapes. R = Droplets, G = Specular Highlights, B = Aerated Foam, A = Dissolve Noise. |
-| Sprite Sheet Grid | The number of columns (X) and rows (Y) in the atlas. The shader will randomly assign a static frame to each particle at birth. |
-| Alpha Multiplier | Globally scales the overall opacity of the particles. Higher values make the fluid look thicker and more opaque. |
-| Alpha Threshold | Pixels with transparency below this value are discarded. Higher values increase performance but can make edges look jagged. |
-| Droplet Base Color | The baseline ambient color of the water droplets. |
-| 3D Normal Strength | Generates physical volume shading by calculating slopes from the Red channel. |
-| Edge Ring Threshold | Controls the internal thickness of the droplet. Lower values make the center thicker. |
-| Edge Ring Softness | Controls the blurriness of the droplet's outer edge. Higher values create a softer look. |
-| Highlight Color | The specular color of the light reflecting off the droplets. |
-| Highlight Intensity | How bright the specular highlights glow when hit by directional light. Higher values create a glaring, highly reflective surface. |
-| Highlight Focus | Controls the size and sharpness of the highlights. Higher values tighten the light into tiny, sharp pinpricks. |
-| White Water Color | The color of the internal aeration and foam (driven by the Blue channel). |
-| White Water Opacity | How strongly the foam channel blends into the droplet. Higher values fill the droplet, simulating thick, churning white water. |
-| Dissolve Speed | How fast the particle physically erodes over its lifetime. A value of 1.2 will fully dissolve the particle exactly as it dies. |
-| Enable Soft Particles | Smoothly fades the particle alpha where it intersects with scene geometry to prevent harsh clipping lines. |
-| Soft Particles Fade Distance | The physical distance over which the intersection fade occurs. Higher values create a longer, softer fade against walls and floors. |
-| Fade Submerged | Automatically fades out particles that fall beneath the surface level of the simulated fluid grid. |
-| Blend Mode | The mathematical blending operation used to draw the particle onto the screen. |
-| Source Blend | The source blend factor used for custom blend modes. |
-| Dest Blend | The destination blend factor used for custom blend modes. |
-| ZWrite | Whether the particle writes its depth to the Z-Buffer. Usually left off for transparent fluids. |
-| Billboard Mode | Controls how the particle faces the camera. 'Camera Normal Up' is recommended for proper directional lighting. |
 
 <a name="shadow-grabber"></a>
 ### Shadows
@@ -753,4 +542,4 @@ The Water Decal system uses signed normalized render buffers to apply the displa
 
 ___
 
-<a name="terrain"></a>
+<a name="fluid-shaders"></a>

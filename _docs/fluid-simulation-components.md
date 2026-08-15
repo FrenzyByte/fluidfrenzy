@@ -697,6 +697,7 @@ This component generates two distinct types of particles by detecting areas of h
 | [Surface Particles System](#fluid-particle-system) | Configuration settings for the advected surface particles (movement, rendering, and limits). |
 | Render Offscreen | If enabled, surface particles are rendered to a dedicated offscreen texture buffer instead of the main camera.<br/><br/>This generated texture is globally available to shaders (e.g., as a foam mask) to create effects like white water trails without drawing individual particle geometry to the screen. |
 | Frustum Culling | When enabled, skips particle spawn work for grid cells outside the (expanded) camera frustum past a short distance. |
+| Distance Reference | World-space origin used for cascade LOD distance calculations.<br/><br/>When assigned, particle emission cascades measure distance from this transform instead of the main camera.<br/>Frustum culling still uses the main camera. When unset, the main camera position is used for distance. |
 
 <a name="fluid-particle-system"></a>
 #### Fluid Particle System

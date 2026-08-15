@@ -4,6 +4,8 @@ permalink: /docs/terrain/
 ---
 
 
+<a name="terrain"></a>
+
 Fluid Frenzy has the capability to render terrain height maps using a custom terrain system. 
 Currently features for terrains are limited but consists of the following:
 

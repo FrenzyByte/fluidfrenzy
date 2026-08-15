@@ -35,7 +35,7 @@ These steps will describe how to set up a fluid simulation that will simulate an
 4. If you followed step 1 go to step 5. The Terrain and its settings have been automatically assigned to the Fluid Simulation Component. If you did not follow step 1 you will have to assign the following fields:
     - Dimension: The size of your simulation/terrain domain.
     - Terrain Type: **Unity Terrain**, **Heightmap**, **Simple Terrain** which specifies the type of terrain you wish to use.
-    - Terrain/[Simple Terrain](../fluid_rendering_components#terrain)/Heightmap: The object you want the Fluid Simulation to interact with.
+    - Terrain/[Simple Terrain](../terrain#terrain)/Heightmap: The object you want the Fluid Simulation to interact with.
 5. Fluid settings, assets, and materials are automatically created in the folder of your scene. You can tweak these values to your liking.
 6. Add a [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) by clicking the GameObject menu and selecting *`Fluid Frenzy > Fluid Source`*.
 7. Setup the new Fluid Modifier by placing it in the desired location in the scene and setting up the settings in the Inspector

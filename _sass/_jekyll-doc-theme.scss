@@ -194,3 +194,41 @@ html {
   .doc-nav-h3 { padding-left: 26px; font-size: 12.5px; }
   .doc-nav-h4 { padding-left: 34px; font-size: 12px; opacity: 0.95; }
 
+  /* Doc markdown body: consistent heading scale (page <h1> in docs.html is outside this container) */
+  #markdown-content-container {
+    h2 {
+      font-size: floor(($font-size-base * 2.15));
+      font-weight: 600;
+      margin-top: 1.5em;
+      margin-bottom: 0.65em;
+    }
+
+    h3 {
+      font-size: ceil(($font-size-base * 1.7));
+      font-weight: 600;
+      margin-top: 1.35em;
+      margin-bottom: 0.5em;
+    }
+
+    h4 {
+      font-size: ceil(($font-size-base * 1.25));
+      font-weight: 600;
+      margin-top: 1.25em;
+      margin-bottom: 0.4em;
+    }
+
+    h5 {
+      font-size: ceil(($font-size-base * 1.1));
+      font-weight: 600;
+      margin-top: 1.15em;
+      margin-bottom: 0.35em;
+    }
+
+    h6 {
+      font-size: ceil(($font-size-base * 0.95));
+      font-weight: 600;
+      margin-top: 1em;
+      margin-bottom: 0.3em;
+    }
+  }
+
