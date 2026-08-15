@@ -18,9 +18,9 @@ These dates are based on when I believe implement these features but some may be
 | 🟢&nbsp;**Implemented** | **Aquarium Mode** | February 2026 | Support for side viewing of the water surface. ***Added in v1.4.1*** |
 | 🟢&nbsp;**Implemented** | **Hybrid Ocean System** | April 2026 | Integration of Gerstner or FFT wave math into the simulation for large open water visuals. ***Added in v2.0.0*** |
 | 🟢&nbsp;**Implemented** | **GPU Clipmaps** | May 2026 | Optimization system using nested grids to simulate massive areas with high-detail localized around the camera. ***Improved and made more standard with the World Renderer in v2.0.0*** |
-| 🟡&nbsp;**Implemented** | **Volumetric Fluid Lighting** | August 2026 | Underwater god rays that react to surface turbulence and provide depth-based light scattering. |
+| 🟢&nbsp;**Implemented** | **Volumetric Fluid Lighting** | August 2026 | Underwater god rays that react to surface turbulence and provide depth-based light scattering. |
 | 🟠&nbsp;**Planned** | **Custom SSR** | September 2026 | A dedicated Screen Space Reflection implementation for the water shader to provide high-quality reflections in URP. |
-| 🟠&nbsp;**Implemented** | **Stylized & Toon Shaders** | October 2026 | Dedicated shaders for stylized looks, cel-shading, ink-outlines, and procedural toon foam patterns. |
+| 🟢&nbsp;**Implemented** | **Stylized & Toon Shaders** | October 2026 | Dedicated shaders for stylized looks, cel-shading, ink-outlines, and procedural toon foam patterns. |
 | 🟠&nbsp;**Planned** | **Surface Decals & Velocity Helper** | October 2026 | Render floating debris like lilypads that naturally follow the simulation's velocity field. |
 | 🟠&nbsp;**Planned** | **Dynamic Wetness Maps** | November 2026 | Global shader support to allow shoreline objects and terrain to appear wet and reflective based on disappearing fluids. |
 | 🟠&nbsp;**Planned** | **Dynamic Lens Wetness** | November 2026 | A post-process effect simulating droplets and wiping streaks on the camera lens after emerging from the fluid. |
