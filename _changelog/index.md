@@ -10,6 +10,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-08-15
+
+### Added
+- Rendering: New **Stylized Water** and **Toon Water** shaders (`FluidFrenzy/StylizedWater`, `FluidFrenzy/ToonWater`) with planar reflections, detail waves, shadows, and Ocean FFT support.
+- Rendering: New water material presets (hot spring, moonlit, peaty loch, river, swamp, stylized, and toon). Updated clear, ocean, tropical, murky, soft, and super clear.
+- Rendering: Underwater Look Mode (Physical, Stylized, or Toon). Underwater volumetric godrays for URP and Built-in.
+- Rendering: Lava shader improvements with layered emission, parallax, and occlusion. New lava texture set.
+- Simulation: `FluidSimulationManager.WarmupSimulation` to pre-run the solver at startup.
+- Simulation: **Unity Terrain Downsample** mode when the sim grid is lower resolution than the Unity terrain heightmap.
+- Particles: **Distance Reference** on `FluidParticleGenerator` for top-down and follow-player distance culling.
+- Samples: Shared **ThirdPersonCharacter** with swimming and splashes.
+- General: CoreCLR auto static cleanup support on Unity 6+.
+
+### Changed
+- Rendering: Planar reflection optimization options on Water Surface and Water World Renderer. URP renderer ID and shadow toggle on reflection settings. Reflection and procedural particle path optimizations.
+- Rendering: Underwater prepass samples wave normals from the normal map instead of screen-space derivatives (less sparkle and sawtooth at the water line).
+- Rendering: Shadow sampling and shader keyword optimizations on water shaders when features are disabled.
+- Rendering: Lava sample materials updated for the new lava look.
+- Simulation: Optimized `FluidParticleGenerator` transform and distance-reference caching.
+- Editor: Shader Stripper settings moved to their own Project Settings asset so changes reload reliably. Tooltips improved across water, lava, and simulation inspectors.
+- Samples: River water look and sample shading tweaks. Sparkler polish.
+
+### Fixed
+- Rendering: Planar reflection edge mask. Enviro3 planar reflections and missing clouds.
+- Rendering: URP overbright/bloom in aquarium-style water edge modes.
+- Rendering: Planar reflection vs refraction mode interaction.
+- Rendering: Mesh spikes in `FluidCreateRenderData` at wet/dry boundaries.
+- Editor: Fluid Shader Stripper Project Settings not reloading after edits.
+- Samples: Grand Canyon HDRP sample.
+- General: Unity 6.7 compiler warnings and related cleanup.
+
 ## [2.0.0] - 2026-07-28
 
 ### Added
