@@ -80,7 +80,7 @@ Use `~0` on both sides to include every channel. Use separate channel masks and 
 <a name="water-world-renderer"></a>
 ### Water World Renderer
 
-Extension of [Fluid World Renderer](#fluid-world-renderer) for multi-tile water: foam, underwater, caustics, and planar reflections, mirroring [Water Surface](#water-surface) on [Fluid Renderer](#fluid-renderer). Configure underwater, caustics, and surface reflections in the [Water Rendering](#water-rendering) sections below.
+Extension of [Fluid World Renderer](#fluid-world-renderer) for multi-tile water: foam, underwater, caustics, planar reflections, and screen-space reflections, mirroring [Water Surface](#water-surface) on [Fluid Renderer](#fluid-renderer). Configure underwater, caustics, and surface reflections in the [Water Rendering](#water-rendering) sections below.
 
 <a name="fft-generator"></a>
 <a name="fft-generator-settings"></a>
@@ -218,7 +218,7 @@ ___
 The [Water Surface](#water-surface) is an extension of the [Fluid Renderer](#fluid-renderer) component that renders all things water like [Foam Layer](../fluid_simulation_components#foam-layer), [Underwater Effect](#underwater-effect) visuals, absorption, and scattering.
 It does this by assigning the active rendering layers to its surface material and using the underwater settings.
 
-Underwater, caustics, and surface reflections use the same settings on [Water Surface](#water-surface) and [Water World Renderer](#water-world-renderer). See [Underwater Settings](#underwater-settings), [Caustics Settings](#caustics-settings), and [Surface Reflections](#surface-reflections) below.
+Underwater, caustics, planar reflections, and screen-space reflections use the same settings on [Water Surface](#water-surface) and [Water World Renderer](#water-world-renderer). See [Underwater Settings](#underwater-settings), [Caustics Settings](#caustics-settings), and [Surface Reflections](#surface-reflections) below.
 
 <a name="underwater-effect"></a>
 #### Underwater Effect
@@ -399,23 +399,29 @@ This section handles the overall strength and blending of the effect, including 
 <a name="surface-reflections"></a>
 #### Surface Reflections
 
-**Surface Reflections** are a set of settings on the [Water Surface](#water-surface) component that generate **real-time reflections** to enhance the rendering quality of the water.
+**Surface Reflections** are settings on [Water Surface](#water-surface) and [Water World Renderer](#water-world-renderer) that add real-time reflections on top of reflection probes.
 
-This is achieved by rendering the scene again from a mirrored perspective flipped around the water plane and capturing the result to a texture. This reflection texture is then applied to the water material.  
+Fluid Frenzy supports two complementary techniques:
 
-The component reads the height of the fluid simulation to set the reflection plane as accurately as possible. It includes built-in smoothing (controlled by [Smooth Position](#m_smooth-position)) to prevent quick, jittering changes caused by small, rapid waves on the fluid surface.  
+- **Planar Reflections** render the scene from a mirrored camera flipped around the water plane. This gives accurate reflections for geometry above the water but costs an extra camera pass.
+- **Screen Space Reflections (SSR)** ray march the rendered scene color buffer to find reflected pixels (Built-in and URP). SSR is cheaper than a full planar camera for many scenes and can be combined with planar reflections.
 
-**Note:** To see the results of the reflection, the water material (e.g., `FluidRenderer.fluidMaterial`) must have surface reflections enabled in its shader.
+The reflection plane follows fluid simulation height, with optional smoothing ([Smooth Position](#smooth-position)) to reduce jitter from small waves.
 
-**Note:** HDRP does not use Surface Reflections in the water shader, it uses the reflections directly rendered by the pipeline.
+**Note:** Planar and screen-space reflections require the water material to sample them. On the material ([Water Shader](../fluid_shaders#water-shader) and related variants), set **Surface Reflections** to match the techniques you enable here.
+
+**Note:** HDRP does not use these settings in the water shader; HDRP renders reflections through its pipeline.
 
 ![planar_reflections](../../assets/images/planar_reflections.png)
 
-The following settings can be configured to setup the Planar reflections:
+<a name="surface-reflections-settings"></a>
+##### Planar Reflections
+
+Planar reflections capture the scene from a mirrored camera and blend the result over reflection probes.
 
 | Property | Description |
 | :--- | :--- |
-| Reflections Enabled | Controls whether real-time planar reflections are generated for this water surface. |
+| Use Planar Reflections | Renders a mirrored camera reflection texture blended over probe reflections. |
 | Resolution | The quality/resolution of the generated planar reflection texture. |
 | Culling Mask | Which layers the planar reflection camera renders. |
 | Clear Flags | What to display in empty areas of the planar reflection's view (e.g., Skybox, Solid Color). |
@@ -424,8 +430,50 @@ The following settings can be configured to setup the Planar reflections:
 | Smooth Speed | How fast the reflection plane adapts to water height changes. Lower values result in smoother, slower transitions. |
 | Snap Threshold | The height difference threshold at which the reflection plane instantly snaps to the new height instead of smoothly transitioning. |
 | Renderer ID | SRP Renderer to use for the planar reflection pass. Use this to select a cheaper render pass for the reflection camera. |
+| Render Shadows | Controls shadow map rendering for the planar reflection camera (URP only). |
 | Shadow Quality | Controls shadow rendering in the reflection (BiRP Only). |
-| Reflection Texture Size | Defines the resolution/size of the generated reflection texture. |
+
+##### Screen Space Reflections
+
+![Water World Renderer Screen Space Reflections](../../assets/images/water_worldrenderer_ssr.png)
+
+Screen Space Reflections trace reflected rays in screen space against the fluid depth prepass and a surface-normal prepass written for water pixels. The pass runs in [Fluid Render Pipeline](#fluid-render-pipeline) after the fluid prepass (Built-in / URP). SSR is one frame behind the scene color it samples, which is typical for screen-space techniques.
+
+When multiple water surfaces are visible, the renderer picks the SSR settings from the surface with the highest enabled resolution.
+
+| Property | Description |
+| :--- | :--- |
+| Use Screen Space Reflections | Ray marches the scene color buffer for reflections (BiRP / URP). Can be combined with planar reflections. |
+| Resolution | Screen-space reflection buffer resolution relative to the camera.<br/><br/>Quarter is cheapest. Half is sharper. Full matches the screen and costs the most. |
+| Normal Precision | Bit depth of the octahedral surface normal prepass written for SSR.<br/><br/>8 bit is usually fine when the water has a lot of small wave detail. The reflection<br/>ray does not track fine normal changes very closely anyway so you save prepass<br/>bandwidth. Use 16 bit if reflections look banded or stepped. |
+| Ray March Steps | Number of iterative ray march steps used to find reflected scene color.<br/><br/>Higher values improve accuracy on steep reflections at a small GPU cost. Compiled as a shader keyword so the march loop can unroll. |
+| Side Edge Fade | Width of the SSR fade at the left and right screen edges. 0 disables. Higher values fade sooner and still reach zero at the edge. |
+| Top & Bottom Fade | Width of the SSR fade at the top and bottom screen edges. 0 disables. Higher values fade sooner and still reach zero at the edge. |
+| Edge Fade Power | Exponent applied to the SSR edge fade curve. 1 is linear. Higher values fade reflections out faster near screen edges. |
+| Mirror Side Misses | When a reflected ray misses left or right of the screen, fold the sample UV horizontally instead of falling back to probes. |
+
+<a name="fluid-decal-renderer"></a>
+#### Fluid Decal Renderer
+
+[Fluid Decal Renderer](#fluid-decal-renderer) stamps a texture onto visible fluid surfaces (water or lava) inside a world-space projector box.
+
+The component does not use a mesh renderer. It draws a procedural projector volume after the fluid prepass and resolves the fluid surface per pixel using fluid depth, scene depth rejection, and optional velocity-driven flow mapping from the bound simulation.
+
+Assign a material using `FluidFrenzy/FluidDecal` or `FluidFrenzy/FluidDecalLit` (URP/BiRP), or the HDRP Shader Graph variants under `FluidFrenzy/HDRP/Decal`. Flow mapping is controlled on this component, not on the material.
+
+![Fluid Decal Renderer](../../assets/images/fluiddecalrenderer.png)
+
+| Property | Description |
+| :--- | :--- |
+| Size | World-space size of the projector box. Content is clipped in projector local space to a unit cube scaled by this vector. |
+| Material | Material used to render the decal. URP/BiRP: `FluidFrenzy/FluidDecal` or `FluidFrenzy/FluidDecalLit`. HDRP: Shader Graphs under `FluidFrenzy/HDRP/Decal`. |
+| Albedo Texture | Optional albedo override. When set, replaces the material `_MainTex` for this projector via a property block. |
+| Normal Map | Optional normal map override for `FluidDecalLit`. When set, replaces the material `_BumpMap` for this projector. |
+| Mask Map | Optional mask map override for `FluidDecalLit`. Green = occlusion, blue = height, alpha = smoothness. When set, replaces the material `_MaskMap` for this projector. |
+| Use Flow Mapping | When enabled, the decal texture advects with fluid velocity using the same flow-mapping modes as the surface shader.<br/>When disabled, the texture uses projector UV (0..1 across the box); use material Tiling/Offset to repeat. |
+| Flow Mode | How the decal texture moves when flow mapping is enabled.<br/><br/>- **Surface** <br/>Multi-phase crossfade matching the water material. Best for seamless tileable textures.<br/><br/>- **Drift** <br/>Integrates fluid velocity and slides the stamp downstream. Requires Height & Velocity readback on the simulation; otherwise Surface is used. |
+| Uv Mode | How decal texture tiling is applied across the projector box.<br/><br/>- **World** <br/>Tiling is repeats per world unit. (1,1) = one tile per meter; (1/size, 1/size) = one tile across the box.<br/><br/>- **Projector** <br/>Texture stretches 0..1 across the horizontal extent of the box. |
+| Edge Softness | World-space distance from the horizontal edge where opacity reaches 1. Steep falloff toward the boundary. 0 = hard cutoff. |
 
 
 ___

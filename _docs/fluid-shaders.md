@@ -6,7 +6,7 @@ permalink: /docs/fluid_shaders/
 
 Fluid Frenzy ships dedicated surface shaders for water, lava, and GPU particles. Assign them to the materials used by [Water Surface](../fluid_rendering_components#water-surface), [Lava Surface](../fluid_rendering_components#lava-surface), and [Fluid Particle System](../fluid_simulation_components#fluid-particle-system) components.
 
-All water surface shaders sample the same [Fluid Simulation](../fluid_simulation_components#fluid-simulation) data (height, velocity, foam, flow) and work with [Water Surface](../fluid_rendering_components#water-surface) features such as underwater effects, caustics, and planar reflections.
+All water surface shaders sample the same [Fluid Simulation](../fluid_simulation_components#fluid-simulation) data (height, velocity, foam, flow) and work with [Water Surface](../fluid_rendering_components#water-surface) features such as underwater effects, caustics, planar reflections, and screen-space reflections.
 
 <a name="water-shader"></a>
 ### Water Shader
@@ -40,6 +40,7 @@ Properties controlling the water surface's reflection of the environment.
 | :--- | :--- |
 | Reflection Roughness | Controls how blurry reflection probes (and HDRP smoothness) appear (lower = sharper reflections, higher = blurrier reflections). |
 | Planar Reflection | Enables or disables the use of planar reflections instead of only reflection probes. |
+| Surface Reflections | Selects how the water surface reflects the environment: reflection probes only, planar camera reflections, or screen-space ray marched reflections (BiRP / URP). |
 | Reflectivity Offset | Offsets the base reflectiveness of the water surface.<br/>Use this to ensure the water is reflective even at sharp viewing angles. |
 | Distortion | Scales the distortion applied to planar reflections. |
 
@@ -152,6 +153,7 @@ Properties controlling the water surface's reflection of the environment.
 | Reflectivity Offset | Offsets the base reflectiveness of the water surface.<br/>Use this to ensure the water is reflective even at sharp viewing angles. |
 | Reflection Roughness | Controls how blurry reflection probes appear (lower = sharper, higher = blurrier). |
 | Planar Reflection | Enables or disables the use of planar reflections instead of only reflection probes. |
+| Surface Reflections | Reflection probes only, planar camera reflections, or screen-space reflections (BiRP / URP). |
 | Distortion | Scales the distortion applied to planar reflections. |
 
 ##### Absorption
@@ -241,6 +243,7 @@ How much of the sky and surroundings the water reflects.
 | Reflectivity Offset | Minimum reflection amount, even when looking straight down. |
 | Reflection Roughness | How sharp or blurry the reflected sky looks. Lower is sharper; higher is softer. |
 | Planar Reflection | Use a live mirrored reflection of the scene instead of only sky/probes. |
+| Surface Reflections | Reflection probes only, planar camera reflections, or screen-space reflections (BiRP / URP). |
 | Distortion | How much waves warp the planar reflection. |
 
 ##### Absorption
@@ -442,3 +445,32 @@ Custom fluid rendering shader for water splashes.
 | Dest Blend | The destination blend factor used for custom blend modes. |
 | ZWrite | Whether the particle writes its depth to the Z-Buffer. Usually left off for transparent fluids. |
 | Billboard Mode | Controls how the particle faces the camera. 'Camera Normal Up' is recommended for proper directional lighting. |
+
+<a name="fluid-decal-shader"></a>
+### Fluid Decal Shader
+
+Materials for [Fluid Decal Renderer](../fluid_rendering_components#fluid-decal-renderer) use `FluidFrenzy/FluidDecal` (unlit) or `FluidFrenzy/FluidDecalLit` (PBR). HDRP projects use Shader Graph variants under `FluidFrenzy/HDRP/Decal`.
+
+##### Rendering
+
+Transparent queue and draw order for the decal pass.
+
+| Property | Description |
+| :--- | :--- |
+| Decal Texture | RGBA albedo sampled on the fluid surface. Alpha controls transparency. |
+| Tint | HDR color multiplier applied to the decal texture. |
+| Normal Map | Tangent-space normal map blended with the fluid surface normal. Uses the same UVs and flow mapping as the decal texture. |
+| Normal Strength | Scales the normal map before blending with the fluid surface. |
+| Mask Map | Optional packed map. Green = occlusion, blue = height (parallax, needs contrast), alpha = smoothness. Uses the same UVs and flow mapping as the decal texture. |
+| Occlusion Strength | Blends the green occlusion channel from the mask map. |
+| Metallic | PBR metallic value for FluidDecalLit. |
+| Smoothness | PBR smoothness multiplier. When a mask map is assigned, smoothness comes from the alpha channel. |
+
+##### Parallax
+
+Optional parallax occlusion mapping from the mask map blue channel.
+
+| Property | Description |
+| :--- | :--- |
+| Enable Parallax | Uses the blue height channel in the mask map. Adds extra texture samples; off by default. |
+| Height Scale | Parallax height scale in texture UV units. Positive: mask blue = raised. Negative inverts the height map. |

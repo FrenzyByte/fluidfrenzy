@@ -19,9 +19,10 @@ These dates are based on when I believe implement these features but some may be
 | 🟢&nbsp;**Implemented** | **Hybrid Ocean System** | April 2026 | Integration of Gerstner or FFT wave math into the simulation for large open water visuals. ***Added in v2.0.0*** |
 | 🟢&nbsp;**Implemented** | **GPU Clipmaps** | May 2026 | Optimization system using nested grids to simulate massive areas with high-detail localized around the camera. ***Improved and made more standard with the World Renderer in v2.0.0*** |
 | 🟢&nbsp;**Implemented** | **Volumetric Fluid Lighting** | August 2026 | Underwater god rays that react to surface turbulence and provide depth-based light scattering. |
-| 🟠&nbsp;**Planned** | **Custom SSR** | September 2026 | A dedicated Screen Space Reflection implementation for the water shader to provide high-quality reflections in URP. |
+| 🟢&nbsp;**Implemented** | **Custom SSR** | August 2026 | A dedicated Screen Space Reflection implementation for the water shader to provide high-quality reflections in URP and Built-in. |
 | 🟢&nbsp;**Implemented** | **Stylized & Toon Shaders** | October 2026 | Dedicated shaders for stylized looks, cel-shading, ink-outlines, and procedural toon foam patterns. |
-| 🟠&nbsp;**Planned** | **Surface Decals & Velocity Helper** | October 2026 | Render floating debris like lilypads that naturally follow the simulation's velocity field. |
+| 🟢&nbsp;**Implemented** | **Surface Decals** | August 2026 | Stamp textures like lilypads onto fluid surfaces with optional flow mapping. |
+| 🟠&nbsp;**Planned** | **Velocity Helper** | October 2026 | Link external meshes to simulation velocity so debris and seaweed follow currents. |
 | 🟠&nbsp;**Planned** | **Dynamic Wetness Maps** | November 2026 | Global shader support to allow shoreline objects and terrain to appear wet and reflective based on disappearing fluids. |
 | 🟠&nbsp;**Planned** | **Dynamic Lens Wetness** | November 2026 | A post-process effect simulating droplets and wiping streaks on the camera lens after emerging from the fluid. |
 | 🟠&nbsp;**Planned** | **Subsurface Bubbles** | December 2026 | GPU-accelerated particles representing bubbles that spawn in turbulent areas and swirl with the flow. |
@@ -50,13 +51,16 @@ I want to enhance the underwater experience by adding volumetric light shafts. T
 To support larger environments, I am implementing a new surface rendering system that will allow multiple simulations to be in one rendering surface. This ensures the simulation is always highest resolution near the camera. As you move, the detail follows you, while distant fluid is simulated at a lower frequency to save performance. Currently there is already the GPU-LOD system but this system is not as good for streaming in simulation data like clipmaps are. Some research needs to be done to see what is possible and if this is viable.
 
 **Custom Screen Space Reflections (SSR)**
-Since URP lacks a native SSR solution, I am building one directly into the Fluid Frenzy water surface. This will allow for high-quality, dynamic reflections of the scene geometry on the water surface without the heavy cost of rendering extra Planar Reflection cameras.
+URP and Built-in now include a dedicated SSR pass in the Fluid Frenzy render pipeline. It ray marches the scene color buffer using fluid depth and a surface-normal prepass, and can be combined with planar reflections. Enable it on [Water Surface](../fluid_rendering_components#water-surface) or [Water World Renderer](../fluid_rendering_components#water-world-renderer), then set **Surface Reflections** on the water material.
 
 **Stylized & Toon Shaders**
 I am adding a dedicated set of shaders for projects with an stylized or cartoon look. This includes cel-shading, ink outlines, and procedural toon-foam patterns that react to the simulation's movement.
 
-**Surface Decals & Velocity Influence Helper**
-The decal system allows you to stamp textures like lilypads directly onto the fluid surface. These decals move naturally with the flow of the water. I am also adding a Velocity Helper component to easily link external meshes to the simulation data so they can be pushed by currents, like seaweed.
+**Surface Decals**
+[Fluid Decal Renderer](../fluid_rendering_components#fluid-decal-renderer) stamps textures onto water or lava inside a world-space projector. Enable flow mapping to advect the decal with simulation velocity, for example lilypads drifting downstream.
+
+**Velocity Helper**
+A planned component to link external meshes to simulation data so objects like seaweed are pushed by currents without using decals.
 
 **Dynamic Wetness Maps**
 This feature provides a shader hook for your environment materials. When the fluid level rises and then recedes, the terrain and objects will appear darker and more reflective (wet) before gradually drying out over time, creating a more realistic shoreline.
