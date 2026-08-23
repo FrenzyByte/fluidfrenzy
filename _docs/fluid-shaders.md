@@ -451,9 +451,9 @@ Custom fluid rendering shader for water splashes.
 
 Materials for [Fluid Decal Renderer](../fluid_rendering_components#fluid-decal-renderer) use `FluidFrenzy/FluidDecal` (unlit) or `FluidFrenzy/FluidDecalLit` (PBR). HDRP projects use Shader Graph variants under `FluidFrenzy/HDRP/Decal`.
 
-##### Rendering
+##### Material Properties
 
-Transparent queue and draw order for the decal pass.
+Decal color, textures, and lit surface response. Tiling and offset apply to the decal texture and follow the same UVs as normal and mask maps on `FluidDecalLit`.
 
 | Property | Description |
 | :--- | :--- |
@@ -474,3 +474,7 @@ Optional parallax occlusion mapping from the mask map blue channel.
 | :--- | :--- |
 | Enable Parallax | Uses the blue height channel in the mask map. Adds extra texture samples; off by default. |
 | Height Scale | Parallax height scale in texture UV units. Positive: mask blue = raised. Negative inverts the height map. |
+
+##### Rendering
+
+Transparent queue and draw order for the decal pass. The shader defaults to `Geometry+512` (render queue 2512) so decals sort after opaque geometry and can be ordered relative to the water surface. Use the material **Render Queue** field to adjust layering when multiple transparents overlap.

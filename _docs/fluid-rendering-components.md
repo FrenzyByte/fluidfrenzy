@@ -457,23 +457,41 @@ When multiple water surfaces are visible, the renderer picks the SSR settings fr
 
 [Fluid Decal Renderer](#fluid-decal-renderer) stamps a texture onto visible fluid surfaces (water or lava) inside a world-space projector box.
 
-The component does not use a mesh renderer. It draws a procedural projector volume after the fluid prepass and resolves the fluid surface per pixel using fluid depth, scene depth rejection, and optional velocity-driven flow mapping from the bound simulation.
+The component does not use a mesh renderer. Each projector submits a procedural cube draw in `LateUpdate` using `Graphics.RenderPrimitives`, the same path as [Fluid Particle System](../fluid_simulation_components#fluid-particle-system). The shader resolves the fluid surface per pixel using the fluid depth prepass (`_FluidDepthRT`), scene depth rejection, and optional velocity-driven flow mapping from the bound simulation.
 
-Assign a material using `FluidFrenzy/FluidDecal` or `FluidFrenzy/FluidDecalLit` (URP/BiRP), or the HDRP Shader Graph variants under `FluidFrenzy/HDRP/Decal`. Flow mapping is controlled on this component, not on the material.
+The projector binds to the nearest [Water World Renderer](#water-world-renderer), [Water Surface](#water-surface), or [Lava Surface](#lava-surface) at its position. Assign a material using `FluidFrenzy/FluidDecal` or `FluidFrenzy/FluidDecalLit` (URP/BiRP), or the HDRP Shader Graph variants under `FluidFrenzy/HDRP/Decal`. Flow mapping is controlled on this component, not on the material.
+
+Sort order relative to water and other transparents is controlled by the decal material **Render Queue** (default `Geometry+512`, queue value 2512). Raise or lower the queue on the material if decals draw in the wrong order.
 
 ![Fluid Decal Renderer](../../assets/images/fluiddecalrenderer.png)
+
+##### Projector
 
 | Property | Description |
 | :--- | :--- |
 | Size | World-space size of the projector box. Content is clipped in projector local space to a unit cube scaled by this vector. |
+| Edge Softness | World-space distance from the horizontal edge where opacity reaches 1. Steep falloff toward the boundary. 0 = hard cutoff. |
 | Material | Material used to render the decal. URP/BiRP: `FluidFrenzy/FluidDecal` or `FluidFrenzy/FluidDecalLit`. HDRP: Shader Graphs under `FluidFrenzy/HDRP/Decal`. |
+| Uv Mode | How decal texture tiling is applied across the projector box.<br/><br/>- **World** <br/>Tiling is repeats per world unit. (1,1) = one tile per meter; (1/size, 1/size) = one tile across the box.<br/><br/>- **Projector** <br/>Texture stretches 0..1 across the horizontal extent of the box. |
+
+##### Flow Mapping
+
+| Property | Description |
+| :--- | :--- |
+| Use Flow Mapping | When enabled, the decal texture advects with fluid velocity using the same flow-mapping modes as the surface shader.<br/>When disabled, the texture uses projector UV (0..1 across the box); use material Tiling/Offset to repeat. |
+| Flow Mode | How the decal texture moves when flow mapping is enabled.<br/><br/>- **Surface** <br/>Multi-phase crossfade matching the water material. Best for seamless tileable textures.<br/><br/>- **Drift** <br/>Integrates fluid velocity and slides the stamp downstream. Requires Height & Velocity readback on the simulation; otherwise Surface is used. |
+
+**Note:** Drift needs Height & Velocity readback on the fluid simulation. If that is off, the projector uses Surface flow mapping instead.
+
+##### Overrides
+
+Optional per-projector texture overrides. When set, these replace the matching slots on the assigned material for this projector only.
+
+| Property | Description |
+| :--- | :--- |
 | Albedo Texture | Optional albedo override. When set, replaces the material `_MainTex` for this projector via a property block. |
 | Normal Map | Optional normal map override for `FluidDecalLit`. When set, replaces the material `_BumpMap` for this projector. |
 | Mask Map | Optional mask map override for `FluidDecalLit`. Green = occlusion, blue = height, alpha = smoothness. When set, replaces the material `_MaskMap` for this projector. |
-| Use Flow Mapping | When enabled, the decal texture advects with fluid velocity using the same flow-mapping modes as the surface shader.<br/>When disabled, the texture uses projector UV (0..1 across the box); use material Tiling/Offset to repeat. |
-| Flow Mode | How the decal texture moves when flow mapping is enabled.<br/><br/>- **Surface** <br/>Multi-phase crossfade matching the water material. Best for seamless tileable textures.<br/><br/>- **Drift** <br/>Integrates fluid velocity and slides the stamp downstream. Requires Height & Velocity readback on the simulation; otherwise Surface is used. |
-| Uv Mode | How decal texture tiling is applied across the projector box.<br/><br/>- **World** <br/>Tiling is repeats per world unit. (1,1) = one tile per meter; (1/size, 1/size) = one tile across the box.<br/><br/>- **Projector** <br/>Texture stretches 0..1 across the horizontal extent of the box. |
-| Edge Softness | World-space distance from the horizontal edge where opacity reaches 1. Steep falloff toward the boundary. 0 = hard cutoff. |
 
 
 ___
