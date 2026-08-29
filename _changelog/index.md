@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rendering: **Wet Lens Effect** on `WaterSurface` and `WaterWorldRenderer` (URP, HDRP, and Built-in). Leftover water film and drops on the camera after leaving the fluid.
 
 ### Changed
-- Rendering: Dynamic Gerstner detail-wave amplitude packing now uses RMS so Displacement Strength matches FFT mode.
+- Rendering: Dynamic Gerstner detail-wave amplitude packing now uses RMS so Displacement Strength matches FFT mode. Divide your displacement height by 10 to get your old value back.
 
 ### Fixed
 - Rendering: URP 2022 compile errors.
