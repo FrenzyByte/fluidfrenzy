@@ -80,7 +80,7 @@ Use `~0` on both sides to include every channel. Use separate channel masks and 
 <a name="water-world-renderer"></a>
 ### Water World Renderer
 
-Extension of [Fluid World Renderer](#fluid-world-renderer) for multi-tile water: foam, underwater, caustics, planar reflections, and screen-space reflections, mirroring [Water Surface](#water-surface) on [Fluid Renderer](#fluid-renderer). Configure underwater, caustics, and surface reflections in the [Water Rendering](#water-rendering) sections below.
+Extension of [Fluid World Renderer](#fluid-world-renderer) for multi-tile water: foam, underwater, wet lens, caustics, planar reflections, and screen-space reflections, mirroring [Water Surface](#water-surface) on [Fluid Renderer](#fluid-renderer). Configure underwater, wet lens, caustics, and surface reflections in the [Water Rendering](#water-rendering) sections below.
 
 <a name="fft-generator"></a>
 <a name="fft-generator-settings"></a>
@@ -178,8 +178,8 @@ To save on GPU performance, you can bake these waves into static textures or fli
 | Baked Texture | The texture asset used for displacement when in Baked mode.<br/><br/>Expected format: Alpha channel for Height, RGB channels for Normals. |
 | Baked Texture Array | A sequence of wave frames stored as a compressed Texture2DArray. |
 | Flipbook FPS | The speed at which the flipbook cycles through frames. |
-| Displacement Strength | The vertical scale of the displacement applied to the surface mesh.<br/><br/>Higher values make the waves physically taller in world space. |
-| Normal Strength | The intensity of the small-scale lighting details.<br/><br/>Controls the normal map strength. <br/>High values make ripples catch more light and appear rougher. |
+| Displacement Strength | World-space peak height in metres applied to the packed detail-wave map.<br/><br/>Dynamic Gerstner and FFT pack height so that a value of 1 is approximately a 1 metre peak<br/>(with Generator Gain at 1). Lighting normals use the same scale. |
+| Normal Strength | Extra multiplier on packed detail-wave normals.<br/><br/>1 matches the displaced heightfield when Tile World Size is aligned with Tiling.<br/>Lower to soften lighting without changing mesh displacement. |
 | Velocity Influence | X = Minimum strength at 0 velocity. Y = Maximum strength multiplier. |
 | Fade Distance | Distance (Start, End) in meters where detail waves fade out to prevent shimmering and tiling artifacts. |
 | Tiling | How many times the wave pattern repeats across the surface area. |
@@ -215,10 +215,10 @@ ___
 
 ![Water Surface](../../assets/images/watersurface.png)
 
-The [Water Surface](#water-surface) is an extension of the [Fluid Renderer](#fluid-renderer) component that renders all things water like [Foam Layer](../fluid_simulation_components#foam-layer), [Underwater Effect](#underwater-effect) visuals, absorption, and scattering.
+The [Water Surface](#water-surface) is an extension of the [Fluid Renderer](#fluid-renderer) component that renders all things water like [Foam Layer](../fluid_simulation_components#foam-layer), [Underwater Effect](#underwater-effect) visuals, [Wet Lens Effect](#wet-lens-effect), absorption, and scattering.
 It does this by assigning the active rendering layers to its surface material and using the underwater settings.
 
-Underwater, caustics, planar reflections, and screen-space reflections use the same settings on [Water Surface](#water-surface) and [Water World Renderer](#water-world-renderer). See [Underwater Settings](#underwater-settings), [Caustics Settings](#caustics-settings), and [Surface Reflections](#surface-reflections) below.
+Underwater, wet lens, caustics, planar reflections, and screen-space reflections use the same settings on [Water Surface](#water-surface) and [Water World Renderer](#water-world-renderer). See [Underwater Settings](#underwater-settings), [Wet Lens Settings](#wet-lens-settings), [Caustics Settings](#caustics-settings), and [Surface Reflections](#surface-reflections) below.
 
 <a name="underwater-effect"></a>
 #### Underwater Effect
@@ -322,6 +322,50 @@ The effect follows the main directional light and can be modulated by shadow cas
 | Breakup Scale | World scale of the breakup pattern.<br/><br/>Higher values make finer filaments. |
 | Breakup Speed | How fast the breakup pattern scrolls. |
 | Blur Radius | Gaussian blur radius in texels, applied after resolve for display only.<br/><br/>Softens leftover sparkle from the low sample count without smearing the temporal history. Set to 0 to disable. |
+
+<a name="wet-lens-effect"></a>
+#### Wet Lens Effect
+
+The [Wet Lens Effect](#wet-lens-effect) module renders leftover water on the camera after you leave the fluid. It is supported in all render pipelines.
+
+While the camera is underwater the lens gets wet. After you surface, a sheet of water drains down the glass and leftover drops stay behind, bending the view until they dry off.
+
+Enable it on any [Water Surface](#water-surface) or [Water World Renderer](#water-world-renderer). Only one pass is drawn per camera. Settings come from the water the camera is inside, then the last water that wet the camera. The lens never shows water that did not get wet, and the effect is hidden while you are still underwater.
+
+<a name="wet-lens-settings"></a>
+#### Wet Lens Settings
+
+Settings for all configurable visual parameters of the [Wet Lens Effect](#wet-lens-effect).
+This class defines leftover water on the camera lens: how long it takes to dry, the draining film, and baked drops.
+
+![Wet Lens Settings](../../assets/images/wetlens_settings.png)
+
+| Property | Description |
+| :--- | :--- |
+| Wet Lens Enabled | Controls whether leftover water is drawn on the camera after leaving this surface.<br/><br/>Only one pass is drawn per camera. Enabling wet lens on any visible water surface or world renderer is enough. |
+| Fade Duration | How long leftover wetness takes to dry off after leaving the water.<br/><br/>Higher values keep the lens wet for longer after you surface. Lower values dry the film and drops off quickly. |
+| Refraction Strength | How hard the film and drops bend the view.<br/><br/>Higher values make the leftover water look thicker and more distorting. Lower values keep a subtler wet-glass look. |
+
+##### Drops
+
+| Property | Description |
+| :--- | :--- |
+| Drop Map | Texture that places leftover water drops on the lens.<br/><br/>Height is stored in the alpha channel. Leave empty to hide drops. |
+| Drop Amount | How strongly the baked drops refract (0 = none).<br/><br/>At 0 the drops are hidden. At 1 they fully bend the view. Drops only appear where the film has receded, and only on a lens that got wet. |
+| Drop Scale | Size of the baked drop texture on the lens. Higher = larger drops.<br/><br/>Lower values tile the drop map more, so you see more, smaller drops. Higher values enlarge the same pattern. |
+
+##### Film
+
+| Property | Description |
+| :--- | :--- |
+| Film Amount | Strength of the water blobs sitting on the wet part of the lens (0 = drops only).<br/><br/>At 0 you only see leftover drops. At 1 a sheet of blobs covers the wet lens and drains away as it dries. |
+| Edge Width | How thick the blob rims are (0 = thin meniscus, 1 = a wider rim).<br/><br/>At 0 the edge is a tight meniscus around each blob. At 1 the rim is wider and more spread out. |
+| Edge Softness | How rounded the rim is. 0 = a harder cut, 1 = a fully rounded falloff.<br/><br/>Low values give a sharper blob outline. High values round the rim so the sheet looks more like a smooth droplet. |
+| Blob Scale | Size of the blobs. Lower = fewer, fatter blobs.<br/><br/>Lower values merge the leftover water into larger blobs. Higher values break it into a finer, more detailed sheet. |
+| Blob Amount | How strongly the noise breaks the boundary into blobs.<br/><br/>At 0 the leftover water is a smoother sheet. Higher values chew the edges into irregular blobs. |
+| Drain Speed | How fast the blobs creep down the lens.<br/><br/>Higher values make the leftover sheet sag and drain faster. At 0 the blobs stay put while they fade. |
+| Warp Amount | Interior refraction through the film (0 = flat sheet).<br/><br/>At 0 the blob interiors are a flat sheet of water. Higher values add ripples through the middle of the film. |
+| Warp Scale | Size of the interior warp. Lower = larger ripples.<br/><br/>Lower values stretch the interior ripples. Higher values pack them tighter across the film. |
 
 <a name="caustics-effect"></a>
 #### Caustics Effect

@@ -10,6 +10,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.3] - 2026-08-29
+
+### Added
+- Simulation: **Wetness Layer** wetness mask after fluid recedes. Simple Terrain, Terraform Terrain, and Unity Terrain wet shaders (`FluidFrenzy/BiRP/Terrain/Standard (Wet)`, `FluidFrenzy/URP/Terrain/Lit (Wet)`). ShaderGraph `SampleWetness` nodes.
+- Rendering: **Wet Lens Effect** on `WaterSurface` and `WaterWorldRenderer` (URP, HDRP, and Built-in). Leftover water film and drops on the camera after leaving the fluid.
+
+### Changed
+- Rendering: Dynamic Gerstner detail-wave amplitude packing now uses RMS so Displacement Strength matches FFT mode.
+
+### Fixed
+- Rendering: URP 2022 compile errors.
+- Rendering: URP underwater effect over-resolving MSAA camera color.
+
 ## [2.0.2] - 2026-08-23
 
 ### Added

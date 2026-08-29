@@ -19,6 +19,8 @@ Create your own shaders using ShaderGraph and the Fluid Frenzy ShaderGraph nodes
 | FluidUVGrid                         | Returns the Grid UV based of the FluidUV from the SampleSimulationData node. This UV matches the Unity Terrain height sampling UV. |
 | LayerToMask                         | Converts the layer data from the SampleSimulationData to a -1 to 1 mask. |
 | SampleFoam                          | Samples the fluid simulation's foam mask.|
+| SampleWetness                       | Samples the residual [Wetness Layer](../fluid_simulation_components#wetness-layer) mask at a fluid UV. |
+| SampleWetnessFromPositionWS         | Samples the residual [Wetness Layer](../fluid_simulation_components#wetness-layer) mask at a world-space position. Uses the world wetness atlas when a [Water World Renderer](../fluid_rendering_components#water-world-renderer) is active. |
 | SampleHeightVelocity                | Samples the fluid simulation's height and velocity data. |
 | SampleNormal                        | Samples the fluid simulation's surface normal.       |
 | SampleSimulationData                | Samples all the fluid simulation data at a provided UV coordinate. |

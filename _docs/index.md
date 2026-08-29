@@ -18,6 +18,8 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 - Terrain erosion: Simulate erosion effects on terrain surfaces as fluids flow over them, creating realistic effects over time.
 - Dynamic object interaction: Objects in the fluid can interact realistically, with buoyancy effects and advection as they move through the fluid simulation.
 - Fluid modifiers: Customize the behavior of the fluid simulation with modifiers like waves, pressure fields, and whirlpools to create dynamic and visually interesting effects in your project.
+- Dynamic wetness maps: Shorelines stay dark and reflective after the fluid recedes, then dry out over time on terrain and custom materials.
+- Wet lens: Leftover water on the camera after leaving the fluid, with a draining film and leftover drops.
 - Universal Render Pipeline: Supports Universal Render Pipeline with minimal extra setup as all features, components, and shaders are useable in both Built-in and URP.
 
 <a name="contents"></a>
@@ -112,7 +114,7 @@ Several optional features rely on **compute shaders**. Those features are **not 
 | GPU buoyancy sampling with [Fluid World Renderer](../fluid_rendering_components#fluid-world-renderer) | Yes | **Not supported** | Use per-tile [Fluid Renderer](../fluid_rendering_components#fluid-renderer) and enable **CPU Height Read** (`readBackHeight`) on each [Fluid Simulation](../fluid_simulation_components#fluid-simulation). |
 | GPULOD Terrain sample | Yes | **Not supported** | Use Unity Terrain, [Simple Terrain](../terrain#simple-terrain), or another non-GPULOD terrain. |
 
-**Generally supported without compute:** [Flux](../fluid_simulation_components#flux-fluid-simulation) and [Flow](../fluid_simulation_components#flow-fluid-simulation) fluid simulation, [Foam Layer](../fluid_simulation_components#foam-layer), [Flow Mapping](../fluid_simulation_components#flowmapping), [Erosion Layer](../fluid_simulation_components#erosion-layer), terraform mixing (without steam particles), [Fluid Modifiers](../terrain#fluid-modifier), [Fluid Simulation Obstacle](../fluid_simulation_components#fluid-simulation-obstacle), standard water/lava rendering, and [Fluid Rigidbody Lite](../fluid_simulation_components#fluid-rigidbody-lite).
+**Generally supported without compute:** [Flux](../fluid_simulation_components#flux-fluid-simulation) and [Flow](../fluid_simulation_components#flow-fluid-simulation) fluid simulation, [Foam Layer](../fluid_simulation_components#foam-layer), [Wetness Layer](../fluid_simulation_components#wetness-layer), [Flow Mapping](../fluid_simulation_components#flowmapping), [Erosion Layer](../fluid_simulation_components#erosion-layer), terraform mixing (without steam particles), [Fluid Modifiers](../terrain#fluid-modifier), [Fluid Simulation Obstacle](../fluid_simulation_components#fluid-simulation-obstacle), standard water/lava rendering, [Wet Lens Effect](../fluid_rendering_components#wet-lens-effect), and [Fluid Rigidbody Lite](../fluid_simulation_components#fluid-rigidbody-lite).
 
 **Related platform limits (not compute):** [Fluid Simulation Obstacle](../fluid_simulation_components#fluid-simulation-obstacle) **Conservative Rasterization** requires hardware support and is unavailable on WebGL, OpenGL ES, and some older mobile GPUs (the system falls back to standard rasterization automatically).
 

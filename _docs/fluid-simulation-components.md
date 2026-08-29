@@ -125,7 +125,7 @@ Serialized settings for one domain edge. The same fields appear under each bound
 
 | Property | Description |
 | :--- | :--- |
-| ***Extension Layers*** | A list of optional [Fluid Layer](#fluid-layer) extensions (e.g., `FoamLayer`, `FluidFlowMapping`) that should be executed and managed by this fluid simulation. |
+| ***Extension Layers*** | A list of optional [Fluid Layer](#fluid-layer) extensions (e.g., `FoamLayer`, `WetnessLayer`, `FluidFlowMapping`) that should be executed and managed by this fluid simulation. |
 
 #### Create Collider
 
@@ -421,6 +421,44 @@ Using a settings asset allows for easy reuse and centralized modification of foa
 | Turbulence Foam Threshold | The minimum turbulence value required to begin generating foam. |
 | Wave Exponential Decay Rate | The rate at which wave-based foam decays exponentially per frame. |
 | Wave Linear Decay Rate | The constant amount of wave-based foam subtracted from the mask per frame (Linear Decay). |
+
+___
+
+<a name="wetness-layer"></a>
+### Wetness Layer
+
+[Wetness Layer](#wetness-layer) is an [Fluid Layer](#fluid-layer) that can be attached to the [Fluid Simulation](#fluid-simulation). It generates a residual wetness mask from the current fluid height field. Cells with fluid above the [Depth Threshold](#wetness-layer-settings) soak toward fully wet, then the mask decays after the fluid recedes. The mask is not advected with the flow. Note: This component lives on a GameObject but also needs to be added to the Layers list of the Fluid Simulation.
+
+The mask is bound as a global shader texture so shoreline terrain and custom materials can appear darker and more reflective where water has just left. [Simple Terrain](../terrain#simple-terrain) and [Terraform Terrain](../terrain#terraform-terrain) sample it from the assigned [Fluid Simulation](#fluid-simulation). Unity Terrain can use `FluidFrenzy/BiRP/Terrain/Standard (Wet)` or `FluidFrenzy/URP/Terrain/Lit (Wet)`. Custom ShaderGraph materials can sample it with the [SampleWetness](../c_interaction_scripting#using-shadergraph) nodes. On a [Water World Renderer](../fluid_rendering_components#water-world-renderer), matching tiles are packed into a wetness atlas automatically.
+
+| Property | Description |
+| :--- | :--- |
+| [Settings](#wetness-layer-settings) | The [Wetness Layer Settings](#wetness-layer-settings) that this [Wetness Layer](#wetness-layer) will use to generate it's wetness mask. |
+
+<a name="wetness-layer-settings"></a>
+### Wetness Layer Settings
+
+A [Scriptable Object](#scriptable-object) asset containing configuration parameters for a [Wetness Layer](#wetness-layer).
+
+Using a settings asset allows for easy reuse and centralized modification of wetness decay across multiple [Wetness Layer](#wetness-layer) instances.
+
+ To create a new settings asset, navigate to: `Assets > Create > Fluid Frenzy > Wetness Layer Settings`.
+
+![Wetness settings](../../assets/images/wetmap_settings.png)
+
+#### Rendering Settings
+
+| Property | Description |
+| :--- | :--- |
+| Texture Size | The resolution of the generated wetness mask texture.<br/><br/>Higher resolutions provide a sharper shoreline but require more memory and GPU processing power.<br/>It is generally recommended to match the aspect ratio of the fluid simulation grid. |
+| Depth Threshold | Fluid height above this value starts soaking the mask toward fully wet.<br/><br/>Measured in the same units as the simulation fluid height field. Lower values wet shallower puddles; higher values restrict wetness to deeper water. |
+
+#### Decay Settings
+
+| Property | Description |
+| :--- | :--- |
+| Exponential Decay Rate | How quickly existing wetness fades away over time.<br/><br/>Higher values make the shoreline dry faster. |
+| Linear Decay Rate | A fixed amount of wetness removed each update, on top of the exponential fade.<br/><br/>Useful for clearing low leftover wetness so thin trails do not linger forever. |
 
 ___
 

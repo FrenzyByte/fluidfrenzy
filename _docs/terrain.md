@@ -13,6 +13,7 @@ Currently features for terrains are limited but consists of the following:
 2. Splatmapping
 3. Terraforming
 4. Collision
+5. Wetness (shoreline darkening from a [Wetness Layer](../fluid_simulation_components#wetness-layer))
 
 <a name="simple-terrain"></a>
 #### Simple Terrain
@@ -21,6 +22,8 @@ A specialized terrain rendering component designed for the [Fluid Simulation](..
 
 Unlike a Unity Terrain, `SimpleTerrain` allows for dynamic updates to its heightmap data directly on the GPU. When an [Erosion Layer](../fluid_simulation_components#erosion-layer) is active, sediment transport and deposition changes are applied to this terrain instantly.
 
+To shade wet shorelines, add a [Wetness Layer](../fluid_simulation_components#wetness-layer) to the simulation and assign it in **Fluid Simulation** below. Unity Terrain instead uses `FluidFrenzy/BiRP/Terrain/Standard (Wet)` or `FluidFrenzy/URP/Terrain/Lit (Wet)`, which sample the globally bound wetness atlas. Those shaders add **Wetness Color** and **Wetness Smoothness** on top of Unity's standard terrain material UI.
+
 ![Simple Terrain](../../assets/images/simpleterrain.png)
 
 ##### **Terrain Settings**
@@ -28,6 +31,7 @@ Unlike a Unity Terrain, `SimpleTerrain` allows for dynamic updates to its height
 | Property | Description |
 | :--- | :--- |
 | Terrain Material | The material used to render the terrain surface.<br/><br/>The assigned shader must support vertex displacement based on the `Render Heightmap` to correctly visualize the terrain shape. |
+| [Fluid Simulation](../fluid_simulation_components#fluid-simulation) | Optional [Fluid Simulation](../fluid_simulation_components#fluid-simulation) that supplies a [Wetness Layer](../fluid_simulation_components#wetness-layer) mask for terrain wetness shading.<br/><br/>When left empty on a tile paired via [Simple Terrain](#simple-terrain), the simulation assigns itself on [Fluid Simulation](../fluid_simulation_components#fluid-simulation).<br/>TerraformTerrain materials sample this mask per material; Unity Terrain wet shaders use the globally bound atlas instead. |
 | [Surface Properties](../fluid_rendering_components#render-properties) | Configuration settings that determine the visual quality, resolution, and rendering method (e.g., MeshRenderer vs. GPULOD) of the terrain. |
 | Source Heightmap | The input texture that defines the initial shape and composition of the terrain.<br/><br/>For best results, use a 16-bit (16bpp) texture to prevent stepping artifacts.<br/><br/>The texture channels represent distinct material layers stacked sequentially from bottom to top. All layers are erodible.<br/>- **`Red Channel`** <br/> Layer 1 (Bottom). Defines the base height. In `TerraformTerrain`, a separate splatmap texture is used to apply visual variation to this specific layer.<br/> <br/>- **`Green Channel`** <br/> Layer 2. Stacked on top of the Red channel.<br/> <br/>- **`Blue Channel`** <br/> Layer 3. Stacked on top of the Green channel.<br/> <br/>- **`Alpha Channel`** <br/> Layer 4 (Top). Stacked on top of the Blue channel. |
 | Height Scale | A global multiplier applied to the height values sampled from the `Source Heightmap`.<br/><br/>This converts the normalized (0 to 1) texture data into world-space height units. |
@@ -128,6 +132,15 @@ This section provides a grid to override properties for each of the 7 terrain la
 | Offset | The UV offset (ZW) for each layer. |
 | Normal Scale | Per-layer scale (R,G,B,A) for each of the 4 Base Layer normal maps. |
 
+##### Wetness
+
+Darkens albedo and raises smoothness where the simulation [Wetness Layer](../fluid_simulation_components#wetness-layer) mask is wet. The mask is bound per material from the assigned [Fluid Simulation](../fluid_simulation_components#fluid-simulation).
+
+| Property | Description |
+| :--- | :--- |
+| Wetness Color | Albedo multiplier tint applied as wetness increases. |
+| Wetness Smoothness | Added smoothness at full wetness. |
+
 <a name="terraform-terrain-single-shader"></a>
 #### Terraform Terrain (Single Layer) Shader
 The Terraform Terrain (Single Layer) shader is a cheaper version of the Terraform Terrain shader and handles the rendering of the Terraform Terrain. It has layers with texture slots for rendering the layers of the terrain. The height of these layers 1 to 4 is controlled by the heightmap's red channel. The heightmap and splatmap(RGBA) can be modified manually or by the **Terraform Terrain Layer** due to fluid mixing. Each layer corresponds to a channel in the splatmap as described above. The **Top/Erosion Layer** has a fixed color layer that cannot have its appearance changed as the visibility and height is controlled by the heightmap's green channel.
@@ -139,6 +152,15 @@ The Terraform Terrain (Single Layer) shader is a cheaper version of the Terrafor
 | Normal Map | Normal map of Layer 1. |
 | Mask Map | Metallic(R), Occlusion(G), Smoothness(A) of Layer 1. |
 | Mask Map | metallic(R), occlusion(G), smoothness(A) of the layer. |
+
+##### Wetness
+
+Darkens albedo and raises smoothness where the simulation [Wetness Layer](../fluid_simulation_components#wetness-layer) mask is wet. The mask is bound per material from the assigned [Fluid Simulation](../fluid_simulation_components#fluid-simulation).
+
+| Property | Description |
+| :--- | :--- |
+| Wetness Color | Albedo multiplier tint applied as wetness increases. |
+| Wetness Smoothness | Added smoothness at full wetness. |
 
 ---
 

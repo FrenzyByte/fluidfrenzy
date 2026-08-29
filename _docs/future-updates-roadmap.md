@@ -22,9 +22,9 @@ These dates are based on when I believe implement these features but some may be
 | 🟢&nbsp;**Implemented** | **Custom SSR** | August 2026 | A dedicated Screen Space Reflection implementation for the water shader to provide high-quality reflections in URP and Built-in. |
 | 🟢&nbsp;**Implemented** | **Stylized & Toon Shaders** | October 2026 | Dedicated shaders for stylized looks, cel-shading, ink-outlines, and procedural toon foam patterns. |
 | 🟢&nbsp;**Implemented** | **Surface Decals** | August 2026 | Stamp textures like lilypads onto fluid surfaces with optional flow mapping. |
+| 🟢&nbsp;**Implemented** | **Dynamic Wetness Maps** | August 2026 | Residual shoreline wetness on terrain and custom materials after the fluid recedes. |
+| 🟢&nbsp;**Implemented** | **Dynamic Lens Wetness** | August 2026 | A post-process effect simulating leftover film and drops on the camera lens after emerging from the fluid. |
 | 🟠&nbsp;**Planned** | **Velocity Helper** | October 2026 | Link external meshes to simulation velocity so debris and seaweed follow currents. |
-| 🟠&nbsp;**Planned** | **Dynamic Wetness Maps** | November 2026 | Global shader support to allow shoreline objects and terrain to appear wet and reflective based on disappearing fluids. |
-| 🟠&nbsp;**Planned** | **Dynamic Lens Wetness** | November 2026 | A post-process effect simulating droplets and wiping streaks on the camera lens after emerging from the fluid. |
 | 🟠&nbsp;**Planned** | **Subsurface Bubbles** | December 2026 | GPU-accelerated particles representing bubbles that spawn in turbulent areas and swirl with the flow. |
 | 🔴&nbsp;**Future** | **Editor-Time Simulation** | January 2027 | Support for running the simulation directly in the Scene View to preview behavior and erosion while designing levels. |
 | 🔴&nbsp;**Future** | **Terraform Sculpting Tools** | February 2027 | Manual sculpting brushes to carve and shape the Terraform Terrain system directly in the editor. |
@@ -63,10 +63,10 @@ I am adding a dedicated set of shaders for projects with an stylized or cartoon 
 A planned component to link external meshes to simulation data so objects like seaweed are pushed by currents without using decals.
 
 **Dynamic Wetness Maps**
-This feature provides a shader hook for your environment materials. When the fluid level rises and then recedes, the terrain and objects will appear darker and more reflective (wet) before gradually drying out over time, creating a more realistic shoreline.
+[Wetness Layer](../fluid_simulation_components#wetness-layer) writes a residual mask as fluid soaks and recedes. Terrain and custom materials sample it to look darker and more reflective along the shoreline, then dry out over time. Enable it on [Simple Terrain](../terrain#simple-terrain), the wet Unity Terrain shaders, or ShaderGraph with [SampleWetness](../c_interaction_scripting#using-shadergraph).
 
-**Dynamic Lens Wetness & Wipers**
-I am developing a post-process effect that simulates a wet lens when the camera emerges from being submerged. I am also thinking about adding droplets that will form and run down the screen similar to  racing games where movement speed causes water to streak or wipers push them way on the windscreen of the car.
+**Dynamic Lens Wetness**
+[Wet Lens Effect](../fluid_rendering_components#wet-lens-effect) draws leftover water on the camera after you leave the fluid. Enable it on [Water Surface](../fluid_rendering_components#water-surface) or [Water World Renderer](../fluid_rendering_components#water-world-renderer). A draining film and baked drops bend the view until they dry off.
 
 **Subsurface Bubbles**
 To make high-velocity areas like waterfalls or boat wakes feel more realistic, I am adding a bubble system. These GPU particles are placed under the surface in turbulent zones, swirling underwater with the velocity field before rising to the surface.
