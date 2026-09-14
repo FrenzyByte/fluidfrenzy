@@ -20,6 +20,9 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 - Fluid modifiers: Customize the behavior of the fluid simulation with modifiers like waves, pressure fields, and whirlpools to create dynamic and visually interesting effects in your project.
 - Dynamic wetness maps: Shorelines stay dark and reflective after the fluid recedes, then dry out over time on terrain and custom materials.
 - Wet lens: Leftover water on the camera after leaving the fluid, with a draining film and leftover drops.
+- Current particles: Current-aligned wisps and foam bubbles in the water volume, visible from above and below the surface.
+- Fluid Floater: Pin debris and foliage to the water surface without buoyancy physics.
+- Current-displaced vegetation: Grass and meshes lean and sway with the simulation current.
 - Universal Render Pipeline: Supports Universal Render Pipeline with minimal extra setup as all features, components, and shaders are useable in both Built-in and URP.
 
 <a name="contents"></a>
@@ -92,7 +95,7 @@ As a result, all shaders have HDRP-specific versions created in ShaderGraph, whi
 | Linux           | **<span style="color:green;">Supported</span>**             | Supported through Vulkan                              |
 | Android         | **<span style="color:green;">Supported</span>**             | Supported, performance varies per device              |
 | iOS             | **<span style="color:red;">Unknown</span>**           | Untested, no device to develop or test                |
-| WebGL           | **<span style="color:orange;">Partial</span>**   | Core simulation and standard surface rendering work. Compute-dependent features are not supported — see [Feature Support](#feature-support). |
+| WebGL           | **<span style="color:orange;">Partial</span>**   | Core simulation and standard surface rendering work. Compute-dependent features are not supported. See [Feature Support](#feature-support). |
 | WebGPU          | **<span style="color:orange;">Experimental</span>**   | Experimental due to Unity bugs                        |
 | VR              | **<span style="color:green;">Supported</span>**             | Tested on Quest 1, performance varies per device     |
 
@@ -101,7 +104,7 @@ As a result, all shaders have HDRP-specific versions created in ShaderGraph, whi
 
 Fluid Frenzy's core shallow-water simulation and standard mesh surface rendering use GPU fragment shaders and run on WebGL 2 and other platforms without compute shaders.
 
-Several optional features rely on **compute shaders**. Those features are **not available** when `SystemInfo.supportsComputeShaders` is false — most notably **WebGL 2**, which has no compute shader support in Unity.
+Several optional features rely on **compute shaders**. Those features are **not available** when `SystemInfo.supportsComputeShaders` is false, most notably **WebGL 2**, which has no compute shader support in Unity.
 
 | Feature | Requires compute | Without compute | Alternative |
 | --- | --- | --- | --- |
@@ -112,9 +115,10 @@ Several optional features rely on **compute shaders**. Those features are **not 
 | [FFT ocean](../fluid_rendering_components#fft-generator-settings) / JONSWAP detail waves | Yes | **Not supported** | Use **Gerstner** dynamic waves or a **baked flipbook** in [Detail Wave Settings](../fluid_rendering_components#detail-wave-settings). |
 | [Fluid Rigidbody](../fluid_simulation_components#fluid-rigidbody) (two-way coupling) | Yes | **Not supported** | Use [Fluid Rigidbody Lite](../fluid_simulation_components#fluid-rigidbody-lite) for simplified buoyancy and impact splashes. |
 | GPU buoyancy sampling with [Fluid World Renderer](../fluid_rendering_components#fluid-world-renderer) | Yes | **Not supported** | Use per-tile [Fluid Renderer](../fluid_rendering_components#fluid-renderer) and enable **CPU Height Read** (`readBackHeight`) on each [Fluid Simulation](../fluid_simulation_components#fluid-simulation). |
+| [Current Particles](../fluid_rendering_components#current-particles-effect) | Yes | **Not supported** | Disable Current Particles on [Water Surface](../fluid_rendering_components#water-surface) / [Water World Renderer](../fluid_rendering_components#water-world-renderer). |
 | GPULOD Terrain sample | Yes | **Not supported** | Use Unity Terrain, [Simple Terrain](../terrain#simple-terrain), or another non-GPULOD terrain. |
 
-**Generally supported without compute:** [Flux](../fluid_simulation_components#flux-fluid-simulation) and [Flow](../fluid_simulation_components#flow-fluid-simulation) fluid simulation, [Foam Layer](../fluid_simulation_components#foam-layer), [Wetness Layer](../fluid_simulation_components#wetness-layer), [Flow Mapping](../fluid_simulation_components#flowmapping), [Erosion Layer](../fluid_simulation_components#erosion-layer), terraform mixing (without steam particles), [Fluid Modifiers](../terrain#fluid-modifier), [Fluid Simulation Obstacle](../fluid_simulation_components#fluid-simulation-obstacle), standard water/lava rendering, [Wet Lens Effect](../fluid_rendering_components#wet-lens-effect), and [Fluid Rigidbody Lite](../fluid_simulation_components#fluid-rigidbody-lite).
+**Generally supported without compute:** [Flux](../fluid_simulation_components#flux-fluid-simulation) and [Flow](../fluid_simulation_components#flow-fluid-simulation) fluid simulation, [Foam Layer](../fluid_simulation_components#foam-layer), [Wetness Layer](../fluid_simulation_components#wetness-layer), [Flow Mapping](../fluid_simulation_components#flowmapping), [Erosion Layer](../fluid_simulation_components#erosion-layer), terraform mixing (without steam particles), [Fluid Modifiers](../terrain#fluid-modifier), [Fluid Simulation Obstacle](../fluid_simulation_components#fluid-simulation-obstacle), standard water/lava rendering, [Wet Lens Effect](../fluid_rendering_components#wet-lens-effect), [Fluid Rigidbody Lite](../fluid_simulation_components#fluid-rigidbody-lite), [Fluid Floater](../fluid_simulation_components#fluid-floater), and [Current Displacement Shaders](../using_shadergraph#current-displacement-shaders).
 
 **Related platform limits (not compute):** [Fluid Simulation Obstacle](../fluid_simulation_components#fluid-simulation-obstacle) **Conservative Rasterization** requires hardware support and is unavailable on WebGL, OpenGL ES, and some older mobile GPUs (the system falls back to standard rasterization automatically).
 

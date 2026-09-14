@@ -10,6 +10,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.4] - 2026-09-13
+
+### Added
+- Simulation: **Fluid Floater** component that pins a GameObject to the fluid surface without buoyancy physics. Optional slope follow and current drift.
+- Rendering: **Current Particles** on `WaterSurface` and `WaterWorldRenderer` (URP, HDRP, and Built-in). Current-aligned wisps and foam bubbles in the water volume, visible from above and below. Independent of Underwater Effects.
+- Rendering: **Current Displacement** Shader Graph shaders for grass and meshes (`FluidFrenzy/FluidCurrentGrassLit`, `FluidCurrentGrassUnlit`, `FluidCurrentMeshLit`, `FluidCurrentMeshUnlit`) plus the `FluidCurrentDisplace` node.
+
 ## [2.0.3] - 2026-08-29
 
 ### Added

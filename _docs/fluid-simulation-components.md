@@ -902,6 +902,51 @@ This component applies physics effects such as buoyancy, drag, and advection (mo
 | Splash Particle Speed Scale | Adjusts the starting speed multiplier of the emitted particles. |
 
 
+<a name="fluid-floater"></a>
+### Fluid Floater
+
+[Fluid Floater](#fluid-floater) pins a GameObject to the fluid surface. It does not simulate buoyancy or sinking.
+
+Use this for debris, lily pads, and foliage that should sit on the water. Use [Fluid RigidBody Lite](#fluid-rigidbody-lite) when you need buoyancy, wakes, and splashes.
+
+A configurable local XZ plane (default at the pivot) is sampled on a grid. The transform is then placed so that plane sits on the water, and can optionally tilt with the waves and drift with the current.
+
+**Prerequisite:** With a [Fluid World Renderer](../fluid_rendering_components#fluid-world-renderer) and packed world atlas, height includes ocean FFT (same GPU path as [Fluid RigidBody](#fluid-rigidbody)). Otherwise enable [Read Back Height](#read-back-height) (`CPU Height Read`) on the [Fluid Simulation](#fluid-simulation) for shallow-water sampling only.
+
+No [Rigidbody](#rigidbody) or [Collider](#collider) is required. If a Rigidbody is present, this component drives its pose so the object cannot punch through the surface.
+
+![Fluid Floater](../../assets/images/fluidfloater.png)
+
+##### Sample Plane
+
+| Property | Description |
+| :--- | :--- |
+| Size | Width (X) and depth (Z) of the sample plane in local space. The plane is centered on Local Offset and scaled by the transform. |
+| Local Offset | Local-space center of the sample plane. Leave at zero to sit the plane on the object's pivot (typically the base). |
+| Sample Resolution | Samples per axis on the plane (N×N). Higher values catch more ocean FFT chop. |
+
+##### Follow Slope
+
+| Property | Description |
+| :--- | :--- |
+| Follow Slope | If enabled, pitch and roll follow the slope of the sampled water plane. Yaw is preserved. |
+| Slope Amount | How much of the sampled wave slope is applied. 1 matches the plane; lower values keep the object more level while still heaving with the waves. |
+
+##### Follow Current
+
+| Property | Description |
+| :--- | :--- |
+| Follow Current | If enabled, the object drifts with the sampled fluid velocity (current). Height follow is always applied. |
+| Current Influence | Scales how strongly the current moves the object. 0 keeps it locked in XZ; 1 uses the full sampled velocity. |
+
+##### Smoothing
+
+| Property | Description |
+| :--- | :--- |
+| Position Sharpness | How quickly the object matches the water height. Higher is snappier. |
+| Rotation Sharpness | How quickly pitch and roll match the water slope. Higher is snappier. |
+
+
 <a name="fluid-simulation-obstacle"></a>
 ### Fluid Simulation Obstacle
 [Fluid Simulation Obstacle](#fluid-simulation-obstacle) is a component that can be added to any object with a [Renderer](#renderer) component attached, or configured to use a procedural shape.

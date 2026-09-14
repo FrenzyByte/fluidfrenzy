@@ -80,7 +80,7 @@ Use `~0` on both sides to include every channel. Use separate channel masks and 
 <a name="water-world-renderer"></a>
 ### Water World Renderer
 
-Extension of [Fluid World Renderer](#fluid-world-renderer) for multi-tile water: foam, underwater, wet lens, caustics, planar reflections, and screen-space reflections, mirroring [Water Surface](#water-surface) on [Fluid Renderer](#fluid-renderer). Configure underwater, wet lens, caustics, and surface reflections in the [Water Rendering](#water-rendering) sections below.
+Extension of [Fluid World Renderer](#fluid-world-renderer) for multi-tile water: foam, underwater, current particles, wet lens, caustics, planar reflections, and screen-space reflections, mirroring [Water Surface](#water-surface) on [Fluid Renderer](#fluid-renderer). Configure underwater, current particles, wet lens, caustics, and surface reflections in the [Water Rendering](#water-rendering) sections below.
 
 <a name="fft-generator"></a>
 <a name="fft-generator-settings"></a>
@@ -215,10 +215,10 @@ ___
 
 ![Water Surface](../../assets/images/watersurface.png)
 
-The [Water Surface](#water-surface) is an extension of the [Fluid Renderer](#fluid-renderer) component that renders all things water like [Foam Layer](../fluid_simulation_components#foam-layer), [Underwater Effect](#underwater-effect) visuals, [Wet Lens Effect](#wet-lens-effect), absorption, and scattering.
+The [Water Surface](#water-surface) is an extension of the [Fluid Renderer](#fluid-renderer) component that renders all things water like [Foam Layer](../fluid_simulation_components#foam-layer), [Underwater Effect](#underwater-effect) visuals, [Current Particles](#current-particles-effect), [Wet Lens Effect](#wet-lens-effect), absorption, and scattering.
 It does this by assigning the active rendering layers to its surface material and using the underwater settings.
 
-Underwater, wet lens, caustics, planar reflections, and screen-space reflections use the same settings on [Water Surface](#water-surface) and [Water World Renderer](#water-world-renderer). See [Underwater Settings](#underwater-settings), [Wet Lens Settings](#wet-lens-settings), [Caustics Settings](#caustics-settings), and [Surface Reflections](#surface-reflections) below.
+Underwater, current particles, wet lens, caustics, planar reflections, and screen-space reflections use the same settings on [Water Surface](#water-surface) and [Water World Renderer](#water-world-renderer). See [Underwater Settings](#underwater-settings), [Current Particle Settings](#current-particle-settings), [Wet Lens Settings](#wet-lens-settings), [Caustics Settings](#caustics-settings), and [Surface Reflections](#surface-reflections) below.
 
 <a name="underwater-effect"></a>
 #### Underwater Effect
@@ -322,6 +322,39 @@ The effect follows the main directional light and can be modulated by shadow cas
 | Breakup Scale | World scale of the breakup pattern.<br/><br/>Higher values make finer filaments. |
 | Breakup Speed | How fast the breakup pattern scrolls. |
 | Blur Radius | Gaussian blur radius in texels, applied after resolve for display only.<br/><br/>Softens leftover sparkle from the low sample count without smearing the temporal history. Set to 0 to disable. |
+
+<a name="current-particles-effect"></a><a name="underwater-particulate-effect"></a>
+#### Current Particles
+
+Current Particles draw additive current wisps and foam bubbles in the water volume. It is supported in all render pipelines.
+
+Positions stay locked in the world inside a radius around the camera; you move through them. Wisps are current-aligned glitter ribbons in fast water. Bubbles rise through aerated foam and follow the flow. The effect is visible from above and below the surface.
+
+Enable it on any [Water Surface](#water-surface) or [Water World Renderer](#water-world-renderer). It is independent of [Underwater Effect](#underwater-effect): turning underwater off does not hide the particles. Draw happens in Play Mode, after the underwater pass when that pass also runs.
+
+This feature requires compute shaders. See [Feature Support](../index#feature-support).
+
+<a name="current-particle-settings"></a><a name="underwater-particulate-settings"></a>
+#### Current Particle Settings
+
+Settings for current-aligned wisps and aerated bubbles in the water volume.
+
+![Current Particle Settings](../../assets/images/currentparticles_settings.png)
+
+| Property | Description |
+| :--- | :--- |
+| Current Particles Enabled | Controls whether current wisps and foam bubbles are drawn in the water volume. |
+| Wisps | Current-aligned glitter streaks in fast water. |
+| Bubbles | Rising air bubbles in aerated, foamy water. |
+| Intensity | Brightness of wisps and bubbles. |
+| Size | Wisp thickness and bubble radius, in meters. |
+| Count | How many particles to draw around the camera.<br/><br/>Higher is denser and more expensive. Each slot can emit a wisp ribbon and a fan of bubbles. |
+| Radius | How far from the camera particles can appear, in meters.<br/><br/>Positions stay locked in the world; you move through them. Replicas recycle at the wrap-box faces. |
+| Depth Range | Depth below the surface in meters. Min is fully visible, Max is where they fade out. |
+| Movement Speed | How fast wisps and bubbles travel along the current.<br/><br/>1 is the default look. Uses a hashed clock, not live sim speed × elapsed time (that runs backward when the current wobbles). |
+| Stretch | How long wisps run along the current when the flow is fast. |
+| Turbulence | How much each wisp snakes up, down, and sideways along its length.<br/><br/>Inspector 0–1 remaps in the shader so 1 is a moderate meander. |
+| Speed Range | Current speed in m/s. Min is when wisps start to appear, Max is when they are fully visible. |
 
 <a name="wet-lens-effect"></a>
 #### Wet Lens Effect
