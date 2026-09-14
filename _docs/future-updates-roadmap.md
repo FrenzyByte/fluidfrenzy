@@ -24,8 +24,8 @@ These dates are based on when I believe implement these features but some may be
 | 🟢&nbsp;**Implemented** | **Surface Decals** | August 2026 | Stamp textures like lilypads onto fluid surfaces with optional flow mapping. |
 | 🟢&nbsp;**Implemented** | **Dynamic Wetness Maps** | August 2026 | Residual shoreline wetness on terrain and custom materials after the fluid recedes. |
 | 🟢&nbsp;**Implemented** | **Dynamic Lens Wetness** | August 2026 | A post-process effect simulating leftover film and drops on the camera lens after emerging from the fluid. |
-| 🟢&nbsp;**Implemented** | **Velocity Helper** | October 2026 | Grass and mesh shaders that lean with simulation currents. ***Added after v2.0.3*** |
-| 🟢&nbsp;**Implemented** | **Subsurface Bubbles** | December 2026 | GPU current particles: wisps and foam bubbles in the water volume. ***Added after v2.0.3*** |
+| 🟢&nbsp;**Implemented** | **Velocity Helper** | October 2026 | Grass and mesh shaders that lean with simulation currents. ***Added in v2.0.4*** |
+| 🟢&nbsp;**Implemented** | **Subsurface Bubbles** | December 2026 | GPU current particles: wisps and foam bubbles in the water volume. ***Added in v2.0.4*** |
 | 🔴&nbsp;**Future** | **Editor-Time Simulation** | January 2027 | Support for running the simulation directly in the Scene View to preview behavior and erosion while designing levels. |
 | 🔴&nbsp;**Future** | **Terraform Sculpting Tools** | February 2027 | Manual sculpting brushes to carve and shape the Terraform Terrain system directly in the editor. |
 | 🔴&nbsp;**Future** | **Localized Moving Ripples** | March 2027 | High-detail ripples that follow the player for fine grained interaction that advects with the main flow. |
