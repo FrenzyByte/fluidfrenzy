@@ -15,6 +15,20 @@ The **Fluid Frenzy Toolbar** is a dedicated overlay for the Unity Scene View, de
 
 To enable the toolbar in your Scene View, right-click on the Scene View tab (or the Overlay menu icon), navigate to **Overlays**, and select **Fluid Frenzy > Toolbar**.
 
+<a name="toolbar-simulation-preview"></a>
+### Simulation Preview
+
+The toolbar includes Play, Pause, Stop, and Reset for [Edit Mode Preview](../simulation_debugger#edit-mode-preview). These controls match *Window > Fluid Frenzy > Preview Simulation* and the Preview button on the [Fluid Simulation](../fluid_simulation_components#fluid-simulation) inspector. They are available in both Sculpt Mode and Modifier Mode.
+
+| Control | Action |
+| :--- | :--- |
+| **Play** | Starts the simulation in Edit Mode. If no simulations are enabled, every loaded simulation is started. |
+| **Pause** | Pauses the simulation. GPU resources stay allocated and the water stays frozen in place. |
+| **Stop** | Stops the simulation and releases GPU resources. Terraform and erosion terrain return to their authored maps. Preview is session-only and is not saved with the scene. |
+| **Reset** | Resets the water on simulations that are currently previewing. |
+
+Preview is disabled while Unity is in Play Mode. The solver then runs from Play Mode as usual.
+
 ### Modes
 
 The toolbar is divided into two primary modes of operation. You can switch between them using the toggle buttons located at the start of the toolbar.

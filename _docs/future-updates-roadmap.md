@@ -26,7 +26,7 @@ These dates are based on when I believe implement these features but some may be
 | 🟢&nbsp;**Implemented** | **Dynamic Lens Wetness** | August 2026 | A post-process effect simulating leftover film and drops on the camera lens after emerging from the fluid. |
 | 🟢&nbsp;**Implemented** | **Velocity Helper** | October 2026 | Grass and mesh shaders that lean with simulation currents. ***Added in v2.0.4*** |
 | 🟢&nbsp;**Implemented** | **Subsurface Bubbles** | December 2026 | GPU current particles: wisps and foam bubbles in the water volume. ***Added in v2.0.4*** |
-| 🔴&nbsp;**Future** | **Editor-Time Simulation** | January 2027 | Support for running the simulation directly in the Scene View to preview behavior and erosion while designing levels. |
+| 🟢&nbsp;**Implemented** | **Editor-Time Simulation** | January 2027 | Run the simulation in the Scene View to preview behavior and erosion while designing levels. See [Edit Mode Preview](../simulation_debugger#edit-mode-preview). |
 | 🔴&nbsp;**Future** | **Terraform Sculpting Tools** | February 2027 | Manual sculpting brushes to carve and shape the Terraform Terrain system directly in the editor. |
 | 🔴&nbsp;**Future** | **Localized Moving Ripples** | March 2027 | High-detail ripples that follow the player for fine grained interaction that advects with the main flow. |
 | 🔎&nbsp;**Research** | **Surface <> Particle Blending** | March 2027 | Secret tech. |
@@ -72,7 +72,7 @@ I am developing a post-process effect that simulates a wet lens when the camera 
 [Current Particles](../fluid_rendering_components#current-particles-effect) draw GPU wisps and foam bubbles in the water volume. Enable them on [Water Surface](../fluid_rendering_components#water-surface) or [Water World Renderer](../fluid_rendering_components#water-world-renderer), independently of [Underwater Effect](../fluid_rendering_components#underwater-effect).
 
 **Editor-Time Simulation Preview**
-This workflow improvement allows you to run the fluid simulation directly in the Unity Scene View without hitting the Play button. This makes it much easier to place obstacles, modifiers, and sources by seeing how the fluid reacts to your changes in real-time.
+You can run the fluid simulation directly in the Unity Scene View without hitting the Play button. This makes it much easier to place obstacles, modifiers, and sources by seeing how the fluid reacts to your changes in real-time. See [Edit Mode Preview](../simulation_debugger#edit-mode-preview).
 
 **Terraform Sculpting & Erosion Tools**
 I am expanding the Terraform Terrain system with sculpting brushes. This will allow you to carve riverbeds or build up banks directly in the Scene View. 

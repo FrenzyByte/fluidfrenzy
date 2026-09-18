@@ -40,7 +40,7 @@ These steps will describe how to set up a fluid simulation that will simulate an
 6. Add a [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) by clicking the GameObject menu and selecting *`Fluid Frenzy > Fluid Source`*.
 7. Setup the new Fluid Modifier by placing it in the desired location in the scene and setting up the settings in the Inspector
 
-You now have a functional Fluid Simulation using Fluid Frenzy. Hit Play and see your Terrain being flooded by water!
+You now have a functional Fluid Simulation using Fluid Frenzy. Use [Edit Mode Preview](../simulation_debugger#edit-mode-preview) in the Scene view, or hit Play, and see your Terrain being flooded by water!
 
 <a name="setup-terraform-simulation"></a>
 ### Terraform Simulation
@@ -56,7 +56,7 @@ These steps will describe how to set up a fluid simulation that will simulate go
 6. Add a [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) by clicking the GameObject menu and selecting *`Fluid Frenzy > Fluid Source`*.
 7. Set up the new Fluid Modifier by placing it in the desired location in the scene and setting up the settings in the Inspector. You can change the layer to control which fluid the modifier should add to. Layer 1 is Water while Layer 2 is Lava.
 
-You now have a functional Terraform Simulation using Fluid Frenzy. Hit Play and see your Terrain being filled with water and lava!
+You now have a functional Terraform Simulation using Fluid Frenzy. Use [Edit Mode Preview](../simulation_debugger#edit-mode-preview) in the Scene view, or hit Play, and see your Terrain being filled with water and lava!
 
 <a name="setup-simulation-regions"></a>
 ### Simulation Regions

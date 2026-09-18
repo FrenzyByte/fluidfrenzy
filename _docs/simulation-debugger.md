@@ -10,8 +10,19 @@ Fluid Frenzy allows you to visually debug the fluid simulation buffers in a cust
 
 In this editor you can see information about each of the fluid simulation's in your scene and it's buffers. The editor can be quite resource intensive due to it constantly refreshing, you can disable this by turning off the **Live** button.
 
+<a name="edit-mode-preview"></a>
+### Edit Mode Preview
+
+You can run the fluid simulation in the Scene view without entering Play Mode. This is useful when placing sources, obstacles, and terraform brushes, and when you want to see erosion while you work.
+
+Open *Window > Fluid Frenzy > Preview Simulation*, enable the simulations you want, and press Play. You can also start preview from the Preview button on the [Fluid Simulation](../fluid_simulation_components#fluid-simulation) inspector, or from Play, Pause, Stop, and Reset on the [Fluid Frenzy Toolbar](../setup#fluid-toolbar).
+
+Preview is session-only and is not saved with the scene. Time pauses while the Unity Editor is unfocused so the water does not jump ahead. Stop releases GPU resources and restores terraform and erosion terrain to their authored maps.
+
+CPU height readback, surface colliders, and Rigidbody buoyancy still need Play Mode.
+
 ---
 
 <div style="page-break-after: always;"></div>
 
-<a name="third-party-support"></a>
+<a name="ai-skills"></a>

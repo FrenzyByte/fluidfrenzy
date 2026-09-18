@@ -500,7 +500,7 @@ Planar reflections capture the scene from a mirrored camera and blend the result
 | :--- | :--- |
 | Use Planar Reflections | Renders a mirrored camera reflection texture blended over probe reflections. |
 | Resolution | The quality/resolution of the generated planar reflection texture. |
-| Culling Mask | Which layers the planar reflection camera renders. |
+| Culling Mask | Which layers the planar reflection camera renders.<br/>Excludes Unity's builtin Water layer (index 4) so the water surface is not reflected in itself. |
 | Clear Flags | What to display in empty areas of the planar reflection's view (e.g., Skybox, Solid Color). |
 | Clip Plane | A vertical offset to apply to the reflection plane. This can be used to prevent clipping artifacts with the water surface. |
 | Smooth Position | Smoothes the reflection plane's height and position over multiple frames to prevent jittering caused by rapid fluid simulation updates. |
@@ -556,9 +556,9 @@ Sort order relative to water and other transparents is controlled by the decal m
 | Property | Description |
 | :--- | :--- |
 | Use Flow Mapping | When enabled, the decal texture advects with fluid velocity using the same flow-mapping modes as the surface shader.<br/>When disabled, the texture uses projector UV (0..1 across the box); use material Tiling/Offset to repeat. |
-| Flow Mode | How the decal texture moves when flow mapping is enabled.<br/><br/>- **Surface** <br/>Multi-phase crossfade matching the water material. Best for seamless tileable textures.<br/><br/>- **Drift** <br/>Integrates fluid velocity and slides the stamp downstream. Requires Height & Velocity readback on the simulation; otherwise Surface is used. |
+| Flow Mode | How the decal texture moves when flow mapping is enabled.<br/><br/>- **Surface** <br/>Multi-phase crossfade matching the water material. Best for seamless tileable textures.<br/><br/>- **Drift** <br/>Integrates fluid velocity and slides the stamp downstream. Requires Height & Velocity readback on the simulation, or a packed world atlas; otherwise Surface is used. |
 
-**Note:** Drift needs Height & Velocity readback on the fluid simulation. If that is off, the projector uses Surface flow mapping instead.
+**Note:** Drift needs Height & Velocity readback on the fluid simulation, or a packed world atlas. If neither is available, the projector uses Surface flow mapping instead.
 
 ##### Overrides
 

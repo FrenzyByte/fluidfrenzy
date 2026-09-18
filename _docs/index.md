@@ -23,6 +23,8 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 - Current particles: Current-aligned wisps and foam bubbles in the water volume, visible from above and below the surface.
 - Fluid Floater: Pin debris and foliage to the water surface without buoyancy physics.
 - Current-displaced vegetation: Grass and meshes lean and sway with the simulation current.
+- Edit Mode Preview: Run the simulation in the Scene view without entering Play Mode.
+- AI Skills: Included skills so coding assistants can set up and script Fluid Frenzy from the public API.
 - Universal Render Pipeline: Supports Universal Render Pipeline with minimal extra setup as all features, components, and shaders are useable in both Built-in and URP.
 
 <a name="contents"></a>
@@ -44,7 +46,9 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
     9. FossilFinder ```Samples~\FossilFinder\FossilFinder.unity```
     10. Pool ```Samples~\Pool\Pool.unity```
     11. GPULODTerrain ```Samples~\GPULODTerrain\GPULODTerrain.unity```
-4. Documentation
+4. AI Skills
+    ```FluidFrenzy\AI\Skills```
+5. Documentation
     ```DOCUMENTATION.pdf```
     ```DOCUMENTATION.html```
     ```Documentation~\DOCUMENTATION.md```

@@ -99,6 +99,120 @@ public class FluidFinder : MonoBehaviour
 }
 ```
 
+<a name="creating-simulations-modifiers-obstacles"></a>
+### Creating simulations, modifiers, and obstacles
+
+`FluidSimulationManager` is the query and one-shot brush API. To spawn persistent objects (the same types the Scene View toolbar places), call `Create` on the component types. These methods work in play mode and in the editor. Created components register themselves in `OnEnable`, so every active simulation picks them up.
+
+#### Simulations
+
+```c#
+FlowFluidSimulation sim = FluidSimulation.Create(
+    settings, position, Quaternion.identity, terrain);
+
+sim.AddFluidLayer<FluidFlowMapping>();
+```
+
+`Create` without a type argument uses Flow. Flux still works through `FluidSimulation.Create<FluxFluidSimulation>(...)`.
+
+`settings` must be assigned before the simulation can `Init` (that happens from `Start`, or call `Init` yourself if you need GPU resources the same frame). `terrain` is optional and is passed to `SetTerrain` (Unity `Terrain`, `SimpleTerrain`, `Texture2D`, or `MeshCollider`).
+
+#### Surfaces
+
+You still need a material. These methods only spawn and wire the renderer.
+
+```c#
+WaterSurface.Create(sim, waterMaterial, flowMapping);
+LavaSurface.Create(sim, lavaMaterial, flowMapping, sim.transform, "Fluid Renderer");
+```
+
+Pass parent as null (or omit it) to add the component on the simulation GameObject. Pass a parent transform to spawn a child renderer.
+
+#### In-memory settings
+
+At runtime, create layer or simulation settings without writing assets:
+
+```c#
+FoamLayerSettings foam = FluidSettingsFactory.Create<FoamLayerSettings>(s => { /* optional */ });
+FoamLayerSettings copy = FluidSettingsFactory.Duplicate(existingAsset);
+```
+
+#### Extension layers
+
+Prefer these over raw `AddFluidLayer` when you need settings assigned in one call:
+
+```c#
+sim.AddFoamLayer(existingFoamSettings);
+sim.AddFlowMapping(configure: s => s.flowMappingMode = FluidFlowMapping.FlowMappingMode.Static);
+sim.AddWetnessLayer();
+sim.AddErosionLayer();
+sim.AddTerraformLayer();
+sim.AddParticleGenerator(generator => { /* tune cascades, materials, etc. */ });
+```
+
+Pass `null` for settings to get a new in-memory instance from `FluidSettingsFactory`.
+
+#### Terraform terrain and simulation
+
+```c#
+TerraformTerrain ground = TerraformTerrain.Create(
+    position, terrainMaterial, Vector2.one, new Vector2Int(512, 512), parent);
+
+FlowFluidSimulation sim = FluidSimulation.CreateTerraformSimulation(
+    ground, waterMaterial, lavaMaterial, initSimulation: true);
+
+// Or with Flux:
+FluidSimulation.CreateTerraformSimulation<FluxFluidSimulation>(
+    ground, waterMaterial, lavaMaterial);
+```
+
+`CreateTerraformSimulation` adds dual-layer fluid settings (or uses your settings asset), foam, static flow, `TerraformLayer`, and water/lava child surfaces. Pass `null` for a material to skip that surface.
+
+#### Editor presets
+
+In the editor, `FluidSimulationMenu` still writes settings assets and default materials. Call the same methods the GameObject menu uses:
+
+```c#
+FluidSimulationMenu.CreateWaterSimulation(terrainObject);
+FluidSimulationMenu.CreateLavaSimulation(terrainObject);
+FluidSimulationMenu.CreateWaterWorldSimulation(terrainObject);
+FluidSimulationMenu.CreateTerraformSimulation(terraformTerrainObject);
+```
+
+Those wrappers create a Flow simulation. Pass Flux types to the generic overloads if you still need that solver.
+
+Use `FluidSimulation.Create` at runtime when you already have settings and a material. Use the menu presets when you want a new authored sim in the scene.
+
+#### Fluid modifiers
+
+```c#
+FluidModifierVolume.CreateSource(position, rotation, size, strength, layer);
+FluidModifierVolume.CreateFlow(position, rotation, size, strength);
+FluidModifierVolume.CreateForce(position, rotation, size, strength);
+FluidModifierVolume.CreateVortex(position, rotation, size);
+```
+
+Yaw of `rotation` sets flow and force direction. After create, change the public `sourceSettings` / `flowSettings` / `forceSettings` fields as needed.
+
+#### Terrain and terraform brushes
+
+```c#
+TerrainModifier.Create(position, rotation, size, strength, layer, splat);
+TerraformModifier.Create(position, rotation, size);
+```
+
+`TerrainModifier` needs an `ErosionLayer` on the simulation. `TerraformModifier` needs a `TerraformLayer`.
+
+#### Obstacles
+
+```c#
+FluidSimulationObstacle.CreateBox(position, rotation, size);
+FluidSimulationObstacle.CreateSphere(position, rotation, radius);
+FluidSimulationObstacle.Create(shape, position, rotation, size);
+```
+
+Shape helpers also exist for cylinder, ellipsoid, wedge, hex prism, cone, and capsule. Changing an obstacle at runtime still goes through `FluidSimulationManager.RequestObstacleUpdate` when you edit it by hand; `Create` already registers the new object.
+
 ---
 
 <div style="page-break-after: always;"></div>
