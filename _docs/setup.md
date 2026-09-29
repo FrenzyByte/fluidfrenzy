@@ -56,6 +56,8 @@ These steps will describe how to set up a fluid simulation that will simulate go
 6. Add a [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) by clicking the GameObject menu and selecting *`Fluid Frenzy > Fluid Source`*.
 7. Set up the new Fluid Modifier by placing it in the desired location in the scene and setting up the settings in the Inspector. You can change the layer to control which fluid the modifier should add to. Layer 1 is Water while Layer 2 is Lava.
 
+Optional: enable [eight-layer terrain](../terrain#eight-layer-terrain) if you need more than four stacked height layers. On the [Erosion Layer](../fluid_simulation_components#erosion-layer) or [Terraform Layer](../fluid_simulation_components#terraform-layer), enable **Tint Water** if carried sediment should stain the water. Set **Sediment Transport** to **Conservative Flux** on a Flux simulation when you want mass-conserving sediment movement on closed borders.
+
 You now have a functional Terraform Simulation using Fluid Frenzy. Use [Edit Mode Preview](../simulation_debugger#edit-mode-preview) in the Scene view, or hit Play, and see your Terrain being filled with water and lava!
 
 <a name="setup-simulation-regions"></a>
@@ -164,5 +166,3 @@ Fluid Frenzy support for HDRP requires different shaders on most materials. This
 | LavaSurface               | FluidFrenzy/Lava                          | FluidFrenzy/Lava                          | FluidFrenzy/HDRP/Lava                          |
 | TerraformTerrain          | Fluidfrenzy/TerraformTerrain              | Fluidfrenzy/TerraformTerrain              | FluidFrenzy/HDRP/TerraformTerrain              |
 | FluidParticleGenerator    | FluidFrenzy/ProceduralParticle (or Unlit) | FluidFrenzy/ProceduralParticle (or Unlit) | FluidFrenzy/HDRP/ProceduralParticle (or Unlit) |
-
-<a name="fluid-toolbar"></a>

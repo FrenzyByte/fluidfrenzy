@@ -181,7 +181,7 @@ FluidSimulationMenu.CreateTerraformSimulation(terraformTerrainObject);
 
 Those wrappers create a Flow simulation. Pass Flux types to the generic overloads if you still need that solver.
 
-Use `FluidSimulation.Create` at runtime when you already have settings and a material. Use the menu presets when you want a new authored sim in the scene.
+Use `FluidSimulation.Create` at runtime when you already have settings and a material. Use the menu presets when you want a new simulation with settings assets in the scene.
 
 #### Fluid modifiers
 
@@ -198,10 +198,11 @@ Yaw of `rotation` sets flow and force direction. After create, change the public
 
 ```c#
 TerrainModifier.Create(position, rotation, size, strength, layer, splat);
+SedimentModifier.Create(position, rotation, size, strength, layer);
 TerraformModifier.Create(position, rotation, size);
 ```
 
-`TerrainModifier` needs an `ErosionLayer` on the simulation. `TerraformModifier` needs a `TerraformLayer`.
+`TerrainModifier` and `SedimentModifier` need an `ErosionLayer` on the simulation. `TerraformModifier` needs a `TerraformLayer`. `SedimentModifier` paints carried sediment. It does not change ground height until erosion deposits that sediment.
 
 #### Obstacles
 

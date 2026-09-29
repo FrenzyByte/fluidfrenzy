@@ -27,7 +27,7 @@ These dates are based on when I believe implement these features but some may be
 | 🟢&nbsp;**Implemented** | **Velocity Helper** | October 2026 | Grass and mesh shaders that lean with simulation currents. ***Added in v2.0.4*** |
 | 🟢&nbsp;**Implemented** | **Subsurface Bubbles** | December 2026 | GPU current particles: wisps and foam bubbles in the water volume. ***Added in v2.0.4*** |
 | 🟢&nbsp;**Implemented** | **Editor-Time Simulation** | January 2027 | Run the simulation in the Scene View to preview behavior and erosion while designing levels. See [Edit Mode Preview](../simulation_debugger#edit-mode-preview). |
-| 🔴&nbsp;**Future** | **Terraform Sculpting Tools** | February 2027 | Manual sculpting brushes to carve and shape the Terraform Terrain system directly in the editor. |
+| 🟢&nbsp;**Implemented** | **Terraform Sculpting Tools** | February 2027 | Manual sculpting brushes to carve and shape the Terraform Terrain system directly in the editor. See [Terrain sculpting and painting](../terrain#terrain-sculpting). |
 | 🔴&nbsp;**Future** | **Localized Moving Ripples** | March 2027 | High-detail ripples that follow the player for fine grained interaction that advects with the main flow. |
 | 🔎&nbsp;**Research** | **Surface <> Particle Blending** | March 2027 | Secret tech. |
 | 🔎&nbsp;**Research** | **Simulation Baking (VATs)** | 2027 | Export simulations into Vertex Animation Textures for high-performance playback on mobile assets. |
@@ -75,7 +75,7 @@ I am developing a post-process effect that simulates a wet lens when the camera 
 You can run the fluid simulation directly in the Unity Scene View without hitting the Play button. This makes it much easier to place obstacles, modifiers, and sources by seeing how the fluid reacts to your changes in real-time. See [Edit Mode Preview](../simulation_debugger#edit-mode-preview).
 
 **Terraform Sculpting & Erosion Tools**
-I am expanding the Terraform Terrain system with sculpting brushes. This will allow you to carve riverbeds or build up banks directly in the Scene View. 
+You can sculpt [Simple Terrain](../terrain#simple-terrain) and [Terraform Terrain](../terrain#terraform-terrain) in the Scene View. Raise, Lower, Smooth, Sharpen, Set, Min, Max, and Slippage paint height layers and splat. See [Terrain sculpting and painting](../terrain#terrain-sculpting). 
 
 **Localized Moving Ripples**
 This system provides high-frequency micro-ripples that follow a specific target (like the player). This allows for very fine interaction detail around the player that still gets warped and pushed by the larger-scale river currents or waves.

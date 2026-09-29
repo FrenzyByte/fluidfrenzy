@@ -15,7 +15,9 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 - Custom terrain support: Compatible with custom terrains to give developers more flexibility in their projects.
 - Advanced rendering capabilities: Create stunning visual effects with the built-in renderer and Universal Render Pipeline.
 - Multiple fluid layers: Create complex interactions between different types of fluids, such as water and lava, that can mix and solidify into terrain surfaces like rock.
-- Terrain erosion: Simulate erosion effects on terrain surfaces as fluids flow over them, creating realistic effects over time.
+- Terrain erosion: Simulate erosion effects on terrain surfaces as fluids flow over them, creating realistic effects over time. Optional **Conservative Flux** transport keeps sediment mass balanced on closed Flux grids.
+- Sediment-tinted water: Carried erosion sediment can stain the water from each terrain layer's **Sediment Color**.
+- Eight-layer terraform terrain: Stack up to eight physical height layers, with layers 5–8 stored on a second heightmap.
 - Dynamic object interaction: Objects in the fluid can interact realistically, with buoyancy effects and advection as they move through the fluid simulation.
 - Fluid modifiers: Customize the behavior of the fluid simulation with modifiers like waves, pressure fields, and whirlpools to create dynamic and visually interesting effects in your project.
 - Dynamic wetness maps: Shorelines stay dark and reflective after the fluid recedes, then dry out over time on terrain and custom materials.
@@ -124,6 +126,6 @@ Several optional features rely on **compute shaders**. Those features are **not 
 
 **Generally supported without compute:** [Flux](../fluid_simulation_components#flux-fluid-simulation) and [Flow](../fluid_simulation_components#flow-fluid-simulation) fluid simulation, [Foam Layer](../fluid_simulation_components#foam-layer), [Wetness Layer](../fluid_simulation_components#wetness-layer), [Flow Mapping](../fluid_simulation_components#flowmapping), [Erosion Layer](../fluid_simulation_components#erosion-layer), terraform mixing (without steam particles), [Fluid Modifiers](../terrain#fluid-modifier), [Fluid Simulation Obstacle](../fluid_simulation_components#fluid-simulation-obstacle), standard water/lava rendering, [Wet Lens Effect](../fluid_rendering_components#wet-lens-effect), [Fluid Rigidbody Lite](../fluid_simulation_components#fluid-rigidbody-lite), [Fluid Floater](../fluid_simulation_components#fluid-floater), and [Current Displacement Shaders](../using_shadergraph#current-displacement-shaders).
 
-**Related platform limits (not compute):** [Fluid Simulation Obstacle](../fluid_simulation_components#fluid-simulation-obstacle) **Conservative Rasterization** requires hardware support and is unavailable on WebGL, OpenGL ES, and some older mobile GPUs (the system falls back to standard rasterization automatically).
+**Related platform limits (not compute):** [Fluid Simulation Obstacle](../fluid_simulation_components#fluid-simulation-obstacle) **Conservative Rasterization** requires hardware support and is unavailable on WebGL, OpenGL ES, and some older mobile GPUs (the system falls back to standard rasterization automatically). [Terraform Terrain](../terrain#terraform-terrain) **Eight Layer Mode** uses four-layer shading on WebGL.
 
 <a name="installation"></a>

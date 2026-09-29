@@ -501,10 +501,11 @@ The `Erosion Layer` is a texture-based system that analyzes the fluid simulation
 
 #### Multi-Layer Terrain System
 
- The erosion system allows you to define up to `four distinct terrain layers`, each with its own properties (e.g., hardness, color). The layers are structured from the bottom up:  
+ The erosion system allows you to define up to `eight distinct terrain layers` (four by default on the GPU height texture). Add a fifth **Layer Settings** entry or more to allocate the second height target for layers 5–8. Each layer has its own properties (e.g., hardness, color). The layers are structured from the bottom up:  
 - **Layer Structure** The first element (Layer 0) represents the bottom-most layer (e.g., bedrock), and each subsequent element represents the material stacked on top. 
 - **User Clarity** For clarity in the editor, you can give each layer a custom name (e.g., "Rock," "Soil," or "Snow") to help keep track of what it represents.   
 
+To render and sculpt layers 5–8, also enable [eight-layer terrain](../terrain#eight-layer-terrain) on the terrain data and material.
 
 
 #### Terrain Modification Processes
@@ -513,8 +514,9 @@ The `Erosion Layer` is a texture-based system that analyzes the fluid simulation
 
  This process converts terrain material into **sediment** using two-dimensional textures, driven by the fluid's velocity field.  
 -  **Erosion** Higher fluid velocity removes terrain material from the heightmap and transfers it into a Sediment Map.  
--  **Transport** The Sediment Map is continuously updated and advected (moved) across the grid according to the fluid's velocity field.  
+-  **Transport** The Sediment Map is continuously updated and moved across the grid. **Back Trace** follows the velocity field (the default). **Conservative Flux** moves sediment with the Flux solver face outflow so grid totals stay balanced on closed borders. Conservative Flux falls back to Back Trace on a [Flow Fluid Simulation](#flow-fluid-simulation). Enable **Full Precision Sediment** with Conservative Flux so small erode and deposit amounts are not rounded away.  
 -  **Deposition** Sediment is redeposited back onto the terrain heightmap in areas where the fluid flow is slower.    
+-  **Water tint** When **Tint Water** is enabled, carried sediment stains the water from each layer's **Sediment Color**. It is off by default so other water stays clear. Do not put sediment colours on the water material. 
 
 ##### 2. Slope-Based Slippage
 
@@ -533,14 +535,18 @@ The `Erosion Layer` is a texture-based system that analyzes the fluid simulation
 | Sediment Dissolve Rate | The rate at which solid terrain is picked up by the fluid.<br/><br/>Higher values cause the terrain to erode faster, provided the fluid has not reached its `Max Sediment` capacity. |
 | Sediment Deposit Rate | The rate at which carried sediment settles back onto the terrain.<br/><br/>Deposition occurs when the fluid slows down or when the carried material exceeds the capacity defined by `Max Sediment`. |
 | Min Tilt Angle | Defines the minimum slope angle required for full hydraulic erosion efficiency.<br/><br/>This value modulates erosion based on the terrain's tilt.<br/>- **0 Degrees** <br/> No restriction. Flat surfaces erode at the same rate as slopes.<br/> <br/>- **High Degrees** <br/> Limits erosion primarily to steeper slopes, preserving flat areas. |
-| Sediment Advection Speed | The speed at which sediment moves with the fluid flow.<br/><br/>Higher values transport material further across the world before it deposits.<br/><br/>Note: Because the erosion simulation is not strictly mass-conserving, very high speeds may cause sediment to "vanish" if it moves into cells with no fluid or off the edge of the simulation grid. |
+| Sediment Advection Speed | The speed at which sediment moves with the fluid flow.<br/><br/>Higher values transport material further across the world before it deposits.<br/><br/>With `Back Trace`, very high speeds may cause sediment to vanish at grid edges because that path is not strictly mass-conserving.<br/><br/>With `Conservative Flux`, this value scales how much carried sediment moves with each face outflow step. Grid totals stay balanced on closed borders. |
 | High Precision Advection | Toggles a higher-fidelity movement calculation for sediment.<br/><br/>When enabled, the simulation uses a more accurate method to move sediment. <br/>This prevents sediment from artificially fading away due to calculation errors but increases the GPU performance cost. |
+| Sediment Transport | How carried sediment moves with the water.<br/><br/>Back Trace uses velocity advection (the default). Conservative Flux uses Flux solver outflow on Flux simulations only. It ignores High Precision Advection. Sediment Advection Speed still applies in both modes. Conservative Flux falls back to Back Trace on the Flow solver. |
+| Full Precision Sediment | Store carried sediment in 32-bit float textures instead of half precision.<br/><br/>Terrain heightmaps use float. Half sediment can round small erode/deposit amounts when material moves between ground and water.<br/>Uses more VRAM. Applied when the layer is initialized. Changing this at runtime does not recreate textures until re-init. |
+| Tint Water | Tints water from carried sediment using each layer's [Erosion Settings](#erosion-settings).<br/><br/>Off leaves water colour unchanged and skips the colour compose blit.<br/>When enabled, carried sediment stains absorption, shortens visibility, and adds silt scatter.<br/>Murkiness scales that extra opacity and silt scatter. 1 is the default. 0 is colour only. |
+| Murkiness | How much carried sediment shortens visibility and fills in silt scatter.<br/><br/>1 is the default look. Higher values make the water more opaque. 0 is colour only, with no extra murk.<br/>Does not change the dirt hue. That stays on per-layer [Erosion Settings](#erosion-settings). |
 | [Layer Settings](#erosion-settings) | A list of erosion configurations, allowing different physical properties to be applied to different terrain layers. |
 
 <a name="erosion-settings"></a>
 ### Erosion Settings
 
-Converts a [Terrain Layer Mask](#terrain-layer-mask) into a vector representation for shader operations.
+Contains configuration parameters for erosion behavior specific to a single terrain layer.
 
 | Property | Description |
 | :--- | :--- |
@@ -552,6 +558,7 @@ Converts a [Terrain Layer Mask](#terrain-layer-mask) into a vector representatio
 | Max Sediment | The maximum amount of sediment a fluid cell can carry.<br/><br/>Once the sediment carried by the fluid reaches this limit, no further erosion will occur in that cell until material is deposited elsewhere. |
 | Sediment Dissolve Rate | The rate at which solid terrain is picked up by the fluid.<br/><br/>Higher values cause the terrain to erode faster, provided the fluid has not reached its `Max Sediment` capacity. |
 | Sediment Deposit Rate | The rate at which carried sediment settles back onto the terrain.<br/><br/>Deposition occurs when the fluid slows down or when the carried material exceeds the capacity defined by `Max Sediment`. |
+| Sediment Color | Colour the water takes on while carrying this layer's sediment.<br/><br/>RGB is the absorption dirt colour. Alpha is how strongly this layer's mass tints the water.<br/>Suspended sediment also shortens visibility and fills in with a lighter silt scatter derived from this colour.<br/>That fog is what reads as particles in the water.<br/>Default RGB is a dirt brown. Carried mass is curved so small amounts still reach this colour.<br/>Screenspace Tint and Alpha use water Color as the fade-to tint. This colour shifts that tint and raises opacity.<br/>Opaque tints the solid water colour. |
 
 <a name="terraform-layer"></a>
 ### Terraform Layer
@@ -649,9 +656,32 @@ This component acts as a "brush" for precise terrain editing, allowing you to ra
 | Remap | Adjust the range used to remap the normalized input value (e.g., from a texture) to the final output strength.<br/><br/>A normalized input of 0 is mapped to `remap.x`, and an input of 1 is mapped to `remap.y`. |
 | Falloff | Adjust the softness of the brush edge (falloff) for the Circle and Box input modes.<br/><br/>Higher values create a wider and softer transition at the modification boundary. |
 | Size | Adjust the size (width and height) of the modification area in world units. |
-| Layer | Specifies the target terrain layer (e.g., a specific heightmap channel) to modify.<br/><br/>Typically used to select between the channels of a multi-channel heightmap, such as channel 0 for Red and 1 for Green. |
+| Layer | Specifies the target terrain layer (heightmap channel) to modify.<br/><br/>Layers 1–4 are the primary heightmap (RGBA). Layers 5–8 write the second heightmap when eight-layer terrain is enabled. |
 | Splat Channel | Specifies the target splatmap channel to use when the blend mode involves a terrain splatmap.<br/><br/>Used to select a specific texture layer for blending (e.g., channel 0 for Red, 1 for Green, etc.). |
 | Texture | The source texture used to define the modification shape and intensity when `Mode` is set to `Texture`. |
+
+<a name="sediment-modifier"></a>
+### Sediment Modifier
+
+[Sediment Modifier](#sediment-modifier) paints **carried sediment** on the simulation sediment maps for an [Erosion Layer](#erosion-layer). It does not change ground height until erosion deposits that sediment.
+
+Requires [Simple Terrain](../terrain#simple-terrain) or [Terraform Terrain](../terrain#terraform-terrain) with an `ErosionLayer` on the overlapping [Fluid Simulation](#fluid-simulation).
+
+Create from **GameObject > Fluid Frenzy > Modifiers > Sediment Modifier** or the Fluid Frenzy toolbar.
+
+Persistent brushes register on the erosion layer each simulation step, the same as [Terrain Modifier](#terrain-modifier). There is no script API on [Fluid Simulation](#fluid-simulation) for sediment. Use `SedimentModifier.Create`.
+
+<a name="sediment-modifier-settings"></a>
+#### Sediment Modifier Settings
+
+| Property | Description |
+| :--- | :--- |
+| Mode | Circle or box brush shape. |
+| Blend Mode | How the brush writes sediment in the selected layer channel.<br/><br/>Additive deposits per second. Set, Minimum, and Maximum write a target sediment amount. |
+| Strength | Additive rate per second, or target sediment amount for set, min, and max. |
+| Falloff | Edge softness for circle and box brushes. |
+| Size | Brush size in world units on X and Z. |
+| Layer | Terrain layer channel that receives carried sediment.<br/><br/>Layers 5–8 use the hi sediment map when eight-layer terrain is enabled. |
 
 <a name="terraform-modifier"></a>
 ### Terraform Modifier

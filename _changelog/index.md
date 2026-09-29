@@ -10,6 +10,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.8] - 2026-09-29
+
+### Added
+- Editor: **Terrain sculpting**. Paint Simple Terrain and Terraform Terrain in the Scene View or the inspector Paint tab. Raise, Lower, Smooth, Sharpen, Set, Min, Max, Slippage, splat paint, custom brushes, and undo.
+- Editor: **Terrain Data** asset that stores heightmap and splatmap textures in the project.
+- Editor: **Add Layer** on the Fluid Simulation inspector. Adds foam, flow mapping, wetness, erosion, terraform, or particle layers.
+- Rendering: **Eight-layer terrain**. Up to eight stacked height layers. Layers 5–8 live on a second heightmap. **Eight Layer Mode** on the Terraform Terrain shader. WebGL stays on four layers. [Issue-57](https://github.com/FrenzyByte/fluidfrenzy/issues/57)
+- Simulation: **Sediment Modifier**. Paints carried sediment on an Erosion Layer.
+- Simulation: **Tint Water** on Erosion Layer and Terraform Layer. Carried sediment stains the water from each layer's **Sediment Color**. Off by default. [Issue-58](https://github.com/FrenzyByte/fluidfrenzy/issues/58)
+- Simulation: **Conservative Flux** sediment transport on Flux simulations. Optional **Full Precision Sediment** to reduce rounding errors. [Issue-59](https://github.com/FrenzyByte/fluidfrenzy/issues/59)
+
+### Changed
+- Editor: Edit Mode Preview controls moved to a separate **Fluid Frenzy > Simulation Preview** overlay.
+
+### Fixed
+- Simulation: Flux dry cells (no water in either layer) use layer 1 velocity instead of layer 2.
+- Simulation: FlowFluidSimulation command buffer error.
+- Rendering: URP shader compile error. Unity 6.4 errors and warnings.
+- Editor: Warnings when entering Play Mode.
+
+## [2.0.7] - 2026-09-18
+
+### Added
+- Editor: **Edit Mode Preview**. Run the simulation in the Scene view without entering Play Mode from the toolbar, the Preview Simulation window, or the Fluid Simulation inspector. Preview pauses when the Unity Editor is unfocused, and Stop restores terraform and erosion terrain.
+- Editor: **AI Skills** in `FluidFrenzy/AI/Skills/` so coding assistants can set up simulations, rendering, and buoyancy from the public API.
+- Simulation: **Create** methods for spawning simulations, surfaces, modifiers, and obstacles from C#. See the documentation for the full API.
+- Editor: GameObject menu entries under Fluid Frenzy for fluid modifiers, terrain modifiers, terraform modifiers, and procedural obstacles.
+- Rendering: Lilypads fluid-decal prefab under `Runtime/Presets/Prefabs`.
+
+### Changed
+- Rendering: Created Water Surfaces and Water World objects use the Water layer. Planar reflection culling excludes the Water layer by default.
+- Rendering: Current particles can meander off the XZ plane instead of staying flat.
+- Editor: Terraform Terrain menu assigns a default heightmap and solid-red splatmap so the ground is not flat or missing layers without sample textures.
+
+### Fixed
+- Simulation: Copying RG/RGB sim height onto the terraform RGBA heightmap no longer treats missing alpha as a full top splat layer.
+- Rendering: URP CommandBuffer execute warnings from Scene View cameras.
+
 ## [2.0.6] - 2026-09-16
 
 ### Fixed
