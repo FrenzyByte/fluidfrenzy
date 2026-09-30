@@ -31,6 +31,56 @@ AddFluid(Vector3 worldPos, Vector2 size, float amount, float falloff, int layer,
 
 Adds fluid in a circular region at the specified world position and size. `layer` selects the fluid layer index. `falloff` controls the radial gradient. `timestep` is the delta time for this application (typically `Time.deltaTime`).
 
+#### Adding sediment
+
+```c#
+AddSediment(Vector3 worldPos, Vector2 worldSize, float rotation, float strength, float falloff, ErosionLayer.TerrainLayer layer, float timestep)
+```
+
+Adds carried sediment in a circular region. The simulation needs an [Erosion Layer](../fluid_simulation_components#erosion-layer). `layer` is the terrain sediment channel, not the fluid layer. `rotation` is the brush rotation in degrees. `timestep` is typically `Time.deltaTime`. This paints suspended sediment. It does not change ground height until erosion deposits that sediment.
+
+<a name="add-fluid-on-click"></a>
+##### Example
+
+This script adds fluid at the mouse cursor while the left mouse button is held. Create a new C# script, paste this in, and add it to any GameObject in the scene. The objects you click need a Collider so the raycast can hit them. `layer` 0 is the first fluid layer. Use `Input.GetMouseButtonDown(0)` instead if you want a single burst per click.
+
+```c#
+using FluidFrenzy;
+using UnityEngine;
+
+public class AddFluidOnClick : MonoBehaviour
+{
+    public float amount = 2f;
+    public float size = 2f;
+    public float falloff = 1f;
+    public int layer = 0;
+
+    void Update()
+    {
+        if (!Input.GetMouseButton(0))
+            return;
+
+        Camera camera = Camera.main;
+        if (camera == null)
+            return;
+
+        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        if (!Physics.Raycast(ray, out RaycastHit hit))
+            return;
+
+        FluidSimulationManager.AddFluid(
+            hit.point,
+            Vector2.one * size,
+            amount,
+            falloff,
+            layer,
+            Time.deltaTime);
+    }
+}
+```
+
+The camera needs the MainCamera tag. This uses the Legacy Input Manager. The samples also work with the Input System package.
+
 #### Applying flow and forces
 
 ```c#
@@ -45,10 +95,13 @@ These mirror [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) b
 
 #### Sampling the simulation
 
+Height, velocity, and normal queries need **Readback Height & Velocity** (`readBackHeight`) enabled on the [Fluid Simulation](../fluid_simulation_components#fluid-simulation) settings. That option is on by default. Nearest-fluid queries need **Readback Distance Field** (`distanceFieldReadback`). That option is off by default. Queries return `false` until at least one readback cycle has finished. CPU data lags the GPU by a few frames.
+
 ##### Height & velocity
 
 ```c#
 bool GetHeight(Vector3 worldPos, out Vector2 heightData)
+bool GetHeightBilinear(Vector3 worldPos, out Vector2 heightData)
 bool GetHeightLayer(Vector3 worldPos, out Vector2 heightData, out int layer)
 bool GetHeightVelocity(Vector3 worldPos, out Vector2 heightData, out Vector3 velocity)
 ```
@@ -59,6 +112,7 @@ Samples height and/or velocity at the specified world space position when inside
 - `heightData.y` contains depth of the fluid in relation to the underlying terrain.
 - `velocity` contains the fluid velocity in world space.
 - `GetHeightLayer` also returns the dominant (highest) fluid layer index at that point.
+- `GetHeightBilinear` returns the same height data as `GetHeight`, with bilinear filtering instead of nearest-cell sampling. Use this when gameplay tracks the water surface smoothly.
 
 Returns `false` when no simulation contains the position or no valid data is available.
 
@@ -98,6 +152,33 @@ public class FluidFinder : MonoBehaviour
     }
 }
 ```
+
+Enable **Readback Distance Field** on the simulation settings or this returns `false`.
+
+<a name="per-simulation-brushes"></a>
+### Per-simulation brushes
+
+The manager applies to every overlapping simulation. When you already have a `FluidSimulation` reference, call the instance methods on that sim instead.
+
+```c#
+AddFluidCircle(Vector3 worldPos, Vector2 size, float amount, float falloff, int layer, float timestep)
+AddFluidSquare(Vector3 worldPos, Vector2 size, float amount, float falloff, int layer, float timestep)
+AddFluid(Vector3 worldPos, Vector2 worldSize, Texture source, float amount, int layer, float timestep)
+
+SetFluidHeightCircle(Vector3 worldPos, Vector2 size, float height, float falloff, int layer, FluidModifierSpace space)
+SetFluidDepthCircle(Vector3 worldPos, Vector2 size, float height, float falloff, int layer, FluidModifierSpace space)
+
+DampenVelocityCircle(Vector3 worldPos, Vector2 size, float strength, float falloff, float timestep)
+DampenVelocity(Vector3 worldPos, Vector2 size, Texture texture, float strength, float timestep)
+```
+
+`AddFluidCircle` is what the manager `AddFluid` call uses. Square and texture overloads follow the same pattern. The texture red channel is the mask.
+
+`SetFluidHeight*` writes a total surface height. `SetFluidDepth*` writes depth above the terrain. `FluidSimulation.FluidModifierSpace.WorldHeight` is world Y. `LocalHeight` is relative to the terrain. Min and max variants clamp instead of writing a value. Square and texture overloads exist for those as well.
+
+`DampenVelocityCircle` reduces flow in a circular region. The texture overload uses the same red-channel mask as add-fluid.
+
+Sediment has the same circle and square split on the simulation: `AddSedimentCircle`, `AddSedimentSquare`, plus set, min, and max variants. The manager `AddSediment` call uses the circle add.
 
 <a name="creating-simulations-modifiers-obstacles"></a>
 ### Creating simulations, modifiers, and obstacles
@@ -181,7 +262,7 @@ FluidSimulationMenu.CreateTerraformSimulation(terraformTerrainObject);
 
 Those wrappers create a Flow simulation. Pass Flux types to the generic overloads if you still need that solver.
 
-Use `FluidSimulation.Create` at runtime when you already have settings and a material. Use the menu presets when you want a new simulation with settings assets in the scene.
+Use `FluidSimulation.Create` at runtime when you already have settings and a material. Use the menu presets when you want a new simulation with settings assets in the scene. The [Runtime Setup](../samples#samples-runtimesetup) sample does this with lava on a Unity Terrain.
 
 #### Fluid modifiers
 

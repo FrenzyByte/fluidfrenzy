@@ -4,6 +4,25 @@ permalink: /docs/physics_colliders/
 ---
 
 
+Fluid Frenzy uses more than one kind of collider. Each one solves a different problem. A Unity Collider on a mesh is not enough on its own. Use this page to pick the right system. The Surface Collider settings for walking and raycasting on the water are documented below.
+
+<a name="which-collider"></a>
+### Which collider to use
+
+- **Ground the water sits on**
+The fluid needs a floor. That comes from **Terrain Type** on the [Fluid Simulation](../fluid_simulation_components#fluid-simulation). Use **Unity Terrain** or [Simple Terrain](../terrain#simple-terrain) for landscapes. Use **Layers** for indoor pools and mesh environments. See [Layer Capture Simulation](../setup#setup-layer-capture). Use **Mesh Collider** when a single static mesh is enough. The [Pool](../samples#samples-pool) sample uses Layers.
+
+- **Fluid flowing around objects**
+A Unity Collider on a rock will not make the water go around it. Add a [Fluid Simulation Obstacle](../fluid_simulation_components#fluid-simulation-obstacle) so the shape is written into the simulation heightfield. Place one from *`Fluid Frenzy > Obstacles`*, or add the component to an existing mesh. The fluid can flow around or over the obstacle. It cannot flow under it.
+
+- **Walking or raycasting on the water**
+Enable **Create Collider** on the [Fluid Simulation](../fluid_simulation_components#fluid-simulation). This builds a Unity TerrainCollider from the fluid surface so characters, rigidbodies, and raycasts can hit the water. This is the Surface Collider described in the rest of this chapter. It is optional and has a GPU readback cost.
+
+- **Objects floating in the water**
+Add a Unity Collider and a Rigidbody, then a [Fluid Rigidbody](../fluid_simulation_components#fluid-rigidbody) or [Fluid Rigidbody Lite](../fluid_simulation_components#fluid-rigidbody-lite). The Collider is used by Unity physics and by the buoyancy sampler. It does not replace a Fluid Simulation Obstacle. The [Pool](../samples#samples-pool) sample shows buoyancy with Layers capture. The [Water Modifiers](../samples#samples-watermodifiers) sample shows floating objects in a terrain simulation.
+
+[Fluid Floater](../fluid_simulation_components#fluid-floater) pins debris to the surface and does not need a Collider.
+
 <a name="surface-collider"></a>
 ### Surface Collider
 

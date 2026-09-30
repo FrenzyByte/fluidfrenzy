@@ -50,6 +50,8 @@ A typical multi-tile workflow looks like this:
 
 Up to 32 simulation tiles can be composited at once. [Fluid RigidBody](../fluid_simulation_components#fluid-rigidbody) buoyancy works across the combined surface when a world renderer is present; single-tile setups still use [Read Back Height](#read-back-height) on the simulation instead.
 
+The [World](../samples#samples-world) sample is a complete example of this setup.
+
 #### Which simulations are included
 
 The renderer does not reference simulation objects directly. Any [Fluid Simulation](../fluid_simulation_components#fluid-simulation) in the scene whose [Fluid Channels](../setup#fluid-channels) overlap the renderer mask is drawn:
@@ -546,8 +548,8 @@ Sort order relative to water and other transparents is controlled by the decal m
 
 | Property | Description |
 | :--- | :--- |
-| Size | World-space size of the projector box. Content is clipped in projector local space to a unit cube scaled by this vector. |
-| Edge Softness | World-space distance from the horizontal edge where opacity reaches 1. Steep falloff toward the boundary. 0 = hard cutoff. |
+| Size | World-space size of the projector bounds. The selected shape is inscribed in this box. Height is always Size Y. |
+| Edge Softness | World-space distance from the horizontal silhouette where opacity reaches 1. Steep falloff toward the boundary. 0 = hard cutoff. |
 | Material | Material used to render the decal. URP/BiRP: `FluidFrenzy/FluidDecal` or `FluidFrenzy/FluidDecalLit`. HDRP: Shader Graphs under `FluidFrenzy/HDRP/Decal`. |
 | Uv Mode | How decal texture tiling is applied across the projector box.<br/><br/>- **World** <br/>Tiling is repeats per world unit. (1,1) = one tile per meter; (1/size, 1/size) = one tile across the box.<br/><br/>- **Projector** <br/>Texture stretches 0..1 across the horizontal extent of the box. |
 

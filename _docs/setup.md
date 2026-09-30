@@ -36,6 +36,7 @@ These steps will describe how to set up a fluid simulation that will simulate an
     - Dimension: The size of your simulation/terrain domain.
     - Terrain Type: **Unity Terrain**, **Heightmap**, **Simple Terrain** which specifies the type of terrain you wish to use.
     - Terrain/[Simple Terrain](../terrain#terrain)/Heightmap: The object you want the Fluid Simulation to interact with.
+    - For indoor pools and custom mesh environments see [Layer Capture Simulation](#setup-layer-capture).
 5. Fluid settings, assets, and materials are automatically created in the folder of your scene. You can tweak these values to your liking.
 6. Add a [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) by clicking the GameObject menu and selecting *`Fluid Frenzy > Fluid Source`*.
 7. Setup the new Fluid Modifier by placing it in the desired location in the scene and setting up the settings in the Inspector
@@ -59,6 +60,37 @@ These steps will describe how to set up a fluid simulation that will simulate go
 Optional: enable [eight-layer terrain](../terrain#eight-layer-terrain) if you need more than four stacked height layers. On the [Erosion Layer](../fluid_simulation_components#erosion-layer) or [Terraform Layer](../fluid_simulation_components#terraform-layer), enable **Tint Water** if carried sediment should stain the water. Set **Sediment Transport** to **Conservative Flux** on a Flux simulation when you want mass-conserving sediment movement on closed borders.
 
 You now have a functional Terraform Simulation using Fluid Frenzy. Use [Edit Mode Preview](../simulation_debugger#edit-mode-preview) in the Scene view, or hit Play, and see your Terrain being filled with water and lava!
+
+<a name="setup-layer-capture"></a>
+### Layer Capture Simulation
+
+These steps will describe how to set up a fluid simulation that uses scene meshes as the ground instead of a Unity Terrain. This is the method used by the [Pool](../samples#samples-pool) sample. Use it for indoor pools and other environments that are built from regular GameObjects.
+
+The simulation captures a top-down orthographic heightmap of the objects on the Unity Layers you pick. Those objects become the floor and walls the fluid sits on.
+
+1. Put the meshes you want the fluid to sit on (pool floor, walls, rocks) on a dedicated Unity Layer. Do not put the water renderer on that same layer.
+2. Add a [Fluid Simulation](../fluid_simulation_components#fluid-simulation) by clicking the GameObject menu and selecting *`Fluid Frenzy > Flux > Create Water Simulation`* or *`Fluid Frenzy > Flow > Create Water Simulation`*. Do not select a Terrain first.
+3. You should now have a GameObject in your Scene Hierarchy named WaterSimulation with 4 Components:
+    - Fluid Simulation
+    - Foam Layer
+    - Fluid Flow Mapping
+    - Water Surface
+4. Move the WaterSimulation to the lowest point of your pool. Set **Dimension** so the domain covers the area you want filled.
+5. On the Fluid Simulation component set the following:
+    - Terrain Type: **Layers**
+    - Capture Layers: the Unity Layer from step 1
+    - Capture Height: high enough to include the top of the walls. The capture starts at the simulation object's Y position and goes up by this amount.
+6. Set every boundary side to **Closed** so the water stays in the pool instead of flowing out of the domain.
+7. Set **Initial Fluid Height** to the world Y you want the water surface to start at. Geometry below that height will be submerged. You can also add a [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) with *`Fluid Frenzy > Fluid Source`* if you want the pool to fill over time instead.
+8. Fluid settings, assets, and materials are automatically created in the folder of your scene. You can tweak these values to your liking.
+
+Enable **Update Ground Every Frame** only if the captured meshes move or deform during play. Leave it off for a static pool.
+
+<sub>Note: Do not include the **Water** layer in Capture Layers. The water surface would be captured as ground.</sub>
+
+You now have a functional Fluid Simulation using scene geometry instead of a Terrain. Use [Edit Mode Preview](../simulation_debugger#edit-mode-preview) in the Scene view, or hit Play, and see the pool fill. The [Pool](../samples#samples-pool) sample is a complete example of this setup with underwater rendering, caustics, buoyancy, and a [Fluid Event Trigger](../fluid_simulation_components#fluid-simulation-event).
+
+If you only have a single static mesh you can set Terrain Type to **Mesh Collider** and assign that collider instead of using Layers. See [Physics Colliders](../tiled_simulations#physics-colliders) for obstacles, walking on the water, and buoyancy.
 
 <a name="setup-simulation-regions"></a>
 ### Simulation Regions

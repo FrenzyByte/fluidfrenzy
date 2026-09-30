@@ -39,6 +39,8 @@ When neighboring tiles utilize advanced features such as flow mapping, foam gene
 
 ![alt text](../../assets/images/tiled_simulation_padding.png)
 
+The [World](../samples#samples-world) sample uses a [Water World Renderer](../fluid_rendering_components#water-world-renderer) to draw a large ocean around a coastline simulation. That is a rendering setup. It is not the same as linking neighbour tiles here.
+
 ---
 
 <div style="page-break-after: always;"></div>

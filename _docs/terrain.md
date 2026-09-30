@@ -58,6 +58,8 @@ To shade wet shorelines, add a [Wetness Layer](../fluid_simulation_components#we
 
 ##### **Collision**
 
+These settings build a Unity TerrainCollider of the fluid surface. See [Physics Colliders](../tiled_simulations#physics-colliders) if you need obstacles, pool ground, or buoyancy instead.
+
 | Property | Description |
 | :--- | :--- |
 | Create Collider | Toggles the generation of a `Terrain Collider` to handle physical interactions with the fluid surface. |

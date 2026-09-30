@@ -22,11 +22,11 @@ This is the base class for all fluid simulation types ([Flux Fluid Simulation](#
  The simulation's bottom depth and its interaction with static terrain are managed through a single primary input source. You must select one of the following modes to define the simulation floor, as they are mutually exclusive:   
 - `UnityTerrain` (Uses the standard Unity Terrain component) 
 - `Simple/TerraformTerrain` (A custom, simplified terrain for faster results) 
-- `Orthographic layer capture` (Captures scene geometry from a camera view) 
+- `Orthographic layer capture` (Captures scene geometry from a camera view). See [Layer Capture Simulation](../setup#setup-layer-capture) for a full setup. 
 - `Custom heightmap` (Uses a texture as the terrain height input) 
 - `MeshCollider` (Can be used as a simple, static bottom surface if no other base mode is selected)  
 
-Additionally, `FluidObstacle` components can be added to the scene to represent dynamic or static objects that interact with the fluid surface, compatible with any of the primary base modes. 
+Additionally, `FluidObstacle` components can be added to the scene to represent dynamic or static objects that interact with the fluid surface, compatible with any of the primary base modes. A Unity Collider on its own will not make fluid flow around an object. See [Physics Colliders](../tiled_simulations#physics-colliders) if you are unsure which collider system you need. 
 
 #### Boundary Conditions
 
@@ -133,7 +133,7 @@ Serialized settings for one domain edge. The same fields appear under each bound
 
 | Property | Description |
 | :--- | :--- |
-| [Collider Properties](../physics_colliders#collider-properties) | Properties used to control the generation and configuration of the `Mesh Collider` representing the fluid surface.<br/><br/>These settings determine the physical shape and properties of the fluid's surface when interacting with objects via Unity's physics system. |
+| [Collider Properties](../physics_colliders#collider-properties) | Properties used to control the generation and configuration of the `Mesh Collider` representing the fluid surface.<br/><br/>These settings determine the physical shape and properties of the fluid's surface when interacting with objects via Unity's physics system. See [Physics Colliders](../tiled_simulations#physics-colliders). |
 
 <a name="fluid-simulation-settings"></a>
 ### Fluid Simulation Settings
@@ -840,7 +840,7 @@ If Rigidbodies (e.g., a vehicle with a mass of 1500) sink when they should float
   
 -  **Fluid to Solids Coupling (Forces)**   The component calculates and applies realistic forces to the object's [Rigidbody](#rigidbody). Forces are determined by analyzing the volume and state of the body's submerged **sub-triangulated geometry** against the fluid's state. These include:  `Buoyancy`: Calculated from the weight of the displaced fluid, based on the submerged volume. `Drag and Lift`: Applied based on the relative velocity of the body to the fluid.    
 -  **Solids to Fluid Coupling (Displacement)**   The object's movement displaces the fluid, generating wakes and splashes. This is calculated by applying the volume and velocity changes of the submerged sub-triangles to the fluid's closest `height field` and `velocity grid cells`. The effect is decayed exponentially with increasing distance from the surface.   
--  **Requirements and Limitations**   The component requires a [Rigidbody](#rigidbody) and a supported [Collider](#collider), such as [Mesh Collider](#mesh-collider), [Sphere Collider](#sphere-collider), [Box Collider](#box-collider), or [Capsule Collider](#capsule-collider), on the same GameObject. This component is `not compatible with WebGL` due to its reliance on compute shaders.
+-  **Requirements and Limitations**   The component requires a [Rigidbody](#rigidbody) and a supported [Collider](#collider), such as [Mesh Collider](#mesh-collider), [Sphere Collider](#sphere-collider), [Box Collider](#box-collider), or [Capsule Collider](#capsule-collider), on the same GameObject. This Collider is for Unity physics and buoyancy sampling. It does not make fluid flow around the object. Use a [Fluid Simulation Obstacle](#fluid-simulation-obstacle) for that. See [Physics Colliders](../tiled_simulations#physics-colliders). This component is `not compatible with WebGL` due to its reliance on compute shaders.
 
 | Property | Description |
 | :--- | :--- |
@@ -887,7 +887,7 @@ A container for the physics coefficients that define how a Rigidbody is affected
 
 This component applies physics effects such as buoyancy, drag, and advection (movement by the current), and allows the object to generate visual wave and splash effects on the fluid surface. It is designed for performance with minimal setup.  
 
- **Requirement:** This component requires both a [Rigidbody](#rigidbody) and a [Collider](#collider) to be attached to the [Game Object](#game-object).  
+ **Requirement:** This component requires both a [Rigidbody](#rigidbody) and a [Collider](#collider) to be attached to the [Game Object](#game-object). See [Physics Colliders](../tiled_simulations#physics-colliders) if you need the water to flow around the object, or to walk on the surface.  
 
  **Prerequisite:** To allow the CPU to access the fluid height for buoyancy calculations, the [Read Back Height](#read-back-height) (`CPU Height Read`) setting must be enabled on the [Fluid Simulation](#fluid-simulation).
 
@@ -981,7 +981,7 @@ No [Rigidbody](#rigidbody) or [Collider](#collider) is required. If a Rigidbody 
 ### Fluid Simulation Obstacle
 [Fluid Simulation Obstacle](#fluid-simulation-obstacle) is a component that can be added to any object with a [Renderer](#renderer) component attached, or configured to use a procedural shape.
 
-When this component is attached, its shape and height are `orthographically rendered` onto the fluid simulation's underlying ground heightfield. This tells the [Fluid Simulation](#fluid-simulation) where the obstacle is, allowing the fluid to correctly flow around or over it. The obstacle itself can be `moved dynamically` during runtime.  
+When this component is attached, its shape and height are `orthographically rendered` onto the fluid simulation's underlying ground heightfield. This tells the [Fluid Simulation](#fluid-simulation) where the obstacle is, allowing the fluid to correctly flow around or over it. The obstacle itself can be `moved dynamically` during runtime. A Unity Collider on the same object is not a substitute. See [Physics Colliders](../tiled_simulations#physics-colliders) if you are unsure which collider system you need.  
 
  `Important Note on Movement:` The simulation's heightfield model means the fluid cannot flow under the obstacle. If the obstacle moves quickly into a location where water is currently present, that water will be instantly forced on top of the obstacle. `Rapidly moving a large obstacle can cause extreme visual artifacts` (like large, unnatural splashes or wild fluid behavior) due to the sudden volume displacement. It is generally advised to use this component on objects that are mostly rounded (e.g., rocks or islands) or those that do not create highly concave shapes with the surrounding terrain.
 
@@ -1006,25 +1006,31 @@ When this component is attached, its shape and height are `orthographically rend
 
 <a name="fluid-simulation-event"></a>
 ### Fluid Event Trigger
-**FluidEventTrigger** is a component that can be used to see if and when a object is in a region with fluid The most dominant/highest fluid will be reported. 
 
-![alt text](../../assets/images/fluid_trigger_event.png)
+[Fluid Event Trigger](#fluid-simulation-event) samples the [Fluid Simulation](#fluid-simulation) at its transform. It reports whether that point is in fluid, which layer is on top, the surface height, and the fluid depth. When layers overlap, the highest layer is reported.
 
-- **onFluidEnter** - the event that will be triggered when fluid enters the trigger.
-- **onFluidExit** - the event that will be triggered when fluid has left the trigger.
-- **fluidLayer** - the current fluid layer at the location of this trigger.
-- **fluidHeight** - the height of the fluid at the location of this trigger.
-- **isInFluid** - is the trigger in fluid or not.
+The [Pool](../samples#samples-pool) sample uses this. An object in that scene turns red when it enters the water.
 
-Adding the following functions to a script allows the them to be registered to the **OnFluidEnter** and **OnFluidExit** event as shown in the image above.
+**Prerequisite:** Enable [Read Back Height](#read-back-height) (`CPU Height Read`) on the [Fluid Simulation](#fluid-simulation). Queries return nothing until a readback cycle has finished.
+
+![Fluid Event Trigger](../../assets/images/fluid_trigger_event.png)
+
+- **onFluidEnter** - invoked when the object goes from outside fluid to submerged.
+- **onFluidExit** - invoked when the object goes from submerged to outside fluid.
+- **fluidLayer** - the dominant fluid layer at this position.
+- **fluidHeight** - the world-space surface height at this position.
+- **fluidDepth** - the fluid depth above the terrain at this position. This is the water column, not how far the object is underwater.
+- **isInFluid** - true while the trigger is inside fluid.
+
+Add these methods to a script and hook them to **On Fluid Enter** and **On Fluid Exit** as shown above.
 ```c#
 public void OnFluidEnter(FluidFrenzy.FluidEventTrigger evt)
 {
-    Debug.LogFormat("Fluid Layer {0} entered trigger {1} ", evt.name, evt.fluidLayer);
+    Debug.LogFormat("{0} entered fluid layer {1}", evt.name, evt.fluidLayer);
 }
 public void OnFluidExit(FluidFrenzy.FluidEventTrigger evt)
 {
-    Debug.LogFormat("Fluid Layer {0} exit trigger {1} ", evt.name, evt.fluidLayer);
+    Debug.LogFormat("{0} left fluid layer {1}", evt.name, evt.fluidLayer);
 }
 ```
 

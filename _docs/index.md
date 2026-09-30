@@ -39,15 +39,20 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 3. <a name="keyfeatures-samples">Sample Scenes</a>
     1. River ```Samples~\River\River.unity```
     2. RiverFlow ```Samples~\River\RiverFlow.unity```
-    3. Grand Canyon (HDRP) ```Samples~\HDRP_GrandCanyon\HDRP_GrandCanyon.unity```
-    4. Water Modifiers ```Samples~\WaterModifiers\WaterModifiers.unity```
-    5. Volcano ```Samples~\Volcano\Volcano.unity```
-    6. Terraform ```Samples~\Terraform\Terraform.unity```
-    7. TerraformFlow ```Samples~\Terraform\TerraformFlow.unity```
-    8. TerraformFlow Beams ```Samples~\Terraform\TerraformFlowBeams.unity```
-    9. FossilFinder ```Samples~\FossilFinder\FossilFinder.unity```
-    10. Pool ```Samples~\Pool\Pool.unity```
-    11. GPULODTerrain ```Samples~\GPULODTerrain\GPULODTerrain.unity```
+    3. MultiFluid RiverFlow ```Samples~\River\MultiFluid_RiverFlow.unity```
+    4. Grand Canyon (HDRP) ```Samples~\HDRP_GrandCanyon\HDRP_GrandCanyon.unity```
+    5. Water Modifiers ```Samples~\WaterModifiers\WaterModifiers.unity```
+    6. Volcano ```Samples~\Volcano\Volcano.unity```
+    7. Terraform ```Samples~\Terraform\Terraform.unity```
+    8. TerraformFlow ```Samples~\Terraform\TerraformFlow.unity```
+    9. TerraformFlow Beams ```Samples~\Terraform\TerraformFlowBeams.unity```
+    10. FossilFinder ```Samples~\FossilFinder\FossilFinder.unity```
+    11. Pool ```Samples~\Pool\Pool.unity```
+    12. Simple Terraform ```Samples~\SimpleTerraform\SimpleTerraform.unity```
+    13. Tiled Simulation ```Samples~\TiledSimulation\TiledSimulation.unity```
+    14. World ```Samples~\World\World.unity```
+    15. Runtime Setup ```Samples~\RuntimeSetup\RuntimeSetup.unity```
+    16. GPULODTerrain ```Samples~\GPULODTerrain\GPULODTerrain.unity```
 4. AI Skills
     ```FluidFrenzy\AI\Skills```
 5. Documentation
