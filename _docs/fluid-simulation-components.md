@@ -34,7 +34,7 @@ The simulation handles the outer edges of the simulation grid realistically for 
 
 - **Closed**: Fluid reflects back into the domain; good for pools and enclosed areas.
 - **Open (Velocity)**: Fluid can flow out through the edge (Flow simulations); used for rivers, drains, and outlets.
-- **Open (Surface Level)**: Holds the fluid surface at a fixed world height along that edge.
+- **Open (Surface Level)**: Holds the selected fluid layers at a fixed world height along that edge.
 - **Neighbour**: Shares the edge with another [Fluid Simulation](#fluid-simulation) tile for seamless tiled worlds.
 
 <a name="fluid-side-border"></a>
@@ -49,6 +49,7 @@ Serialized settings for one domain edge. The same fields appear under each bound
 | Mode | How fluid behaves at this edge of the simulation.<br/><br/>- **Closed** <br/>Fluid reflects back like a wall. Good for pools and enclosed areas.<br/><br/>- **Open (Velocity)** <br/>Fluid can flow out through this edge. Used for rivers, drains, and outlets on Flow simulations.<br/><br/>- **Open (Surface Level)** <br/>Keeps the fluid surface at a fixed height along this edge.<br/><br/>- **Neighbour** <br/>Shares this edge with another simulation tile so fluid continues seamlessly. |
 | Outflow speed | How fast fluid is allowed to flow out when this edge uses Open (Velocity) mode.<br/><br/>Only applies to Flow simulations. Higher values let more fluid leave through this edge. |
 | Surface level | The target fluid surface height at this edge, in world space.<br/><br/>Used for Open (Surface Level) edges, and when the absorb band pulls fluid toward a resting level. Set this to the surface height you want near the edge. |
+| Surface layers | Which fluid layers this edge holds at the surface level.<br/><br/>Only shown when the simulation has a second layer. Layer 1 is a water ocean on a world that also has lava. Layer 2 is a lava or sludge ocean. A layer that is not held flows out of the domain at this edge. Defaults to Layer 1. |
 | Absorb mode | Optional calming band just inside this edge that reduces splashing and drift.<br/><br/>Only applies to Flow simulations. Ignored when this edge is linked to a neighbour tile.<br/>- **Off** <br/>Only the boundary mode above applies.<br/><br/>- **Height And Velocity** <br/>Slows flow and eases fluid depth toward the surface level inside the band.<br/><br/>- **Velocity Only** <br/>Slows flow inside the band without changing fluid depth. |
 | Absorb Band Percent | How far the absorb band reaches into the simulation, as a percentage of the tile size.<br/><br/>Based on the longer side of the simulation so every edge gets the same band width in meters. Larger values affect more of the fluid; smaller values keep the effect near the edge only. |
 | Absorb Strength | How strongly the absorb band calms fluid at the outer edge.<br/><br/>The effect fades smoothly toward the inside of the band. Increase for quicker calming; pair with band width so you do not see a hard line where the band ends. |

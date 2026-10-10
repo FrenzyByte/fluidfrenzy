@@ -28,7 +28,7 @@ These dates are based on when I believe implement these features but some may be
 | 🟢&nbsp;**Implemented** | **Subsurface Bubbles** | December 2026 | GPU current particles: wisps and foam bubbles in the water volume. ***Added in v2.0.4*** |
 | 🟢&nbsp;**Implemented** | **Editor-Time Simulation** | January 2027 | Run the simulation in the Scene View to preview behavior and erosion while designing levels. See [Edit Mode Preview](../simulation_debugger#edit-mode-preview). |
 | 🟢&nbsp;**Implemented** | **Terraform Sculpting Tools** | February 2027 | Manual sculpting brushes to carve and shape the Terraform Terrain system directly in the editor. See [Terrain sculpting and painting](../terrain#terrain-sculpting). |
-| 🔴&nbsp;**Future** | **Localized Moving Ripples** | March 2027 | High-detail ripples that follow the player for fine grained interaction that advects with the main flow. |
+| 🟢&nbsp;**Implemented** | **Localized Moving Ripples** | March 2027 | High-detail ripples that follow a target for fine interaction around a player or camera. Visual overlay. Currently in beta. See [Fluid Ripple Zone](../fluid_simulation_components#fluid-ripple-zone). |
 | 🔎&nbsp;**Research** | **Surface <> Particle Blending** | March 2027 | Secret tech. |
 | 🔎&nbsp;**Research** | **Simulation Baking (VATs)** | 2027 | Export simulations into Vertex Animation Textures for high-performance playback on mobile assets. |
 | 🔎&nbsp;**Research** | **Unity Terrain Terraforming** | 2027+ | Support for the native Unity Terrain system to be permanently eroded and terraformed by the fluid simulation. |
@@ -78,7 +78,7 @@ You can run the fluid simulation directly in the Unity Scene View without hittin
 You can sculpt [Simple Terrain](../terrain#simple-terrain) and [Terraform Terrain](../terrain#terraform-terrain) in the Scene View. Raise, Lower, Smooth, Sharpen, Set, Min, Max, and Slippage paint height layers and splat. See [Terrain sculpting and painting](../terrain#terrain-sculpting). 
 
 **Localized Moving Ripples**
-This system provides high-frequency micro-ripples that follow a specific target (like the player). This allows for very fine interaction detail around the player that still gets warped and pushed by the larger-scale river currents or waves.
+[Fluid Ripple Zone](../fluid_simulation_components#fluid-ripple-zone) and [Fluid Ripple Impulse](../fluid_simulation_components#fluid-ripple-impulse) add a moving patch of extra ripple height around a target. This is a visual overlay. It does not change the simulated water column. The feature is currently in beta.
 
 **Surface <> Particle Blending**
 Secret tech.
