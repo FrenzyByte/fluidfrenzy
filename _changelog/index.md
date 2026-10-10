@@ -10,6 +10,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.9] - 2026-10-10
+
+### Added
+- Simulation: **Fluid Ripple Zone** and **Fluid Ripple Impulse**. A small moving patch of extra ripple height that follows a target. Motion leaves a wake, and entering the fluid adds a splash.
+- Simulation: **Fluid Modifier Path**. Place fluid along a path or push it using a path.
+- Rendering: Circle, Hexagon, and Diamond shapes on **Fluid Decal Renderer**.
+- Simulation: **Open Surface Layers** on Open (Surface Level) edges. Choose which fluid layers the edge holds. Defaults to Layer 1. [Issue-60](https://github.com/FrenzyByte/fluidfrenzy/issues/60)
+
+### Fixed
+- Simulation: Terraform Layer CopyFrom copies mix, deposit, and per-layer settings. Flux neighbour tiles copy the second fluid layer's outflow across seams. [Issue-61](https://github.com/FrenzyByte/fluidfrenzy/issues/61)
+- Rendering: Incorrect sorting of fluid decals.
+- Editor: Built-in RP Game view flashing black when resizing.
+- Simulation: Fluid Modifier Waves error when swapping scenes.
+- Simulation: `GetHeightBilinear` and Burst height readback.
+- Editor: Volume preview is square in box mode.
+
 ## [2.0.8] - 2026-09-29
 
 ### Added

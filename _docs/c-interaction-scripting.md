@@ -269,11 +269,13 @@ Use `FluidSimulation.Create` at runtime when you already have settings and a mat
 ```c#
 FluidModifierVolume.CreateSource(position, rotation, size, strength, layer);
 FluidModifierVolume.CreateFlow(position, rotation, size, strength);
+FluidModifierVolume.CreateFlowBox(position, rotation, size, strength);
+FluidModifierPath.Create(position, rotation, length, width, strength);
 FluidModifierVolume.CreateForce(position, rotation, size, strength);
 FluidModifierVolume.CreateVortex(position, rotation, size);
 ```
 
-Yaw of `rotation` sets flow and force direction. After create, change the public `sourceSettings` / `flowSettings` / `forceSettings` fields as needed.
+Yaw of `rotation` sets flow and force direction. After create, change the public `sourceSettings` / `flowSettings` / `forceSettings` fields as needed. `CreateFlowBox` uses Set blend and a rectangle. Size X is width. Size Y is length along the flow.
 
 #### Terrain and terraform brushes
 

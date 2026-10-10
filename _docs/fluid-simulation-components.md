@@ -1034,6 +1034,68 @@ public void OnFluidExit(FluidFrenzy.FluidEventTrigger evt)
 }
 ```
 
+<a name="fluid-ripple-zone"></a>
+### Fluid Ripple Zone (Beta)
+
+[Fluid Ripple Zone](#fluid-ripple-zone) is a small moving patch of extra ripple height that follows a target. It is not a [Fluid Simulation](#fluid-simulation).
+
+[Fluid Ripple Zone](#fluid-ripple-zone) and [Fluid Ripple Impulse](#fluid-ripple-impulse) are a **beta** feature. The components, inspector, and behavior may change in future versions. If you encounter any bugs, issues, or have suggestions, please report them [here](https://github.com/FrenzyByte/fluidfrenzy/issues).
+
+These ripples are a visual overlay on top of the water surface. They do not change the simulated water column. Buoyancy, [Fluid RigidBody](#fluid-rigidbody) physics, surface colliders, and height queries still use the [Fluid Simulation](#fluid-simulation). Use a Fluid Ripple Zone when the main simulation is too coarse for the small wakes around a player, camera, or other focus object. Large waves, current, and volume displacement still come from the simulation and from [Fluid RigidBody Lite](#fluid-rigidbody-lite).
+
+The window follows a target in world XZ. Scale on this GameObject is ignored. Set the size with Window World Size. [Fluid Ripple Impulse](#fluid-ripple-impulse) components write a wake or splash into every enabled zone that overlaps them and shares a fluid channel. The water shader samples one active zone at a time.
+
+| Property | Description |
+| :--- | :--- |
+| Fluid Channels | Bitmask of fluid channels this zone belongs to.<br/><br/>Channel bit labels are defined in [Fluid Frenzy Settings](../setup#fluid-frenzy-settings) (Edit > Project Settings > Fluid Frenzy > Channels).<br/>A [Fluid Ripple Impulse](#fluid-ripple-impulse) writes to this zone when `(impulse mask & fluidChannels) != 0`.<br/>Use `~0` to match all channels. |
+| Resolution | Number of cells along one edge of the follow window.<br/><br/>Higher values add more detail. They also cost more. The window size in meters stays the same. |
+| Wave Speed | How fast ripples travel across the water in meters per second. |
+| Window World Size | World-space width of the square follow window. Transform scale on this GameObject is ignored. |
+| Follow Target | Transform the ripple window follows in world XZ. If empty, this GameObject is used. |
+| Damping Factor | How quickly ripples die out. Higher values fade faster. |
+| Edge Fade | How far from the window edge ripples fade out. This is a fraction of the window size. |
+
+<a name="fluid-ripple-impulse"></a>
+### Fluid Ripple Impulse (Beta)
+
+[Fluid Ripple Impulse](#fluid-ripple-impulse) drives every matching [Fluid Ripple Zone](#fluid-ripple-zone) from this transform. Horizontal motion leaves a trail. Crossing into the fluid downward adds a splash.
+
+This component is part of the same **beta** overlay as [Fluid Ripple Zone](#fluid-ripple-zone). The stamp shape, inspector, and behavior may change in future versions.
+
+Place this on a player or other moving object. The stamp is a Circle, Cube, or Capsule footprint, not a mesh. One shape is used for both the wake and the splash. This still does not write into the [Fluid Simulation](#fluid-simulation). It only stamps the local ripple overlay.
+
+ **Prerequisite:** A [Fluid Ripple Zone](#fluid-ripple-zone) must be enabled in the scene, and [Read Back Height](#read-back-height) (`CPU Height Read`) should be enabled on the overlapping [Fluid Simulation](#fluid-simulation) so the impulse can tell when the object is in the water.
+
+##### Stamp
+
+| Property | Description |
+| :--- | :--- |
+| Shape | Footprint of this object on the water. Used for both the wake and the splash.<br/><br/>- **Circle** <br/>Round stamp. Wake uses a raised front and a lowered back.<br/><br/>- **Cube** <br/>Square or rectangular footprint. Matches a box or cube.<br/><br/>- **Capsule** <br/>Stadium footprint. Straight section with round ends. |
+| Spacing | Length of the stamp along the object. For Circle this is the distance between the front and back stamps. For Cube this is the box length. For Capsule this is the straight section between the round ends. |
+| Radius | Size of the stamp across the object. Radius for Circle and Capsule. Half-width for Cube. |
+
+##### Wake
+
+| Property | Description |
+| :--- | :--- |
+| Wake Offset | Local offset from this transform for the wake. Place this at the front of the object. |
+| Wake Strength | Strength of the trail left along the path this frame. Grows with horizontal speed. Slow motion stays small so it does not pile under the object. |
+
+##### Splash
+
+| Property | Description |
+| :--- | :--- |
+| Splash Offset | Local offset from this transform for the splash. Leave at zero for the middle of the object. |
+| Splash Enabled | Adds a splash when the object enters the water while moving downward. |
+| Splash Strength | Splash strength. Scales up with downward entry speed. |
+
+##### Contact
+
+| Property | Description |
+| :--- | :--- |
+| Fluid Channels | Bitmask of fluid channels this impulse writes to.<br/><br/>Channel bit labels are defined in [Fluid Frenzy Settings](../setup#fluid-frenzy-settings) (Edit > Project Settings > Fluid Frenzy > Channels).<br/>A [Fluid Ripple Zone](#fluid-ripple-zone) receives this impulse when `(impulse mask & zone mask) != 0`.<br/>Use `~0` to match all channels. |
+| Contact Y Offset | Shifts the bottom contact test. Negative moves the test downward. |
+
 ---
 
 <div style="page-break-after: always;"></div>

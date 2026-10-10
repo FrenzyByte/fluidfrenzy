@@ -89,6 +89,7 @@ This mode provides a drag-and-drop palette for placing simulation and layout obj
 | <img src="../../assets/images/icons/icons-toolbar-mod-fluid-source.png" width="40" /> | [Fluid Source](../fluid_modifiers#fluid-modifier-volume) |
 | <img src="../../assets/images/icons/icons-toolbar-mod-fluid-wave.png" width="40" /> | [Fluid Force](../fluid_modifiers#fluid-modifier-volume) |
 | <img src="../../assets/images/icons/icons-toolbar-mod-fluid-current.png" width="40" /> | [Fluid Current](../fluid_modifiers#fluid-modifier-volume) |
+| <img src="../../assets/images/icons/icons-toolbar-mod-fluid-path.png" width="40" /> | [Fluid Path](../fluid_modifiers#fluid-modifier-path) |
 | <img src="../../assets/images/icons/icons-toolbar-mod-fluid-vortex.png" width="40" /> | [Fluid Vortex](../fluid_modifiers#fluid-modifier-volume) |
 | <img src="../../assets/images/icons/icons-toolbar-mod-terrain-source.png" width="40" /> | [Terrain Modifier](../fluid_simulation_components#terrain-modifier) |
 | <img src="../../assets/images/icons/icons-toolbar-mod-sediment.png" width="40" /> | [Sediment Modifier](../fluid_simulation_components#sediment-modifier) |

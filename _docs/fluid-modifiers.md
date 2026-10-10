@@ -44,8 +44,8 @@ Defines the settings when [Flow](#flow) is enabled on the [Fluid Modifier Volume
 
 | Property | Description |
 | :--- | :--- |
-| Mode | Sets the input mode of the modifier, defining how flow is applied.<br/><br/>Flow application modes include:<br/>- **`Circle`** <br/> A constant directional flow within a circular shape.<br/> <br/>- **`Vortex`** <br/> A circular flow with radial and tangential control.<br/> <br/>- **`Texture`** <br/> Flow direction supplied from a dedicated flow map texture. |
-| Direction | Sets the 2D direction in which the flow force will be applied for `Circle`.<br/><br/>The `x` component maps to world X, and the `y` component maps to world Z (assuming a flat surface). |
+| Mode | Sets the input mode of the modifier, defining how flow is applied.<br/><br/>Flow application modes include:<br/>- **`Circle`** <br/> A constant directional flow within a circular shape.<br/> <br/>- **`Vortex`** <br/> A circular flow with radial and tangential control.<br/> <br/>- **`Texture`** <br/> Flow direction supplied from a dedicated flow map texture.<br/> <br/>- **`Box`** <br/> A uniform directional flow inside a rectangle. Use this for gates, sluices, and channels. |
+| Direction | Sets the 2D direction in which the flow force will be applied for `Circle` and `Box`.<br/><br/>The `x` component maps to world X, and the `y` component maps to world Z (assuming a flat surface). |
 | Blend Mode | The blending operation used to apply the generated velocity to the simulation's velocity field.<br/><br/>This determines how the velocity is applied to the simulation's current flow. Options include:<br/>- **`Additive`** <br/> Adds or subtracts the flow/velocity amount.<br/> <br/>- **`Set`** <br/> Sets the flow/velocity to a specific vector.<br/> <br/>- **`Minimum`/`Maximum`** <br/> Clamps the velocity vector components to the target values. |
 | Strength | Adjusts the magnitude of the flow applied to the velocity field.<br/><br/>For `Vortex` mode, this specifically controls the *inward* flow to the center. |
 | Radial Flow Strength | Adjusts the amount of *tangential* flow applied for `Vortex` mode. <br/>Higher values create a faster spinning vortex. |
@@ -68,6 +68,28 @@ Defines the settings when [Force](#force) is enabled on the [Fluid Modifier Volu
 | Size | Adjust the size (width and height) of the modification area in world units. |
 | Texture | The source texture used as an input when `Mode` is `Texture`. <br/>Only the red channel is used for height/force displacement. |
 
+
+<a name="fluid-modifier-path"></a>
+### Fluid Modifier Path
+
+[Fluid Modifier Path](#fluid-modifier-path) is a polyline pipe. Flow stays on the path. After the last node the simulation takes over.
+
+Use this for a gate, sluice, or channel. Place at least two nodes. Set each node's width. Enable **Emit Fluid** to add water from the first node.
+
+The path is one velocity draw. Corners blend tangents instead of stepping from box to box. **Emit Fluid** adds a second draw. A [Flux Fluid Simulation](../fluid_simulation_components#flux-fluid-simulation) adds a third draw for a downhill pressure ramp. Circle Force still starts as a round bump. Prefer Path or Flow Box for directional emission. The path shader samples at most 32 nodes.
+
+| Property | Description |
+| :--- | :--- |
+| Nodes | Ordered pipe points. Each node has a local position and a width in world units. The path shader samples at most 32 nodes. |
+| Emit Fluid | Adds water at the first node, oriented along the first segment. |
+| Emit Along Path | Adds water along every segment instead of only at the inlet. |
+| Source Strength | Rate of fluid added per second when emission is enabled. |
+| Source Falloff | Edge softness of the inlet source. |
+| Source Length | Length of the inlet source along the path from the first node. |
+| Source Layer | Fluid layer that receives emitted water. 0 is layer 1. |
+| Flow Blend Mode | Set keeps flow on the path like a pipe. Additive pushes along the path without replacing existing current. |
+| Flow Strength | Speed of the pipe current. On Flux this is also the virtual head that drives water along the path. |
+| Flow Falloff | Edge softness of each path segment. |
 
 <a name="fluid-modifier-waves"></a>
 ### Fluid Modifier Waves
@@ -115,9 +137,9 @@ The **Foam Modifier** component adds and removes foam to the **Foam Layer** base
 
 | Property | Description |
 | :--- | :--- |
-| Strength | The amount of foam to add or remove |
-| Exponent | The falloff/shape of the foam added. |
-| Size | The size/area that is covered by the modifier to add foam in that region. |
+| Strength | The amount of foam to add or remove. |
+| Exponent | The falloff and shape of the foam added. |
+| Size | The size of the area that receives foam. |
 
 ---
 
