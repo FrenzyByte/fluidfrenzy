@@ -6,7 +6,7 @@ permalink: /docs/c_interaction_scripting/
 
 Fluid Frenzy exposes a static API on `FluidFrenzy.FluidSimulationManager` for querying and modifying all registered [Fluid Simulation](../fluid_simulation_components#fluid-simulation) components in the scene. Each call iterates every active simulation and applies the operation where the world position falls inside that simulation's bounds.
 
-The manager is driven automatically by `FluidSimulationLoop`, which hooks into Unity's player loop (FixedUpdate by default, or Update when `FLUIDFRENZY_RUN_UPDATE` is defined). You normally do not call `Step` yourself unless you are building a custom integration.
+The manager is driven automatically by `FluidSimulationLoop`, which hooks into Unity's player loop (FixedUpdate by default, or Update when `FLUIDFRENZY_RUN_UPDATE` is defined). Set `automaticStepping` to false and call `Tick` when a custom tick loop owns the clock. For networked sessions write `externalTime` instead of feeding Unity delta time. See [Multiplayer Support (Beta)](../third_party_support#multiplayer-support) for the full feature.
 
 <a name="fluid-simulation-manager"></a>
 ### Fluid Simulation Manager
@@ -16,12 +16,48 @@ The manager is driven automatically by `FluidSimulationLoop`, which hooks into U
 ```c#
 FluidSimulationManager.simulations          // List<FluidSimulation> of all registered sims
 FluidSimulationManager.globalTimeScale      // float multiplier for all sim time (script-only)
+FluidSimulationManager.useExternalTime      // follow externalTime instead of Unity delta time
+FluidSimulationManager.externalTime         // shared session time in seconds
+FluidSimulationManager.simulationStep       // 60 Hz steps applied this session
+FluidSimulationManager.automaticStepping    // false to stop the player-loop driver
+FluidSimulationManager.Tick(int steps)      // exact 60 Hz steps from a custom tick loop
 FluidSimulationManager.Step(deltaTime, maxSteps)
+FluidSimulationManager.CreateState(onComplete, downsample, groupID)
+FluidSimulationManager.LoadState(states)
 FluidSimulationManager.MarkSettingsChanged(bool changed)
 FluidSimulationManager.RequestObstacleUpdate(bool changed)
 ```
 
 `Step` advances every registered simulation, runs solid-to-fluid coupling on [Fluid RigidBody](../fluid_simulation_components#fluid-rigidbody) instances, and updates cull/pause state from active game cameras. `MarkSettingsChanged` and `RequestObstacleUpdate` broadcast to all simulations when shared settings or obstacle geometry change at runtime.
+
+<a name="multiplayer-hooks"></a>
+#### Multiplayer hooks (Beta)
+
+These calls keep solver state close across players. They are a **beta** API. Fluid Frenzy does not ship a netcode library. The Fluid Frenzy calls stay the same whether you test locally or send the bytes over the network. For what is possible, what is not, and how the clock and snapshot fit together, see [Multiplayer Support (Beta)](../third_party_support#multiplayer-support).
+
+```c#
+// Every peer. networkTime is your session clock, not Time.time.
+FluidSimulationManager.useExternalTime = true;
+FluidSimulationManager.externalTime = networkTime;
+
+// Host, when a player joins.
+source.CreateState(state =>
+{
+    byte[] blob = state.ToBytes();
+    // send blob with your netcode
+}, downsample: 1);
+
+// Joiner, when the blob arrives.
+FluidSimulationState received = FluidSimulationState.FromBytes(blob);
+target.LoadState(received);
+FluidSimulationManager.simulationStep = received.simulationStep;
+```
+
+Write `externalTime` from the game's network clock on every peer. `CreateState` is an async GPU readback. `ToBytes` / `FromBytes` is the RPC payload. `LoadState` resumes the joiner from that tick. Replicate `AddFluid`, modifier toggles, and rigidbody poses yourself.
+
+You can also call `FluidSimulationManager.CreateState` / `LoadState` to capture or apply every registered simulation. Pass a `groupID` to limit the set.
+
+The [State Sync](../samples#samples-statesync) sample does this in one process with two simulations. It is not a networked session. Do not stream the field every frame. Do not expect bit-identical water.
 
 #### Adding fluid
 
@@ -208,6 +244,15 @@ LavaSurface.Create(sim, lavaMaterial, flowMapping, sim.transform, "Fluid Rendere
 ```
 
 Pass parent as null (or omit it) to add the component on the simulation GameObject. Pass a parent transform to spawn a child renderer.
+
+For a [Fluid Surface Bake](../fluid_simulation_components#fluid-surface-bake) with no live solver:
+
+```c#
+WaterSurface.Create(bake, waterMaterial, flowMapping);
+LavaSurface.Create(staticSimulation, lavaMaterial, flowMapping);
+```
+
+`Create(bake, ...)` also spawns a [Fluid Simulation Static](../fluid_simulation_components#fluid-simulation-static). Pass an existing static simulation when you already have one. Set Mode to Static. Use Static or StaticFast flow mapping. See [Baked Surface Playback](../setup#setup-baked-surface).
 
 #### In-memory settings
 

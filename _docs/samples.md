@@ -143,6 +143,11 @@ This is a different setup from the [Tiled Simulation](#samples-tiledsimulation) 
 
 Demonstrates how to setup a fluid simulation at runtime with `FluidSimulation.Create` and `LavaSurface.Create`. This can be useful for when a game makes use of procedurally generated terrain that does not exist before entering playmode. See [Creating simulations, modifiers, and obstacles](../c_interaction_scripting#creating-simulations-modifiers-obstacles).
 
+<a name="samples-statesync"></a>
+### State Sync
+
+Two Flow simulations already sit in the scene. Left is the host. Right is the joiner. This is a local demo of the multiplayer pattern. It is not a networked session. Hold the mouse to pour. Pours are applied to both basins in local space. Press C to copy a solver snapshot from host to joiner. Press R to reset the joiner, then C again to see a late join. Press T to pour on only one basin so they drift. Foam will not match. You still pick the network library. See [Multiplayer Support (Beta)](../third_party_support#multiplayer-support).
+
 <a name="samples-gpulodterrain"></a>
 ### GPULOD Terrain
 

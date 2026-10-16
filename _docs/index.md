@@ -26,7 +26,9 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 - Fluid Floater: Pin debris and foliage to the water surface without buoyancy physics.
 - Current-displaced vegetation: Grass and meshes lean and sway with the simulation current.
 - Edit Mode Preview: Run the simulation in the Scene view without entering Play Mode.
+- Baked surface playback: Capture a settled frame and play it back without a live solver. Height stays frozen. Flow mapping still scrolls surface textures. Use this for low-end, VR, or any scene that wants the Fluid Frenzy look without the solver cost.
 - AI Skills: Included skills so coding assistants can set up and script Fluid Frenzy from the public API.
+- Multiplayer hooks (Beta): Capture solver state for a late joiner and follow a shared clock. You still pick the network library. See [Multiplayer Support (Beta)](../third_party_support#multiplayer-support).
 - Universal Render Pipeline: Supports Universal Render Pipeline with minimal extra setup as all features, components, and shaders are useable in both Built-in and URP.
 
 <a name="contents"></a>
@@ -52,7 +54,8 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
     13. Tiled Simulation ```Samples~\TiledSimulation\TiledSimulation.unity```
     14. World ```Samples~\World\World.unity```
     15. Runtime Setup ```Samples~\RuntimeSetup\RuntimeSetup.unity```
-    16. GPULODTerrain ```Samples~\GPULODTerrain\GPULODTerrain.unity```
+    16. State Sync ```Samples~\StateSync\StateSync.unity```
+    17. GPULODTerrain ```Samples~\GPULODTerrain\GPULODTerrain.unity```
 4. AI Skills
     ```FluidFrenzy\AI\Skills```
 5. Documentation
@@ -77,7 +80,7 @@ Fluid Frenzy is an interactive GPU-accelerated fluid simulation and renderer des
 
 - Fluid Frenzy is a [2.5D/*Shallow Water Equation*](https://en.wikipedia.org/wiki/Shallow_water_equations) fluid simulation that is achieved by storing the height of the fluid in a 2D texture (X, Z). This method restricts the simulation to having only one height per pixel, thereby preventing the fluid from flowing both under and over objects simultaneously.
 - The fluid simulation has a maximum speed limit determined by the 2.5D implementation used. In this simulation, the fluid is represented in a 2D texture where each pixel corresponds to a specific size in the world. The fluid can only move one pixel per step, resulting in a maximum speed limit based on the pixel's world units per frame. The simulation attempts to adjust automatically when the dimensions are scaled, but there is a limit to how fast or slow the fluid can move.
-- Multiplayer is not supported in Fluid Frenzy since syncing the data over the network takes too much bandwidth and there is no guarantee simulations run in sync and stay in sync due to latency.
+- Fluid Frenzy can capture and resume solver state and follow a shared clock. It cannot make two GPUs produce the same ripples. It does not stream height every frame. It does not replicate boats or modifiers. Foam, flow mapping, and particles stay local after join. See [Multiplayer Support (Beta)](../third_party_support#multiplayer-support).
 - Fluid Frenzy's WebGL 2 support is currently in beta. There is the possibility of bugs when running in WebGL 2. Please report them if you encounter them.
 - WebGL 2 does not support compute shaders. Any feature that depends on compute is unavailable on WebGL and other platforms without compute support. See [Feature Support](#feature-support) for the full list and recommended alternatives. WebGPU may restore compute support in the future, but Unity support is still experimental and unstable with Fluid Frenzy.
 - Older Unity versions below Unity 2021.3 are not officially supported. Unity 2020.3 is functional as of 01-04-2025 but may not have feature parity and constant support. Support may be added on request depending on the amount of work.
@@ -129,7 +132,7 @@ Several optional features rely on **compute shaders**. Those features are **not 
 | [Current Particles](../fluid_rendering_components#current-particles-effect) | Yes | **Not supported** | Disable Current Particles on [Water Surface](../fluid_rendering_components#water-surface) / [Water World Renderer](../fluid_rendering_components#water-world-renderer). |
 | GPULOD Terrain sample | Yes | **Not supported** | Use Unity Terrain, [Simple Terrain](../terrain#simple-terrain), or another non-GPULOD terrain. |
 
-**Generally supported without compute:** [Flux](../fluid_simulation_components#flux-fluid-simulation) and [Flow](../fluid_simulation_components#flow-fluid-simulation) fluid simulation, [Foam Layer](../fluid_simulation_components#foam-layer), [Wetness Layer](../fluid_simulation_components#wetness-layer), [Flow Mapping](../fluid_simulation_components#flowmapping), [Erosion Layer](../fluid_simulation_components#erosion-layer), terraform mixing (without steam particles), [Fluid Modifiers](../terrain#fluid-modifier), [Fluid Simulation Obstacle](../fluid_simulation_components#fluid-simulation-obstacle), standard water/lava rendering, [Wet Lens Effect](../fluid_rendering_components#wet-lens-effect), [Fluid Rigidbody Lite](../fluid_simulation_components#fluid-rigidbody-lite), [Fluid Floater](../fluid_simulation_components#fluid-floater), and [Current Displacement Shaders](../using_shadergraph#current-displacement-shaders).
+**Generally supported without compute:** [Flux](../fluid_simulation_components#flux-fluid-simulation) and [Flow](../fluid_simulation_components#flow-fluid-simulation) fluid simulation, [Fluid Simulation Static](../fluid_simulation_components#fluid-simulation-static) playback, [Foam Layer](../fluid_simulation_components#foam-layer), [Wetness Layer](../fluid_simulation_components#wetness-layer), [Flow Mapping](../fluid_simulation_components#flowmapping), [Erosion Layer](../fluid_simulation_components#erosion-layer), terraform mixing (without steam particles), [Fluid Modifiers](../terrain#fluid-modifier), [Fluid Simulation Obstacle](../fluid_simulation_components#fluid-simulation-obstacle), standard water/lava rendering, [Wet Lens Effect](../fluid_rendering_components#wet-lens-effect), [Fluid Rigidbody Lite](../fluid_simulation_components#fluid-rigidbody-lite), [Fluid Floater](../fluid_simulation_components#fluid-floater), and [Current Displacement Shaders](../using_shadergraph#current-displacement-shaders).
 
 **Related platform limits (not compute):** [Fluid Simulation Obstacle](../fluid_simulation_components#fluid-simulation-obstacle) **Conservative Rasterization** requires hardware support and is unavailable on WebGL, OpenGL ES, and some older mobile GPUs (the system falls back to standard rasterization automatically). [Terraform Terrain](../terrain#terraform-terrain) **Eight Layer Mode** uses four-layer shading on WebGL.
 

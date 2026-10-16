@@ -7,15 +7,19 @@ permalink: /docs/fluid_rendering_components/
 <a name="fluid-renderer"></a>
 ### Fluid Renderer
 
-The [Fluid Renderer](#fluid-renderer) component is responsible for rendering the [Fluid Simulation](../fluid_simulation_components#fluid-simulation). This component is in charge of creating and rendering the necessary meshes and materials needed for displaying the assigned [Fluid Simulation](../fluid_simulation_components#fluid-simulation). Users can customize the [Fluid Renderer](#fluid-renderer) component to create their own rendering effects, similar to [Water Surface](#water-surface) and [Lava Surface](#lava-surface) renderers.
+The [Fluid Renderer](#fluid-renderer) component is responsible for rendering a [Fluid Simulation](../fluid_simulation_components#fluid-simulation) or a [Fluid Simulation Static](../fluid_simulation_components#fluid-simulation-static). This component is in charge of creating and rendering the necessary meshes and materials needed for displaying the assigned data. Users can customize the [Fluid Renderer](#fluid-renderer) component to create their own rendering effects, similar to [Water Surface](#water-surface) and [Lava Surface](#lava-surface) renderers.
+
+Set **Mode** to Dynamic for a live solver, or Static for a bake. The inspector shows only one of those fields. See [Baked Surface Playback](../setup#setup-baked-surface) to export and assign a bake.
 
 | Property | Description |
 | :--- | :--- |
 | Debug Mode | Different fluid debugging modes that can be used in the editor. |
 | [Surface Properties](#render-properties) | Properties that determine the mesh quality and the specific drawing mode of the fluid surface.<br/><br/>This structure holds settings that control the visual fidelity and performance of the fluid surface mesh. <br/>This includes the specific method used to render the mesh, such as standard MeshRenderer, procedural drawing, GPULOD, or a specialized HDRP mode. |
 | Fluid Material | The material to be used to render the fluid surface.<br/><br/>This material is internally instantiated at runtime. The component copies the properties from the original material to the new instance, <br/>and then overrides or injects any necessary rendering requirements (e.g., shader keywords or properties) for the fluid simulation effects <br/>to function correctly. |
-| [Simulation](../fluid_simulation_components#fluid-simulation) | The [Fluid Simulation](../fluid_simulation_components#fluid-simulation) component that this renderer will draw.<br/><br/>This is a mandatory dependency. The FluidRenderer will automatically adopt the world-space dimensions and position of the assigned Fluid Simulation,<br/>ensuring the rendered fluid surface matches the simulated area exactly. |
-| [Flow Mapping](#fluid-flow-mapping) | The [Fluid Flow Mapping](#fluid-flow-mapping) component that this [Fluid Renderer](#fluid-renderer) uses to visualize fluid currents and wakes.<br/><br/>This component provides the necessary data to the fluid shader, which can be either a dedicated flow map texture (for dynamic UV-offsetting) <br/>or material parameters derived directly from the simulation's velocity texture. This allows the fluid surface to depict accurate movement and flow. |
+| Mode | Chooses whether this surface reads a live solver or a frozen bake.<br/><br/>Dynamic uses a [Fluid Simulation](../fluid_simulation_components#fluid-simulation). Static uses a [Fluid Simulation Static](../fluid_simulation_components#fluid-simulation-static). The inspector shows only one field. |
+| [Simulation](../fluid_simulation_components#fluid-simulation) | The [Fluid Simulation](../fluid_simulation_components#fluid-simulation) this renderer will draw.<br/><br/>Visible when Mode is Dynamic. The renderer uses the simulation size and position. |
+| [Static Simulation](../fluid_simulation_components#fluid-simulation-static) | The [Fluid Simulation Static](../fluid_simulation_components#fluid-simulation-static) this renderer will draw.<br/><br/>Visible when Mode is Static. Assign a Surface Bake on that component. |
+| [Flow Mapping](#fluid-flow-mapping) | The [Fluid Flow Mapping](#fluid-flow-mapping) component that this [Fluid Renderer](#fluid-renderer) uses to visualize fluid currents and wakes.<br/><br/>This component provides the necessary data to the fluid shader, which can be either a dedicated flow map texture (for dynamic UV-offsetting)<br/>or material parameters derived directly from the simulation's velocity texture. This allows the fluid surface to depict accurate movement and flow.<br/>On a live simulation the layer can sit on the sim. On a static simulation assign it on this renderer and use Static or StaticFast. |
 | Render Skirts | Renders downward skirts at the edges of the fluid surface. |
 
 <a name="fluid-world-renderer"></a>
@@ -218,7 +222,7 @@ ___
 ![Water Surface](../../assets/images/watersurface.png)
 
 The [Water Surface](#water-surface) is an extension of the [Fluid Renderer](#fluid-renderer) component that renders all things water like [Foam Layer](../fluid_simulation_components#foam-layer), [Underwater Effect](#underwater-effect) visuals, [Current Particles](#current-particles-effect), [Wet Lens Effect](#wet-lens-effect), absorption, and scattering.
-It does this by assigning the active rendering layers to its surface material and using the underwater settings.
+It does this by assigning the active rendering layers to its surface material and using the underwater settings. It can draw a live [Fluid Simulation](../fluid_simulation_components#fluid-simulation) or a [Fluid Simulation Static](../fluid_simulation_components#fluid-simulation-static). Set **Mode** on the renderer. See [Baked Surface Playback](../setup#setup-baked-surface).
 
 Underwater, current particles, wet lens, caustics, planar reflections, and screen-space reflections use the same settings on [Water Surface](#water-surface) and [Water World Renderer](#water-world-renderer). See [Underwater Settings](#underwater-settings), [Current Particle Settings](#current-particle-settings), [Wet Lens Settings](#wet-lens-settings), [Caustics Settings](#caustics-settings), and [Surface Reflections](#surface-reflections) below.
 
@@ -581,7 +585,7 @@ ___
 
 <a name="lava-surface"></a>
 #### Lava Surface
-[Lava Surface](#lava-surface) is an extension of the [Fluid Renderer](#fluid-renderer) component that specifically deals with rendering lava-related elements of the fluid simulation.
+[Lava Surface](#lava-surface) is an extension of the [Fluid Renderer](#fluid-renderer) component that specifically deals with rendering lava-related elements of the fluid simulation. It can draw a live [Fluid Simulation](../fluid_simulation_components#fluid-simulation) or a [Fluid Simulation Static](../fluid_simulation_components#fluid-simulation-static). Set **Mode** on the renderer. See [Baked Surface Playback](../setup#setup-baked-surface).
 
 This component adds specific lava rendering features, such as heat and emissive color gradients, by generating and applying a custom **Heat Look-Up Texture (LUT)**.  
 
@@ -626,7 +630,7 @@ Both the Water and Lava is rendered after any opaque layers to allow for refract
 <a name="hdrp-water-system"></a>
 <a name="hdrp-water-surface"></a>
 ### HDRP Water System
-Fluid Frenzy has the ability to apply the Fluid Simulation's data to the [HDRP Water System](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@14.0/manual/WaterSystem-use.html). This allows the user to enhance their HDRP scene without sacrificing the quality HDRP provides.
+Fluid Frenzy has the ability to apply the Fluid Simulation's data to the [HDRP Water System](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@14.0/manual/WaterSystem-use.html). This allows the user to enhance their HDRP scene without sacrificing the quality HDRP provides. This mode needs a live [Fluid Simulation](../fluid_simulation_components#fluid-simulation). A [Fluid Simulation Static](../fluid_simulation_components#fluid-simulation-static) cannot drive HDRP Water Surface mode. Use MeshRenderer or GPULOD instead. See [Baked Surface Playback](../setup#setup-baked-surface).
 
 To support this the user will have to enable decal support in their HDRP Quality settings:
 ![alt text](../../assets/images/hdrp_settings_decal.png)

@@ -10,6 +10,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.10] - 2026-10-17
+
+### Added
+- Simulation: **Multiplayer hooks (Beta)**. A shared clock and a solver snapshot so a late joiner can load the current flood, river, and carved terrain. You still pick the network library.
+- Samples: **State Sync**. Two Flow simulations in one process that share a clock and copy a snapshot. It shows the multiplayer pattern. It is not a networked session.
+- Simulation: **Baked Surface Playback**. Capture one settled frame with **Export Surface Bake...** and play it back on **Fluid Simulation Static** without a live solver. Height stays frozen. Static and StaticFast flow mapping still scroll along the baked velocity. Buoyancy and floaters can sit on the frozen field. HDRP Water Surface mode still needs a live simulation.
+- Rendering: **Static** mode on Water Surface and Lava Surface. The surface reads a Fluid Simulation Static instead of a live solver.
+- Editor: Shader stripping for **Toon Water** and **Stylized Water**.
+
+### Changed
+- Rendering: Detail-wave sampling is skipped beyond Displacement Wave Fade Distance.
+
+### Fixed
+- Simulation: Legacy border settings on Flow simulations now migrate when the scene loads.
+- Editor: **Shader Stripper** no longer drops variants that strict shader matching still needs. The water instancing keyword is vertex-only, matching the other shaders. [Issue-62](https://github.com/FrenzyByte/fluidfrenzy/issues/62)
+
 ## [2.0.9] - 2026-10-10
 
 ### Added

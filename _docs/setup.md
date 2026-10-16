@@ -92,6 +92,43 @@ You now have a functional Fluid Simulation using scene geometry instead of a Ter
 
 If you only have a single static mesh you can set Terrain Type to **Mesh Collider** and assign that collider instead of using Layers. See [Physics Colliders](../tiled_simulations#physics-colliders) for obstacles, walking on the water, and buoyancy.
 
+<a name="setup-baked-surface"></a>
+### Baked Surface Playback
+
+These steps will describe how to capture one settled frame of a [Fluid Simulation](../fluid_simulation_components#fluid-simulation) and play it back without a live solver. Height stays frozen. [Flow Mapping](../fluid_simulation_components#flowmapping) in **Static** or **StaticFast** still scrolls textures along the baked velocity.
+
+Use this for low-end, VR, or any scene that wants the Fluid Frenzy look without the solver cost.
+
+| | |
+| :--- | :--- |
+| **Pros** | **Cons** |
+| No solver cost at runtime. | Height does not change. |
+| Flow mapping still animates the surface. | No wakes, pouring, or modifiers writing into the bake. |
+| Buoyancy can sit on the frozen field. | Dynamic flow mapping is not used. |
+| Same water and lava shaders as a live sim. | HDRP Water Surface mode needs a live sim. |
+
+Terrain height is required for shoreline fade. Foam is optional and only exported when a [Foam Layer](../fluid_simulation_components#foam-layer) is present. Several bakes in one [Fluid World Renderer](../fluid_rendering_components#fluid-world-renderer) is not supported.
+
+1. Set up a live [Fluid Simulation](../fluid_simulation_components#fluid-simulation) as usual. Let it settle to the look you want.
+2. Start [Edit Mode Preview](../simulation_debugger#edit-mode-preview) or enter Play Mode. Export needs GPU data.
+3. On the [Fluid Simulation](../fluid_simulation_components#fluid-simulation) inspector click **Export Surface Bake...**. You can also use *Window > Fluid Frenzy > Debugger* **Export Bake...**, or the component context menu **Export Surface Bake...**.
+4. Choose a folder inside `Assets/`. Unity writes EXR textures and a [Fluid Surface Bake](../fluid_simulation_components#fluid-surface-bake) asset.
+5. Add a GameObject with [Fluid Simulation Static](../fluid_simulation_components#fluid-simulation-static) (*Add Component > Fluid Frenzy > Fluid Simulation Static*).
+6. Assign the bake on **Surface Bake**.
+7. On your [Water Surface](../fluid_rendering_components#water-surface) or [Lava Surface](../fluid_rendering_components#lava) set **Mode** to **Static**. Assign the static simulation.
+8. Keep a [Fluid Flow Mapping](#fluid-flow-mapping) on the renderer. Use the settings from the bake, or any Static / StaticFast settings. Do not use Dynamic.
+9. You can delete or disable the original live simulation. Do not keep a disabled sim just to hold textures.
+
+From script:
+
+```c#
+WaterSurface.Create(bake, waterMaterial, flowMapping);
+```
+
+Move the static simulation object to place the surface. Bounds follow that transform and the bake dimension.
+
+You now have a Fluid Frenzy surface that looks alive without the solver cost. The [Fluid Simulation Static](../fluid_simulation_components#fluid-simulation-static) and [Fluid Surface Bake](../fluid_simulation_components#fluid-surface-bake) sections describe every field.
+
 <a name="setup-simulation-regions"></a>
 ### Simulation Regions
 As of version 1.2.1 a simulation does not need to match the exact size of the **Unity Terrain** and can be smaller to cover only a select region by setting a smaller **Dimension** and moving the simulation to the desired location.

@@ -29,8 +29,9 @@ These dates are based on when I believe implement these features but some may be
 | 🟢&nbsp;**Implemented** | **Editor-Time Simulation** | January 2027 | Run the simulation in the Scene View to preview behavior and erosion while designing levels. See [Edit Mode Preview](../simulation_debugger#edit-mode-preview). |
 | 🟢&nbsp;**Implemented** | **Terraform Sculpting Tools** | February 2027 | Manual sculpting brushes to carve and shape the Terraform Terrain system directly in the editor. See [Terrain sculpting and painting](../terrain#terrain-sculpting). |
 | 🟢&nbsp;**Implemented** | **Localized Moving Ripples** | March 2027 | High-detail ripples that follow a target for fine interaction around a player or camera. Visual overlay. Currently in beta. See [Fluid Ripple Zone](../fluid_simulation_components#fluid-ripple-zone). |
+| 🟢&nbsp;**Implemented** | **Baked Surface Playback** | October 2026 | Capture one settled frame and play it back without a live solver. Height stays frozen. Flow mapping still scrolls. See [Baked Surface Playback](../setup#setup-baked-surface). |
+| 🟢&nbsp;**Implemented** | **Multiplayer hooks** | October 2026 | Host-authoritative solver snapshots and a shared clock for late join. Beta. Fluid Frenzy does not ship a netcode library. See [Multiplayer Support (Beta)](../third_party_support#multiplayer-support). |
 | 🔎&nbsp;**Research** | **Surface <> Particle Blending** | March 2027 | Secret tech. |
-| 🔎&nbsp;**Research** | **Simulation Baking (VATs)** | 2027 | Export simulations into Vertex Animation Textures for high-performance playback on mobile assets. |
 | 🔎&nbsp;**Research** | **Unity Terrain Terraforming** | 2027+ | Support for the native Unity Terrain system to be permanently eroded and terraformed by the fluid simulation. |
 
 #### Upcoming Feature Breakdown
@@ -80,11 +81,14 @@ You can sculpt [Simple Terrain](../terrain#simple-terrain) and [Terraform Terrai
 **Localized Moving Ripples**
 [Fluid Ripple Zone](../fluid_simulation_components#fluid-ripple-zone) and [Fluid Ripple Impulse](../fluid_simulation_components#fluid-ripple-impulse) add a moving patch of extra ripple height around a target. This is a visual overlay. It does not change the simulated water column. The feature is currently in beta.
 
+**Multiplayer hooks**
+[Multiplayer Support (Beta)](../third_party_support#multiplayer-support) lets a host send solver state to a late joiner and keep a shared clock afterward. Foam, particles, and wakes stay local. You still send the snapshot bytes and gameplay events with your own netcode. The feature is currently in beta.
+
 **Surface <> Particle Blending**
 Secret tech.
 
-**Simulation Baking (VATs)**
-For projects targeting low-end mobile devices or for background decorations, you can bake a complex simulation into a Vertex Animation Texture. This allows you to play back a pre-recorded simulation with virtually no CPU or GPU performance hit. This is highly experimental and may not be implemented.
+**Baked Surface Playback**
+[Baked Surface Playback](../setup#setup-baked-surface) freezes one frame of height and velocity. Flow mapping still animates the surface. Use this for low-end, VR, or any scene that wants the Fluid Frenzy look without the solver. This is implemented.
 
 **Native Unity Terrain Terraforming**
 My long term goal is to bring the terraforming, erosion, and liquification features to the native Unity Terrain system. This will allow Fluid Frenzy to permanently modify and carve the standard Unity terrain at runtime. This might require the new Unity Terrain system if/when it comes out.

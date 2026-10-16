@@ -13,7 +13,9 @@ There are two types of simulations: **Flux Fluid Simulation** and **Flow Fluid S
 
 [Fluid Simulation](#fluid-simulation) is the core component of Fluid Frenzy. It handles the full simulation and the components attached to it.
 
-This is the base class for all fluid simulation types ([Flux Fluid Simulation](#flux-fluid-simulation) and [Flow Fluid Simulation](#flow-fluid-simulation)). The system uses the `Shallow Water Equations` to create a physically-based `fluid heightfield simulation`. This core technology calculates a velocity field that dictates how the fluid moves and flows over a static, underlying ground heightfield, providing a realistic and performant simulation of large water bodies. It defines common properties and systems used by both solvers.  
+This is the base class for all fluid simulation types ([Flux Fluid Simulation](#flux-fluid-simulation) and [Flow Fluid Simulation](#flow-fluid-simulation)). The system uses the `Shallow Water Equations` to create a physically-based `fluid heightfield simulation`. This core technology calculates a velocity field that dictates how the fluid moves and flows over a static, underlying ground heightfield, providing a realistic and performant simulation of large water bodies. It defines common properties and systems used by both solvers.
+
+While [Edit Mode Preview](../simulation_debugger#edit-mode-preview) or Play Mode is running, click **Export Surface Bake...** on this inspector to capture the current frame. See [Baked Surface Playback](../setup#setup-baked-surface).
 
 ![Fluid Simulation](../../assets/images/fluidsimulation.png)
 
@@ -49,7 +51,7 @@ Serialized settings for one domain edge. The same fields appear under each bound
 | Mode | How fluid behaves at this edge of the simulation.<br/><br/>- **Closed** <br/>Fluid reflects back like a wall. Good for pools and enclosed areas.<br/><br/>- **Open (Velocity)** <br/>Fluid can flow out through this edge. Used for rivers, drains, and outlets on Flow simulations.<br/><br/>- **Open (Surface Level)** <br/>Keeps the fluid surface at a fixed height along this edge.<br/><br/>- **Neighbour** <br/>Shares this edge with another simulation tile so fluid continues seamlessly. |
 | Outflow speed | How fast fluid is allowed to flow out when this edge uses Open (Velocity) mode.<br/><br/>Only applies to Flow simulations. Higher values let more fluid leave through this edge. |
 | Surface level | The target fluid surface height at this edge, in world space.<br/><br/>Used for Open (Surface Level) edges, and when the absorb band pulls fluid toward a resting level. Set this to the surface height you want near the edge. |
-| Surface layers | Which fluid layers this edge holds at the surface level.<br/><br/>Only shown when the simulation has a second layer. Layer 1 is a water ocean on a world that also has lava. Layer 2 is a lava or sludge ocean. A layer that is not held flows out of the domain at this edge. Defaults to Layer 1. |
+| Surface layers | Which fluid layers this edge holds at `Open Surface Level`.<br/><br/>Used for Open (Surface Level) edges, and when the absorb band pulls fluid toward that level.<br/>Only matters when the simulation has a second layer. Layer 1 is a water ocean on a world that also has lava.<br/>Layer 2 is a lava or sludge ocean. A layer that is not held reads zero depth past the edge. It flows out of the domain there.<br/>Defaults to Layer 1. |
 | Absorb mode | Optional calming band just inside this edge that reduces splashing and drift.<br/><br/>Only applies to Flow simulations. Ignored when this edge is linked to a neighbour tile.<br/>- **Off** <br/>Only the boundary mode above applies.<br/><br/>- **Height And Velocity** <br/>Slows flow and eases fluid depth toward the surface level inside the band.<br/><br/>- **Velocity Only** <br/>Slows flow inside the band without changing fluid depth. |
 | Absorb Band Percent | How far the absorb band reaches into the simulation, as a percentage of the tile size.<br/><br/>Based on the longer side of the simulation so every edge gets the same band width in meters. Larger values affect more of the fluid; smaller values keep the effect near the edge only. |
 | Absorb Strength | How strongly the absorb band calms fluid at the outer edge.<br/><br/>The effect fades smoothly toward the inside of the band. Increase for quicker calming; pair with band width so you do not see a hard line where the band ends. |
@@ -204,7 +206,7 @@ The simulation fully runs on the GPU but in some cases, interaction with objects
 | Property | Description |
 | :--- | :--- |
 | Second Layer | Enables an optional secondary layer for simulating a different type of fluid.<br/><br/>The secondary layer runs concurrently with the main fluid layer, increasing VRAM usage and slightly decreasing performance. However, this is generally more efficient than running a separate `FluidSimulation` component. The second layer is used for features like **Lava** in the Terraform simulation option. The following properties provide independent physics overrides for this layer. |
-| Cell size | Secondary Layer: Adjusts the internal scale factor of the fluid volume to control the effective flow speed.<br/><br/>A smaller `cellSize` implies less fluid volume per cell, which results in faster-flowing fluid and more energetic wave behavior for a given acceleration. |
+| Cell size | Adjusts the internal scale factor of the fluid volume within each cell to control the effective flow speed.<br/><br/>A smaller `cellSize` implies less fluid volume per cell, which results in faster-flowing fluid and more energetic wave behavior for a given acceleration. |
 | Wave Damping | Secondary Layer: Adjusts the rate at which wave energy is dissipated over time.<br/><br/>A higher value causes waves and ripples to fade away quickly, leading to a calmer surface, while a lower value allows waves to persist longer. |
 | Acceleration | Secondary Layer: The force of acceleration applied to the fluid, which directly controls the speed of wave propagation.<br/><br/>This value simulates the effect of gravity (9.8 m/s^2 is typical) on the fluid and is the primary factor determining how quickly waves travel across the simulation domain. |
 | Linear Evaporation | Secondary Layer: The rate of constant (linear) fluid volume removal.<br/><br/>Fluid volume is reduced uniformly at this rate: `fluid -= secondLayerLinearEvaporation * dt`. |
@@ -352,6 +354,56 @@ As a [Scriptable Object](#scriptable-object) asset, `FlowFluidSimulationSettings
 <div style="page-break-after: always;"></div>
 ___
 
+<a name="fluid-simulation-static"></a>
+### Fluid Simulation Static
+
+[Fluid Simulation Static](#fluid-simulation-static) plays back a [Fluid Surface Bake](#fluid-surface-bake) without a live solver. Height stays still. [Flow Mapping](#flowmapping) can still scroll surface textures along the baked velocity.
+
+Export a bake from a running [Fluid Simulation](#fluid-simulation). Assign it here. Set the surface **Mode** to Static and point the [Fluid Renderer](../fluid_rendering_components#fluid-renderer) at this component. Height and velocity are copied to the CPU once so buoyancy and other height queries can sample the frozen field.
+
+See [Baked Surface Playback](../setup#setup-baked-surface) for the full export and playback steps.
+
+| | |
+| :--- | :--- |
+| **Pros** | **Cons** |
+| No solver cost at runtime. | Height does not change. |
+| Flow mapping still animates the surface. | No wakes, pouring, or modifiers writing into the bake. |
+| Buoyancy can sit on the frozen field. | Dynamic flow mapping is not used. |
+| Same water and lava shaders as a live sim. | HDRP Water Surface mode needs a live sim. |
+
+| Property | Description |
+| :--- | :--- |
+| [Surface Bake](#fluid-surface-bake) | The Surface Bake this simulation uses.<br/><br/>Export this from a live simulation while Preview or Play Mode is running. |
+
+<a name="fluid-surface-bake"></a>
+### Fluid Surface Bake
+
+Textures and values captured from a [Fluid Simulation](#fluid-simulation). Assign this on a [Fluid Simulation Static](#fluid-simulation-static). Height stays still. Flow mapping can still scroll surface textures.
+
+Export from the simulation inspector or the Debugger while Preview or Play Mode is running. Then assign the bake on a [Fluid Simulation Static](#fluid-simulation-static) and set the surface Mode to Static.
+
+Packed **Render Data** is height in RG and velocity in BA. That is the same layout as the live height and velocity texture.
+
+Cell count is taken from the render data size minus one. Terrain and foam UV scale skip ghost cells from the size difference versus render data. You do not set those by hand.
+
+To create an empty asset, navigate to: `Assets > Create > Fluid Frenzy > Surface Bake`. Export is the usual path. It writes the textures and fills the fields.
+
+| Property | Description |
+| :--- | :--- |
+| Render Data | Packed height (RG) and velocity (BA).<br/><br/>Same layout as the live height and velocity texture. Height stays frozen. Velocity still drives Static and StaticFast flow mapping. |
+| Normals | Normal map of the fluid surface.<br/><br/>Copied from the live simulation at export. Used for lighting and shoreline fade. |
+| Terrain | Terrain height used for shoreline fade.<br/><br/>Required. Shoreline fade is wrong without it. |
+| Foam | Optional foam mask. Null skips foam.<br/><br/>This is a still image. Foam does not advect after export. |
+| Dimension | World-space XZ size of the simulation. |
+| Cell Size | Cell size of the simulation.<br/><br/>Copied from the live solver at export. This is the solver scale. It is not world size divided by cell count. |
+| Clip Height | Height clip used by the surface shaders.<br/><br/>Copied from the live simulation at export. |
+| Terrain Scale | Terrain height scale.<br/><br/>Unity Terrain uses this as the terrain height. |
+| Terrain Type | Terrain source type.<br/><br/>Copied from the live simulation at export. Unity Terrain always unpacks the heightmap. |
+| [Flow Mapping Settings](#flowmap-settings) | Flow mapping settings. Shared by reference.<br/><br/>Use Static or StaticFast. Dynamic is not used on a bake. |
+
+<div style="page-break-after: always;"></div>
+___
+
 <a name="foam-layer"></a>
 ### Foam Layer
 
@@ -467,6 +519,8 @@ ___
 ### Fluid Flow Mapping
 
 **Fluid Flow Mapping** is an extension layer that enables and controls [*flow mapping*](https://catlikecoding.com/unity/tutorials/flow/directional-flow/) functionality in the simulation and rendering side of Fluid Frenzy. The layer generates the *flow map* procedurally using the flow of the fluid simulation. The rendering data is automatically passed to the material assigned to the [Fluid Renderer](#fluid-rendering-components). There are several settings to control the visuals of the flow mapping in the layer which can be set in the [Fluid Flow Mapping Settings](#flowmap-settings) asset assigned to this layer.
+
+On a live [Fluid Simulation](#fluid-simulation) this component lives on a GameObject and also needs to be added to the Layers list. On a [Fluid Simulation Static](#fluid-simulation-static), assign it on the [Fluid Renderer](../fluid_rendering_components#fluid-renderer) only. Use **Static** or **StaticFast**. Dynamic needs a live solver UV buffer, so a bake falls back to Static.
 
 - **Settings** - a [Fluid Flow Mapping Settings](#flowmap-settings) asset which holds the settings to be used for this Flow Mapping Layer
 
@@ -829,7 +883,7 @@ The component performs geometry-to-fluid interaction using an optimized system t
 
 #### Prerequisite
 
-For buoyancy on [Fluid RigidBody](#fluid-rigidbody), use a [Fluid World Renderer](../fluid_rendering_components#fluid-world-renderer) in multi-tile setups, or enable [Read Back Height](#read-back-height) (`CPU Height Read`) on each [Fluid Simulation](#fluid-simulation) the body should interact with.
+For buoyancy on [Fluid RigidBody](#fluid-rigidbody), use a [Fluid World Renderer](../fluid_rendering_components#fluid-world-renderer) in multi-tile setups, enable [Read Back Height](#read-back-height) (`CPU Height Read`) on each [Fluid Simulation](#fluid-simulation) the body should interact with, or overlap a [Fluid Simulation Static](#fluid-simulation-static). A static sim copies height once. The body can sit and drift on the frozen field. It cannot stamp the bake.
 
 #### Fluid Density Calibration
 
@@ -890,7 +944,7 @@ This component applies physics effects such as buoyancy, drag, and advection (mo
 
  **Requirement:** This component requires both a [Rigidbody](#rigidbody) and a [Collider](#collider) to be attached to the [Game Object](#game-object). See [Physics Colliders](../tiled_simulations#physics-colliders) if you need the water to flow around the object, or to walk on the surface.  
 
- **Prerequisite:** To allow the CPU to access the fluid height for buoyancy calculations, the [Read Back Height](#read-back-height) (`CPU Height Read`) setting must be enabled on the [Fluid Simulation](#fluid-simulation).
+ **Prerequisite:** To allow the CPU to access the fluid height for buoyancy calculations, enable [Read Back Height](#read-back-height) (`CPU Height Read`) on the [Fluid Simulation](#fluid-simulation), or overlap a [Fluid Simulation Static](#fluid-simulation-static).
 
 ![Fluid Rigidbody Lite](../../assets/images/fluidrigidbody_lite.png)
 
@@ -942,7 +996,7 @@ Use this for debris, lily pads, and foliage that should sit on the water. Use [F
 
 A configurable local XZ plane (default at the pivot) is sampled on a grid. The transform is then placed so that plane sits on the water, and can optionally tilt with the waves and drift with the current.
 
-**Prerequisite:** With a [Fluid World Renderer](../fluid_rendering_components#fluid-world-renderer) and packed world atlas, height includes ocean FFT (same GPU path as [Fluid RigidBody](#fluid-rigidbody)). Otherwise enable [Read Back Height](#read-back-height) (`CPU Height Read`) on the [Fluid Simulation](#fluid-simulation) for shallow-water sampling only.
+**Prerequisite:** With a [Fluid World Renderer](../fluid_rendering_components#fluid-world-renderer) and packed world atlas, height includes ocean FFT (same GPU path as [Fluid RigidBody](#fluid-rigidbody)). Otherwise enable [Read Back Height](#read-back-height) (`CPU Height Read`) on the [Fluid Simulation](#fluid-simulation) for shallow-water sampling only, or overlap a [Fluid Simulation Static](#fluid-simulation-static).
 
 No [Rigidbody](#rigidbody) or [Collider](#collider) is required. If a Rigidbody is present, this component drives its pose so the object cannot punch through the surface.
 
@@ -1012,7 +1066,7 @@ When this component is attached, its shape and height are `orthographically rend
 
 The [Pool](../samples#samples-pool) sample uses this. An object in that scene turns red when it enters the water.
 
-**Prerequisite:** Enable [Read Back Height](#read-back-height) (`CPU Height Read`) on the [Fluid Simulation](#fluid-simulation). Queries return nothing until a readback cycle has finished.
+**Prerequisite:** Enable [Read Back Height](#read-back-height) (`CPU Height Read`) on the [Fluid Simulation](#fluid-simulation), or overlap a [Fluid Simulation Static](#fluid-simulation-static). Live queries return nothing until a readback cycle has finished. A static sim copies height once.
 
 ![Fluid Event Trigger](../../assets/images/fluid_trigger_event.png)
 

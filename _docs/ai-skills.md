@@ -18,14 +18,15 @@ They are meant for Unity AI, Cursor, and similar assistants that read project sk
 | Skill | Use it when |
 | :--- | :--- |
 | `fluid-frenzy-setup-and-overview` | Installing Fluid Frenzy, checking render pipelines, importing samples, or choosing which skill to use next. |
-| `fluid-frenzy-create-simulations` | Adding water, lava, Flow or Flux, or a Water World. |
+| `fluid-frenzy-create-simulations` | Adding water, lava, Flow or Flux, a Water World, or a [baked surface](../setup#setup-baked-surface). |
 | `fluid-frenzy-create-terraform-simulation` | Creating [Terraform Terrain](../terrain#terraform-terrain) and dual-fluid terraform (water, lava, and terrain reactions). |
+| `fluid-frenzy-sculpt-terraform-terrain` | Sculpting or painting Terraform Terrain height layers and splat in the Scene View. |
 | `fluid-frenzy-add-modifiers-and-obstacles` | Placing persistent sources, flow, forces, vortices, terrain brushes, or procedural obstacles. |
 | `fluid-frenzy-buoyancy-and-proximity` | Making objects float, adding Rigidbody buoyancy and wakes, or fading audio by distance to fluid. |
 | `fluid-frenzy-script-and-query-fluid` | Custom C# such as adding fluid on click, sampling height, or reading velocity. Not for ordinary floating. |
 | `fluid-frenzy-preview-and-debug` | Previewing in Edit Mode, missing surfaces, wrong heights, settings mismatches, or build shader stripping. |
 
-The setup skill routes to the others. Floating, wakes, and shoreline audio belong in **buoyancy-and-proximity**. Custom sampling belongs in **script-and-query-fluid**. Visibility and Preview problems belong in **preview-and-debug**.
+The setup skill routes to the others. Sculpting terraform ground belongs in **sculpt-terraform-terrain**. Floating, wakes, and shoreline audio belong in **buoyancy-and-proximity**. Custom sampling belongs in **script-and-query-fluid**. Visibility and Preview problems belong in **preview-and-debug**.
 
 ---
 
