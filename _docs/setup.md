@@ -48,18 +48,40 @@ You now have a functional Fluid Simulation using Fluid Frenzy. Use [Edit Mode Pr
 
 ![Terraform Simulation Setup](../../assets/images/gameobject_fluidfrenzy_terraform.png)
 
-These steps will describe how to set up a fluid simulation that will simulate god game-like terraforming. The simulation supports fluids of water and lava, erosion and fluid mixing to turn water and lava into rock. In the current version of **Fluid Frenzy** terraforming only works the [Terraform Terrain](../terrain#terraform-terrain).
+These steps will describe how to set up a fluid simulation that will simulate god game-like terraforming. The simulation supports water, lava, and extra fluids, with erosion and fluid mixing that can turn overlapping fluids into rock. In the current version of **Fluid Frenzy** terraforming only works the [Terraform Terrain](../terrain#terraform-terrain).
 1. Add a [Terraform Terrain](../terrain#terraform-terrain) to your scene by clicking the GameObject menu and selecting *`Fluid Frenzy > Terraform Terrain`*.
 2. Set up your [Terraform Terrain](../terrain#terraform-terrain) by assigning all required settings.
 2. Set up the newly created [Terraform Terrain](../terrain#terraform-terrain) to your liking.
 3. Select your [Terraform Terrain](../terrain#terraform-terrain) and add a Terraform Simulation by clicking *`Fluid Frenzy > Flux > Terraform Simulation`* or *`Fluid Frenzy > Flow > Terraform Simulation`*.
 5. Fluid settings, assets, and materials are automatically created in the folder of your scene. You can tweak these values to your liking.
 6. Add a [Fluid Modifier Volume](../fluid_modifiers#fluid-modifier-volume) by clicking the GameObject menu and selecting *`Fluid Frenzy > Fluid Source`*.
-7. Set up the new Fluid Modifier by placing it in the desired location in the scene and setting up the settings in the Inspector. You can change the layer to control which fluid the modifier should add to. Layer 1 is Water while Layer 2 is Lava.
+7. Set up the new Fluid Modifier by placing it in the desired location in the scene and setting up the settings in the Inspector. You can change the layer to control which fluid the modifier should add to. Layer 1 is Water. Layer 2 is Lava. Layers 3 and 4 are extra fluids when Layer Count is 3 or 4.
 
 Optional: enable [eight-layer terrain](../terrain#eight-layer-terrain) if you need more than four stacked height layers. On the [Erosion Layer](../fluid_simulation_components#erosion-layer) or [Terraform Layer](../fluid_simulation_components#terraform-layer), enable **Tint Water** if carried sediment should stain the water. Set **Sediment Transport** to **Conservative Flux** on a Flux simulation when you want mass-conserving sediment movement on closed borders.
 
 You now have a functional Terraform Simulation using Fluid Frenzy. Use [Edit Mode Preview](../simulation_debugger#edit-mode-preview) in the Scene view, or hit Play, and see your Terrain being filled with water and lava!
+
+If water should sit on lava or sludge instead of mixing through it, see [Stacked Fluids](#setup-stacked-fluids).
+
+<a name="setup-stacked-fluids"></a>
+### Stacked Fluids
+
+These steps will describe how to sit one fluid on another, for example water on lava or sludge. Fluids sit side by side on the terrain until you stack them.
+
+1. On the simulation settings asset, set **Layer Count** under **Extra Fluid Layers** to 2 or more. Add a [Water Surface](../fluid_rendering_components#water-surface), [Lava Surface](../fluid_rendering_components#lava), or [Fluid Renderer](../fluid_rendering_components#fluid-renderer) for each fluid. Set each material **Layer** (`_Layer`) to Layer1 through Layer4.
+2. Open the **Stack** board. Terrain is the bottom. The top of the stack is lighter. Drag a fluid onto another to sit on it. Drop it onto a second fluid to sit on both. Drop on the same fluid again to stop sitting on it. Drop in empty space or on terrain to unstack. Fluids that sit on the same fluid draw side by side. **Side by side** clears stacking.
+3. In C# call `SetStackLayers`. Water on lava is `settings.SetStackLayers(0, FluidSurfaceLayers.Layer2)`. Water on lava and sludge is `SetStackLayers(0, FluidSurfaceLayers.Layer2 | FluidSurfaceLayers.Layer3)`. Leave `stackLayers` at None to keep fluids side by side.
+4. Set **Render Queue** on each fluid material to match the stack. The lowest fluid (closest to terrain) should have the lowest queue.
+   - Terrain uses 2000.
+   - Lava or sludge under water: around **2400**. This still draws with opaque objects, so screenspace refraction can see it.
+   - Water on top: **2510**, or a little higher than the lava or sludge.
+
+   2000 is the terrain queue and will z-fight if used on a fluid. The [Terraform](../samples#samples-terraform) sample uses lava at 2401 and water at 2511.
+5. In URP, enable Opaque Texture and Depth Texture on the pipeline asset. See [Universal Render Pipeline](#setup-urp).
+
+If you are using a [Terraform Layer](../fluid_simulation_components#terraform-layer), mixing will still consume overlapping fluids into rock. Untick Mix for that pair if you want a lake sitting on lava.
+
+You now have stacked fluids. Use [Edit Mode Preview](../simulation_debugger#edit-mode-preview) or hit Play to check refraction through the water.
 
 <a name="setup-layer-capture"></a>
 ### Layer Capture Simulation
@@ -166,9 +188,9 @@ Bits 5–31 default to `Channel N` until renamed. Up to 32 channels are supporte
 <a name="fluid-shader-stripper-settings"></a>
 ### Shader Stripper
 
-Fluid Frenzy strips unused shader variants from its water, lava, terraform, and prepass shaders during player builds. This reduces build size and shader load time. The build callback lives in `FluidFrenzyShaderStripper`; project toggles live under **Edit → Project Settings → Fluid Frenzy → Shader Stripper** and are stored in `ProjectSettings/Packages/com.frenzybyte.fluidfrenzy/FluidFrenzyShaderStripperSettings.asset`.
+Fluid Frenzy strips unused shader variants from its water, lava, sludge, current displacement, terraform, and prepass shaders during player builds. This reduces build size and shader load time. The build callback lives in `FluidFrenzyShaderStripper`; project toggles live under **Edit → Project Settings → Fluid Frenzy → Shader Stripper** and are stored in `ProjectSettings/Packages/com.frenzybyte.fluidfrenzy/FluidFrenzyShaderStripperSettings.asset`.
 
-Only the active render pipeline subshader is kept for each FluidFrenzy shader (HDRP, URP, or Built-in, depending on project defines). Additional variants are removed automatically (for example incompatible instancing combinations, unused fog keywords, and WebGL GPULOD limits).
+Only the active render pipeline subshader is kept for each FluidFrenzy shader (HDRP, URP, or Built-in, depending on project defines). Additional variants are removed automatically (for example incompatible instancing combinations, unused fog keywords, and WebGL GPULOD limits). Sludge and current displacement graphs keep Unity fog because Shader Graph Lit uses it. Lightmap variants are stripped from sludge and from the current grass and mesh graphs. Those surfaces are not lightmapped.
 
 Use **Auto Optimize** to scan enabled build scenes and FluidFrenzy materials, then enable only the keyword combinations your project needs. Use **Enable All** to reset every toggle before testing a smaller strip profile.
 
@@ -233,5 +255,6 @@ Fluid Frenzy support for HDRP requires different shaders on most materials. This
 | WaterSurface              | FluidFrenzy/Water                         | FluidFrenzy/Water                         | FluidFrenzy/Water                              |
 | WaterSurfaceHDRP          | N/A                                       | N/A                                       | FluidFrenzy/HDRP/WaterSurfaceHDRP              |
 | LavaSurface               | FluidFrenzy/Lava                          | FluidFrenzy/Lava                          | FluidFrenzy/HDRP/Lava                          |
+| FluidRenderer (Sludge)    | FluidFrenzy/Sludge                        | FluidFrenzy/Sludge                        | FluidFrenzy/HDRP/Sludge                        |
 | TerraformTerrain          | Fluidfrenzy/TerraformTerrain              | Fluidfrenzy/TerraformTerrain              | FluidFrenzy/HDRP/TerraformTerrain              |
 | FluidParticleGenerator    | FluidFrenzy/ProceduralParticle (or Unlit) | FluidFrenzy/ProceduralParticle (or Unlit) | FluidFrenzy/HDRP/ProceduralParticle (or Unlit) |

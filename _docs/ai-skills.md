@@ -19,7 +19,7 @@ They are meant for Unity AI, Cursor, and similar assistants that read project sk
 | :--- | :--- |
 | `fluid-frenzy-setup-and-overview` | Installing Fluid Frenzy, checking render pipelines, importing samples, or choosing which skill to use next. |
 | `fluid-frenzy-create-simulations` | Adding water, lava, Flow or Flux, a Water World, or a [baked surface](../setup#setup-baked-surface). |
-| `fluid-frenzy-create-terraform-simulation` | Creating [Terraform Terrain](../terrain#terraform-terrain) and dual-fluid terraform (water, lava, and terrain reactions). |
+| `fluid-frenzy-create-terraform-simulation` | Creating [Terraform Terrain](../terrain#terraform-terrain) and dual-fluid terraform (water, lava, mix pairs, and terrain reactions). |
 | `fluid-frenzy-sculpt-terraform-terrain` | Sculpting or painting Terraform Terrain height layers and splat in the Scene View. |
 | `fluid-frenzy-add-modifiers-and-obstacles` | Placing persistent sources, flow, forces, vortices, terrain brushes, or procedural obstacles. |
 | `fluid-frenzy-buoyancy-and-proximity` | Making objects float, adding Rigidbody buoyancy and wakes, or fading audio by distance to fluid. |

@@ -33,7 +33,7 @@ Defines the settings when [Source](#source) is enabled on the [Fluid Modifier Vo
 | Space | Specifies the coordinate space to which the fluid height source should be set relative to.<br/><br/>- **[Fluid Simulation](../fluid_simulation_components#fluid-simulation)** <br/> The height is interpreted as a specific world Y-coordinate.<br/> <br/>- **[Fluid Simulation](../fluid_simulation_components#fluid-simulation)** <br/> The height is interpreted relative to the fluid surface's base height. |
 | Strength | Adjusts the amount of fluid added or set by the volume.<br/><br/>- **For Additive blending** <br/> This is the rate per second of fluid to add/subtract.<br/> <br/>- **For Set blending** <br/> This value contributes to the target height. |
 | Falloff | Adjusts the curve of the distance-based strength, controlling how quickly the influence falls off from the center.<br/><br/>Higher values create a faster falloff, resulting in a more focused fluid source. |
-| Target Layer | Specifies the target fluid layer to which the fluid will be added. |
+| Target Layer | Specifies the target fluid layer to which the fluid will be added. Layer1 through Layer4. |
 | Size | Adjust the size (width and height) of the modification area in world units. |
 | Source Texture | The source texture used to determine the shape and intensity of the fluid input when `Mode` is `Texture`. <br/>Only the red channel of the texture is used. |
 
@@ -86,7 +86,7 @@ The path is one velocity draw. Corners blend tangents instead of stepping from b
 | Source Strength | Rate of fluid added per second when emission is enabled. |
 | Source Falloff | Edge softness of the inlet source. |
 | Source Length | Length of the inlet source along the path from the first node. |
-| Source Layer | Fluid layer that receives emitted water. 0 is layer 1. |
+| Source Layer | Fluid layer that receives emitted water. Layer1 through Layer4. |
 | Flow Blend Mode | Set keeps flow on the path like a pipe. Additive pushes along the path without replacing existing current. |
 | Flow Strength | Speed of the pipe current. On Flux this is also the virtual head that drives water along the path. |
 | Flow Falloff | Edge softness of each path segment. |

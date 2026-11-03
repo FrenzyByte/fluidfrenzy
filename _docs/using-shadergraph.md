@@ -6,13 +6,18 @@ permalink: /docs/using_shadergraph/
 
 Create your own shaders using ShaderGraph and the Fluid Frenzy ShaderGraph nodes. You can create custom shaders for the **Fluid Simulation**, **Terraform Terrain**, and **Procedural particles**. To get started it is recommended to look at the example shader found at `FluidFrenzy\Runtime\Rendering\Shaders\ShaderGraph\SampleFluidSimple`. This example demonstrates how to sample the fluid simulation's data like the height, depth. velocity, layer, normals and how to apply flowmapping.
 
+The shipped [Sludge Shader](../fluid_shaders#sludge-shader) (`FluidFrenzy/Sludge`, HDRP: `FluidFrenzy/HDRP/Sludge`) is a Lit Shader Graph that uses those same nodes. It samples sludge and bubble maps with `SampleTex2DFlow`, tints them with Base Color and Bubble Color, clips the assigned Layer, and alpha-blends the shoreline with FadeFluid. Use it as a second starting point when you want PBR instead of the unlit example.
+
+`SampleSimulationData` declares world atlas, GPU LOD instancing (vertex), multilayer (fragment), and flow mapping. Keep `FLUID_MULTILAYER` on Fragment only so vertex displacement keeps packed wall pinning. Do not add ocean FFT, color field, local ripples, or displacement waves to these graphs. Shader Graph's variant limit cannot hold the full handwritten water set. The HDRP water Shader Graph keeps its own FoamMode keywords and inherits multilayer and flow mapping from `SampleSimulationDataFromPositionWS`.
+
 #### Fluid Simulation Nodes
 
 | Node                                | Description                                  |
 |-------------------------------------|--------------------------------------------------|
 | ApplyClipSpaceOffset                | Applies a depth offset to the clipspace position |
 | ClampVector2                        | Clamps a Vector2 to a given length |
-| ClipFluid                           | Calls hlsl clip to discard any invisible fluid layer's pixels. |
+| ClipFluid                           | Discards pixels that do not belong to the material Layer. With several fluids the mask is that layer's coverage, not the packed water/lava sign. |
+| FadeFluid                           | Custom Function in `FluidRenderingShaderGraph.hlsl`. Shoreline alpha from the clip mask, Layer, and Fade Height. Same formula as lava. Connect SampleNormal clipmask, Layer, and Fade Height. Write it to Alpha. |
 | EvaluateWaterFoamMask               | Evaluate the visibly of the foam based on factors like the selected mode, albedo, and foam mask. |
 | FluidClipHeight                     | Shader subgraph for fluid clip height       |
 | FluidUV0To1                         | Returns the 0 to 1 UV based of the FluidUV from the SampleSimulationData node. |
@@ -22,7 +27,7 @@ Create your own shaders using ShaderGraph and the Fluid Frenzy ShaderGraph nodes
 | SampleWetness                       | Samples the residual [Wetness Layer](../fluid_simulation_components#wetness-layer) mask at a fluid UV. |
 | SampleWetnessFromPositionWS         | Samples the residual [Wetness Layer](../fluid_simulation_components#wetness-layer) mask at a world-space position. Uses the world wetness atlas when a [Water World Renderer](../fluid_rendering_components#water-world-renderer) is active. |
 | SampleHeightVelocity                | Samples the fluid simulation's height and velocity data. |
-| SampleNormal                        | Samples the fluid simulation's surface normal.       |
+| SampleNormal                        | Samples the fluid simulation's surface normal and the clip mask for ClipFluid. |
 | SampleSimulationData                | Samples all the fluid simulation data at a provided UV coordinate. |
 | SampleSimulationDataFromPositionOS  | Samples all the fluid simulation data at a provided object space position. |
 | SampleSimulationDataFromPositionWS  | Samples all the fluid simulation data at a provided world space position. |
@@ -61,6 +66,8 @@ Use the ready-made graphs, or drop the **FluidCurrentDisplace** subgraph into yo
 **Grass** (`FluidFrenzy/FluidCurrentGrassLit`, `FluidFrenzy/FluidCurrentGrassUnlit`) is for terrain mesh details and painted tufts. Vertex color RGB tints the blade. Vertex color alpha scales how much that vertex leans (keep 0 at the root). Both Transform nodes on the subgraph must stay on **Offset**; **Direction** skips GPU-instance matrices and makes tufts sway the wrong way. Built-in terrain mesh details need the Unlit graph. The Lit graph is PBR on Built-in and URP.
 
 **Mesh** (`FluidFrenzy/FluidCurrentMeshLit`, `FluidFrenzy/FluidCurrentMeshUnlit`) is for MeshRenderers such as seaweed. Keep both Transform nodes on **Direction**. Texture alpha drives cutout.
+
+The shipped graphs skip lightmap variants with the same list as sludge. Unity fog stays enabled. The shader stripper also drops the idle pipeline subshader. Custom graphs that use **FluidCurrentDisplace** do not get that skip unless you add it.
 
 Example prefabs and materials live in `FluidFrenzy\Runtime\Presets\Prefabs\Current` and `FluidFrenzy\Runtime\Presets\Materials\Current`.
 

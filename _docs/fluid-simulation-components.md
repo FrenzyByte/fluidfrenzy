@@ -89,7 +89,9 @@ Serialized settings for one domain edge. The same fields appear under each bound
 | Property | Description |
 | :--- | :--- |
 | Initial Fluid Height | Specifies the fluid height at the start of the simulation.<br/><br/>This value defines the initial water *depth* relative to the terrain height at that point. Specifically, it's the target initial Y-coordinate for the fluid surface. Any terrain geometry below this Y-coordinate will be submerged. |
-| Initial Fluid Height Layer2 | Specifies the fluid height at the start of the simulation for the second layer.<br/><br/>This value defines the initial water *depth* relative to the terrain height at that point. Specifically, it's the target initial Y-coordinate for the fluid surface. Any terrain geometry below this Y-coordinate will be submerged. |
+| Initial Fluid Height (Layer 2) | Specifies the fluid height at the start of the simulation for the second layer.<br/><br/>Shown when **Layer Count** is 2 or more. This value defines the initial water *depth* relative to the terrain height at that point. Specifically, it's the target initial Y-coordinate for the fluid surface. Any terrain geometry below this Y-coordinate will be submerged. |
+| Initial Fluid Height (Layer 3) | Specifies the fluid height at the start of the simulation for the third layer.<br/><br/>Shown when **Layer Count** is 3 or more. |
+| Initial Fluid Height (Layer 4) | Specifies the fluid height at the start of the simulation for the fourth layer.<br/><br/>Shown when **Layer Count** is 4. |
 | Initial Fluid Height Texture | A texture mask that specifies a non-uniform initial fluid height across the domain.<br/><br/>This acts as a heightmap, where bright pixels correspond to a higher initial fluid level. The final initial fluid height for any pixel is the maximum of the value sampled from this texture and the uniform `Initial Fluid Height`. |
 | Fluid Base Height | A normalized offset (from 0 to 1) applied to the fluid's base height.<br/><br/>This subtle adjustment can be used to prevent visual clipping artifacts that may occur between the fluid surface and underlying tessellated or displaced terrain geometry. |
 
@@ -155,10 +157,11 @@ By utilizing a [Scriptable Object](#scriptable-object) asset, `FluidSimulationSe
 
 ##### Wave Simulation
 
-![Fluid Simulation Settings](../../assets/images/fluidsimulationsettings_slice_1_0.png)
+![Fluid Simulation Settings Wave](../../assets/images/flow_fluidsimulationsettings_wave.png)
 
 | Property | Description |
 | :--- | :--- |
+| Name | Display name for an extra fluid.<br/><br/>Shown as the Extra Fluid Layers header for fluids 2 to 4. Empty shows Fluid 2, Fluid 3, or Fluid 4. Mix pair labels and contact headers use these names. Fluid 1 is named under Wave Simulation Settings. |
 | Number of Cells | Controls the resolution (width and height) of the simulation's 2D grid.<br/><br/>It is highly recommended to use power-of-two dimensions (e.g., 512x512 or 1024x1024) for optimal GPU performance. <br/>A higher resolution increases the spatial accuracy of the fluid simulation but linearly increases both GPU memory usage and processing cost (frame time). |
 | Cell Size Scale | Adjusts the internal scale factor of the fluid volume within each cell to control the effective flow speed.<br/><br/>A smaller `cellSize` implies less fluid volume per cell, which results in faster-flowing fluid and more energetic wave behavior for a given acceleration. |
 | Wave Damping | Adjusts the rate at which wave energy is dissipated (dampened) over time.<br/><br/>A higher value causes waves and ripples to fade away quickly, leading to a calmer surface, while a lower value allows waves to persist longer. |
@@ -169,7 +172,7 @@ By utilizing a [Scriptable Object](#scriptable-object) asset, `FluidSimulationSe
 
 ##### Rendering
 
-![Fluid Simulation Settings](../../assets/images/fluidsimulationsettings_slice_2_0.png)
+![Fluid Simulation Settings Rendering](../../assets/images/flow_fluidsimulationsettings_rendering.png)
 
 | Property | Description |
 | :--- | :--- |
@@ -177,7 +180,9 @@ By utilizing a [Scriptable Object](#scriptable-object) asset, `FluidSimulationSe
 
 ##### GPU > CPU Readback Synchronization
 
-![Fluid Simulation Settings](../../assets/images/fluidsimulationsettings_slice_3_0.png)
+![Fluid Simulation Settings Readback](../../assets/images/flow_fluidsimulationsettings_readback.png)
+
+![Fluid Simulation Settings Distance Field](../../assets/images/flow_fluidsimulationsettings_distancefield.png)
 The simulation fully runs on the GPU but in some cases, interaction with objects that live in the CPU is desired like floating objects. When enabling this the simulation data for height and velocity will be read back to the CPU asynchronously. The reason the simulation data is readback asynchronously is to prevent stalls and improve performance, this does mean that the CPU data is a few frames behind the GPU simulation.
 
 | Property | Description |
@@ -196,16 +201,34 @@ The simulation fully runs on the GPU but in some cases, interaction with objects
 
 ##### Evaporation
 
+![Fluid Simulation Settings Evaporation](../../assets/images/flow_fluidsimulationsettings_evaporation.png)
+
 | Property | Description |
 | :--- | :--- |
 | Linear Evaporation | The rate of constant (linear) fluid volume removal from every cell in the simulation.<br/><br/>This simulates a constant, external water loss like pumping. The fluid volume is reduced uniformly at this rate: `fluid -= linearEvaporation * dt`. |
 | Proportional Evaporation | The rate of fluid volume removal proportional to the amount of fluid currently in the cell.<br/><br/>This simulates natural evaporation, where the rate is dependent on surface area/volume. More fluid results in a higher removal rate: `fluid -= fluid * proportionalEvaporation * dt`. |
 
-#### Second Layer
+#### Extra Fluid Layers
+
+![Fluid Simulation Settings Extra Fluid Layers](../../assets/images/flow_fluidsimulationsettings_layers.png)
+
+A simulation can run 1 to 4 fluids in one domain. They share one solver. Extra fluids run concurrently with the first one. This is generally more efficient than running a separate `FluidSimulation` component. One fluid keeps the packed height-and-velocity layout used for a single water surface. Two to four fluids add a coverage texture and per-fluid velocity so each surface clips and flows on its own data.
+
+Fluids sit side by side until you stack them on the **Stack** board. Drag a fluid onto another to sit on it. Drop it onto a second fluid to sit on both. Drop on the same fluid again to stop sitting on it. Drop in empty space or on terrain to unstack. Fluids that sit on the same fluid draw side by side. Fluid 1 stores this on `settings.stackLayers`. Fluids 2 to 4 store it on `extraLayers[].stackLayers`. See [Stacked Fluids](../setup#setup-stacked-fluids) for the full setup, including Render Queue.
+
+When water sits on lava or sludge, those fluids should use a Render Queue around **2400** and water **2510**. 2000 is the terrain queue. The lowest fluid (closest to terrain) should have the lowest queue. URP needs Opaque Texture so screenspace refraction can see the lava or sludge underneath.
+
+Terraform water and lava use two fluids. Fluids 3 and 4 mix, liquify, and contact when those pairs and reactions are enabled.
+
+Fluid 1 uses the top-level physics fields. Fluids 2 to 4 use `extraLayers`. Index 0 is fluid 2. The list always stores three entries. `layerCount` chooses how many are simulated. In C# prefer `GetLayerSettings` and `SetLayerSettings` with a 0-based fluid index. Older assets copy the legacy `secondLayer*` fields into index 0 once.
+
+Each fluid has a display name. Fluid 1 stores it on `layerName` under Wave Simulation Settings. Fluids 2 to 4 store it on `extraLayers[].name`. Empty names show Fluid 1 through Fluid 4. Shaders and `FluidLayerIndex` still use the layer index. The terraform preset names fluid 2 Lava.
 
 | Property | Description |
 | :--- | :--- |
-| Second Layer | Enables an optional secondary layer for simulating a different type of fluid.<br/><br/>The secondary layer runs concurrently with the main fluid layer, increasing VRAM usage and slightly decreasing performance. However, this is generally more efficient than running a separate `FluidSimulation` component. The second layer is used for features like **Lava** in the Terraform simulation option. The following properties provide independent physics overrides for this layer. |
+| Layer Count | The number of fluids simulated side by side, from 1 to 4.<br/><br/>Each extra fluid runs concurrently with the first one in the same simulation. This is cheaper than running a separate `FluidSimulation` component. One fluid keeps the fastest packed render data. Two to four fluids add a coverage texture and per-fluid velocity so each surface clips and flows on its own data. Fluids sit side by side until you stack them on the Stack board. |
+| Stack | Board that edits which fluids sit on which.<br/><br/>Shown when Layer Count is 2 or more. Terrain is the bottom. The top of the stack is lighter. Drag a fluid onto another to sit on it. Drop it onto a second fluid to sit on both. Drop on the same fluid again to stop sitting on it. Drop in empty space or on terrain to unstack. Fluids that sit on the same fluid draw side by side. Side by side clears stacking. Water on lava is `SetStackLayers(0, FluidSurfaceLayers.Layer2)`. Default None keeps fluids side by side. |
+| Name | Display name for an extra fluid.<br/><br/>Shown as the Extra Fluid Layers header for fluids 2 to 4. Empty shows Fluid 2, Fluid 3, or Fluid 4. Mix pair labels and contact headers use these names. Does not change simulation or shader layer indices. Fluid 1 is named under Wave Simulation Settings. |
 | Cell size | Adjusts the internal scale factor of the fluid volume within each cell to control the effective flow speed.<br/><br/>A smaller `cellSize` implies less fluid volume per cell, which results in faster-flowing fluid and more energetic wave behavior for a given acceleration. |
 | Wave Damping | Secondary Layer: Adjusts the rate at which wave energy is dissipated over time.<br/><br/>A higher value causes waves and ripples to fade away quickly, leading to a calmer surface, while a lower value allows waves to persist longer. |
 | Acceleration | Secondary Layer: The force of acceleration applied to the fluid, which directly controls the speed of wave propagation.<br/><br/>This value simulates the effect of gravity (9.8 m/s^2 is typical) on the fluid and is the primary factor determining how quickly waves travel across the simulation domain. |
@@ -340,6 +363,8 @@ As a [Scriptable Object](#scriptable-object) asset, `FlowFluidSimulationSettings
 #### Specialized Flow Properties
 
  This asset contains all settings that are specific to the "Flow" implementation of the fluid solver, building upon the universal properties inherited from the base [Fluid Simulation Settings](#fluid-simulation-settings). These properties control the unique behaviors and optimizations of the Flow algorithm.
+
+![Flow Fluid Simulation Settings Overshooting](../../assets/images/flow_fluidsimulationsettings_overshooting.png)
 
 | Property | Description |
 | :--- | :--- |
@@ -637,7 +662,7 @@ The `Terraform Layer` extends the base erosion system by adding highly customiza
 
 #### Fluid Mixing (Fluid + Fluid to Solid Terrain)
 
- When two different fluid layers occupy the same cell, this system can be triggered to simulate a reaction (e.g., water and lava mixing to cool and solidify into rock).  
+ When two different fluid layers occupy the same cell, this system can be triggered to simulate a reaction (e.g., water and lava mixing to cool and solidify into rock). Each distinct pair has its own Mix, Rate, Scale, Deposit, Layers, and Splat. A fluid cannot mix with itself. Column and row labels use the fluid display names.  
 - **Solidification** The mixing fluids are consumed and deposited as a new, solid terrain layer onto the heightmap and splatmap. 
 - **Particle Emission** The system can emit visual particles (e.g., steam) upon mixing, with customizable settings for `Emission Rate`, color, and lifetime.   
 
@@ -646,11 +671,13 @@ The `Terraform Layer` extends the base erosion system by adding highly customiza
 | Property | Description |
 | :--- | :--- |
 | Fluid Mixing | Toggles the interaction logic between overlapping fluid types.<br/><br/>When enabled, if two distinct fluids (e.g., Water and Lava) occupy the same grid cell, they will trigger a mixing event. <br/>In standard configurations, this results in the fluid volume being consumed and converted into solid terrain geometry. |
-| Fluid Mix Rate | Controls the speed of the reaction between interacting fluids.<br/><br/>Higher values cause the fluids to consume each other and generate terrain more rapidly. |
-| Fluid Mix Scale | The volumetric conversion ratio between consumed fluid and generated terrain.<br/><br/>This value determines how much solid ground is created for every unit of fluid lost during mixing.<br/>- **1.0** <br/> One unit of fluid volume converts exactly to one unit of terrain volume.<br/> <br/>- **Greater than 1.0** <br/> The reaction expands, creating more terrain than the fluid consumed.<br/> <br/>- **Less than 1.0** <br/> The reaction contracts, creating less terrain than the fluid consumed. |
-| Deposit Rate | The rate at which the newly solidified material is integrated into the terrain's heightmap.<br/><br/>While `Fluid Mix Rate` controls the fluid consumption, this controls the visual rise of the ground. <br/>Lower values can smooth out the generation process, preventing abrupt spikes in the terrain mesh. |
-| Deposit Terrain Layers | Specifies which vertical terrain layer (e.g., Bedrock or Sediment) receives the newly generated geometry. |
-| Deposit Terrain Splat | Specifies the material channel (R, G, B, or A) in the splatmap to apply to the newly generated terrain.<br/><br/>This ensures that the new ground visually matches the expected material (e.g., setting the channel to display "Obsidian" or "Rock" texture where lava hardened). |
+| Mix Pairs | A lower triangle of every distinct fluid pair.<br/><br/>Each cell holds Mix, Rate, Scale, Deposit, Layers, and Splat for that pair. A fluid cannot mix with itself. Pair Fluid 1 × Fluid 2 is on by default. In C# use `GetMixPair(a, b)` with 0-based fluid indices. |
+| Mix | When enabled, these two fluids consume overlapping volume and deposit terrain. |
+| Rate | Controls the speed of the reaction between this pair of fluids.<br/><br/>Higher values cause these fluids to consume each other and generate terrain more rapidly. |
+| Scale | The volumetric conversion ratio between consumed fluid and generated terrain for this pair.<br/><br/>This value determines how much solid ground is created for every unit of fluid lost during mixing.<br/>- **1.0** <br/> One unit of fluid volume converts exactly to one unit of terrain volume.<br/> <br/>- **Greater than 1.0** <br/> The reaction expands, creating more terrain than the fluid consumed.<br/> <br/>- **Less than 1.0** <br/> The reaction contracts, creating less terrain than the fluid consumed. |
+| Deposit | The rate at which the newly solidified material is integrated into the terrain's heightmap.<br/><br/>While Rate controls the fluid consumption, this controls the visual rise of the ground. |
+| Layers | Which vertical terrain layer receives the newly generated geometry. |
+| Splat | Which splat channel is applied to the newly generated terrain. |
 | [Fluid Particles](#fluid-particle-system) | Configuration for the particle system emitted during fluid mixing events.<br/><br/>This is commonly used to create steam or smoke effects when hot fluids interact with cool fluids (e.g., Lava meeting Water). |
 | Emission Rate | The time interval, in seconds, between consecutive particle spawn events at a mixing location.<br/><br/>A lower value results in a higher frequency of particle emission (more particles), while a higher value results in sparse emission. |
 
@@ -684,8 +711,9 @@ An extended configuration profile for the [Terraform Layer](#terraform-layer), i
 | Target Fluid Layer | The target fluid layer (e.g., Layer 1, Layer 2) that this terrain layer dissolves into when `Liquify` is enabled. |
 | Liquify Rate | The speed at which the terrain naturally dissolves into fluid, in units of height per second. |
 | Terrain to Fluid Ratio | The volumetric conversion ratio of terrain height to fluid depth during liquefaction.<br/><br/>- **1.0** <br/> 1 unit of terrain height becomes 1 unit of fluid depth.<br/> <br/>- **2.0** <br/> 1 unit of terrain produces 2 units of fluid. |
-| [Fluid Layer1Contact](#fluid-contact-reaction) | Defines the reaction rules applied when this terrain layer comes into contact with Fluid Layer 1. |
-| [Fluid Layer2Contact](#fluid-contact-reaction) | Defines the reaction rules applied when this terrain layer comes into contact with Fluid Layer 2. |
+| Fluid Contact | Settings to control how this terrain layer reacts to contact with a fluid.<br/><br/>Each live fluid has its own contact block. The header uses the fluid display name. See [Fluid Contact Reaction](#fluid-contact-reaction). |
+
+Terraform mixing needs **Layer Count** 2 or more on the simulation settings. Tick mix pairs for the fluids that should consume each other. Liquify and contact reactions apply to every live fluid.
 
 <a name="terrain-modifier"></a>
 ### Terrain Modifier

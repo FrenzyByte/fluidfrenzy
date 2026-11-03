@@ -147,7 +147,7 @@ Samples height and/or velocity at the specified world space position when inside
 - `heightData.x` contains the total height in world space, including the height of the underlying terrain.
 - `heightData.y` contains depth of the fluid in relation to the underlying terrain.
 - `velocity` contains the fluid velocity in world space.
-- `GetHeightLayer` also returns the dominant (highest) fluid layer index at that point.
+- `GetHeightLayer` also returns the dominant (highest) fluid layer index at that point, from 1 to 4. One water always reports 1. Two fluids use 1 and 2. Three and four fluids also report 3 and 4.
 - `GetHeightBilinear` returns the same height data as `GetHeight`, with bilinear filtering instead of nearest-cell sampling. Use this when gameplay tracks the water surface smoothly.
 
 Returns `false` when no simulation contains the position or no valid data is available.
@@ -208,7 +208,7 @@ DampenVelocityCircle(Vector3 worldPos, Vector2 size, float strength, float fallo
 DampenVelocity(Vector3 worldPos, Vector2 size, Texture texture, float strength, float timestep)
 ```
 
-`AddFluidCircle` is what the manager `AddFluid` call uses. Square and texture overloads follow the same pattern. The texture red channel is the mask.
+`AddFluidCircle` is what the manager `AddFluid` call uses. Square and texture overloads follow the same pattern. The texture red channel is the mask. The `layer` argument is a 0-based fluid index. 0 is fluid 1. 3 is fluid 4.
 
 `SetFluidHeight*` writes a total surface height. `SetFluidDepth*` writes depth above the terrain. `FluidSimulation.FluidModifierSpace.WorldHeight` is world Y. `LocalHeight` is relative to the terrain. Min and max variants clamp instead of writing a value. Square and texture overloads exist for those as well.
 
@@ -292,7 +292,7 @@ FluidSimulation.CreateTerraformSimulation<FluxFluidSimulation>(
     ground, waterMaterial, lavaMaterial);
 ```
 
-`CreateTerraformSimulation` adds dual-layer fluid settings (or uses your settings asset), foam, static flow, `TerraformLayer`, and water/lava child surfaces. Pass `null` for a material to skip that surface.
+`CreateTerraformSimulation` adds dual-layer fluid settings (or uses your settings asset), foam, static flow, `TerraformLayer`, and water/lava child surfaces. Mix pair Fluid 1 × Fluid 2 is on by default. Use `GetMixPair(a, b)` with 0-based fluid indices to tick other pairs. Pass `null` for a material to skip that surface.
 
 #### Editor presets
 

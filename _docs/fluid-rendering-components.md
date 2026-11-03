@@ -7,7 +7,7 @@ permalink: /docs/fluid_rendering_components/
 <a name="fluid-renderer"></a>
 ### Fluid Renderer
 
-The [Fluid Renderer](#fluid-renderer) component is responsible for rendering a [Fluid Simulation](../fluid_simulation_components#fluid-simulation) or a [Fluid Simulation Static](../fluid_simulation_components#fluid-simulation-static). This component is in charge of creating and rendering the necessary meshes and materials needed for displaying the assigned data. Users can customize the [Fluid Renderer](#fluid-renderer) component to create their own rendering effects, similar to [Water Surface](#water-surface) and [Lava Surface](#lava-surface) renderers.
+The [Fluid Renderer](#fluid-renderer) component is responsible for rendering a [Fluid Simulation](../fluid_simulation_components#fluid-simulation) or a [Fluid Simulation Static](../fluid_simulation_components#fluid-simulation-static). This component is in charge of creating and rendering the necessary meshes and materials needed for displaying the assigned data. Users can customize the [Fluid Renderer](#fluid-renderer) component to create their own rendering effects, similar to [Water Surface](#water-surface) and [Lava Surface](#lava-surface) renderers. The shipped [Sludge Shader](../fluid_shaders#sludge-shader) uses this component. Assign `FluidFrenzy/Sludge` (HDRP: `FluidFrenzy/HDRP/Sludge`) and set the material **Layer**.
 
 Set **Mode** to Dynamic for a live solver, or Static for a bake. The inspector shows only one of those fields. See [Baked Surface Playback](../setup#setup-baked-surface) to export and assign a bake.
 
@@ -354,10 +354,10 @@ Settings for current-aligned wisps and aerated bubbles in the water volume.
 | Bubbles | Rising air bubbles in aerated, foamy water. |
 | Intensity | Brightness of wisps and bubbles. |
 | Size | Wisp thickness and bubble radius, in meters. |
-| Count | How many particles to draw around the camera.<br/><br/>Higher is denser and more expensive. Each slot can emit a wisp ribbon and a fan of bubbles. |
+| Count | How many particles to draw around the camera.<br/><br/>Higher is denser and more expensive. Each slot emits either a wisp ribbon or a fan of bubbles. |
 | Radius | How far from the camera particles can appear, in meters.<br/><br/>Positions stay locked in the world; you move through them. Replicas recycle at the wrap-box faces. |
 | Depth Range | Depth below the surface in meters. Min is fully visible, Max is where they fade out. |
-| Movement Speed | How fast wisps and bubbles travel along the current.<br/><br/>1 is the default look. Uses a hashed clock, not live sim speed × elapsed time (that runs backward when the current wobbles). |
+| Movement Speed | How fast wisps and bubbles travel along the current, relative to the simulation velocity.<br/><br/>1 matches the flow map. 0 holds them still. |
 | Stretch | How long wisps run along the current when the flow is fast. |
 | Turbulence | How much each wisp snakes up, down, and sideways along its length.<br/><br/>Inspector 0–1 remaps in the shader so 1 is a moderate meander. |
 | Speed Range | Current speed in m/s. Min is when wisps start to appear, Max is when they are fully visible. |
@@ -625,7 +625,9 @@ ___
 
 <a name="shadow-grabber"></a>
 ### Shadows
-Both the Water and Lava is rendered after any opaque layers to allow for refraction and to prevent sorting issues. This means that in the Built-in Render pipeline shadows are not automatically sampled due to the transparent nature of the rendering. In order to solve this the user can add he **ShadowGrabber** component to the **Main Directional Light** in the scene. This will assign the shadow buffer to global shader property so that the Water and Lava shader can read it. In order for a material to read it the Shadows property on the Material needs to be set to either *Hard* or *Soft*.
+Both the Water and Lava is rendered after the terrain to allow for refraction and to prevent sorting issues. Water typically uses queue 2510. When water sits on lava or sludge, those fluids should use a queue around 2400 so they are included in the opaque buffer and can be refracted. 2000 is the terrain queue. See [Stacked Fluids](../setup#setup-stacked-fluids).
+
+This means that in the Built-in Render pipeline shadows are not automatically sampled due to the transparent nature of the rendering. In order to solve this the user can add the **ShadowGrabber** component to the **Main Directional Light** in the scene. This will assign the shadow buffer to global shader property so that the Water and Lava shader can read it. In order for a material to read it the Shadows property on the Material needs to be set to either *Hard* or *Soft*.
 
 <a name="hdrp-water-system"></a>
 <a name="hdrp-water-surface"></a>

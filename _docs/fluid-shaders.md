@@ -4,7 +4,7 @@ permalink: /docs/fluid_shaders/
 ---
 
 
-Fluid Frenzy ships dedicated surface shaders for water, lava, and GPU particles. Assign them to the materials used by [Water Surface](../fluid_rendering_components#water-surface), [Lava Surface](../fluid_rendering_components#lava-surface), and [Fluid Particle System](../fluid_simulation_components#fluid-particle-system) components.
+Fluid Frenzy ships dedicated surface shaders for water, lava, sludge, and GPU particles. Assign them to the materials used by [Water Surface](../fluid_rendering_components#water-surface), [Lava Surface](../fluid_rendering_components#lava-surface), [Fluid Renderer](../fluid_rendering_components#fluid-renderer), and [Fluid Particle System](../fluid_simulation_components#fluid-particle-system) components.
 
 All water surface shaders sample the same [Fluid Simulation](../fluid_simulation_components#fluid-simulation) data (height, velocity, foam, flow) and work with [Water Surface](../fluid_rendering_components#water-surface) features such as underwater effects, caustics, planar reflections, and screen-space reflections.
 
@@ -118,6 +118,7 @@ General rendering, depth-handling, and simulation sampling properties.
 | Exponential Clip Offset | An exponential/depth-based offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with distant terrain or surfaces. |
 | UV Space | Controls which coordinate space is used for sampling Wave Normal / Foam / Detail Waves.<br/><br/>- Normalized UV Space: uses simulation UVs in 0..1.<br/>- World UV Space: uses world XZ planar UVs. In this mode the texture tiling values are interpreted as repeats per meter (1,1 repeats every meter). |
 | Non-Tiled Sampling | Hides texture tiling artifacts on the wave normal, detail waves and foam by sampling a noise key once and offsetting samples. Slight extra cost. |
+| Render Queue | Controls the draw order of this surface.<br/><br/>The default is 2510. When this water sits on lava or sludge, those fluids should use a queue around 2400 so screenspace refraction can see them. 2000 is the terrain queue. The lowest fluid (closest to terrain) should have the lowest queue. |
 
 <div style="page-break-after: always;"></div>
 
@@ -365,6 +366,55 @@ General rendering, depth-handling, and simulation sampling properties.
 | Linear Clip Offset | A linear offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with close terrain or surfaces. |
 | Exponential Clip Offset | An exponential/depth-based offset applied to the clip-space Z depth<br/>to help prevent visual clipping (Z-fighting) with distant terrain or surfaces. |
 | Non-Tiled Sampling | Hides texture tiling artifacts on the lava albedo, normal and emission by sampling a noise key once and offsetting samples. Slight extra cost. |
+| Render Queue | Controls the draw order of this surface.<br/><br/>When this lava sits under water, use a queue around 2400 so water at 2510 can refract it. 2000 is the terrain queue. The lowest fluid (closest to terrain) should have the lowest queue. |
+
+___
+
+<a name="sludge-shader"></a>
+### Sludge Shader
+
+The *FluidFrenzy/Sludge* shader is applied to the material used by a [Fluid Renderer](../fluid_rendering_components#fluid-renderer). It is a Lit Shader Graph for slime, mucus, or industrial sludge. Set **Layer** to the fluid it should draw.
+
+It samples a grayscale sludge map and a grayscale bubble map through `SampleTex2DFlow`. Base Color tints the sludge. Bubble Color tints the bubbles. HDR emission sits on the bubble mask. Caps Emission lights the scattered bubble caps. The assigned [Fluid Flow Mapping](#fluid-flow-mapping) scrolls those maps the same way lava textures scroll. Sludge Tiling and Bubble Tiling are independent. Cap scatter follows Bubble Tiling.
+
+The material inspector uses the same foldout Shader GUI as water and lava. Sludge, Bubbles, Material Properties, and Rendering are separate headers.
+
+Shipped maps live at `FluidFrenzy/Runtime/Presets/Textures/Sludge`. Tiling is repeats across the fluid UV, same idea as lava.
+
+The surface alpha-blends like lava. `ClipFluid` still discards empty texels. **Fade Height** then fades the thin band above the clip height instead of cutting it hard. URP and Built-in force ZWrite. The shipped `sludge_green` preset uses queue **2400** so water at 2510 can refract it. 2000 is the terrain queue. HDRP uses the transparent pass with ZWrite off, same as HDRP lava. See [Stacked Fluids](../setup#setup-stacked-fluids).
+
+High smoothness drives specular and fresnel through standard PBR. The graph does not implement a custom water-style SSR pass.
+
+A default green material lives at `FluidFrenzy/Runtime/Presets/Materials/Sludge/sludge_green`. Duplicate it and change **Base Color** for other sludge hues.
+
+**Compatibility:**
+This shader is compatible with both the Universal Render Pipeline (URP) and the Built-in Render Pipeline (BiRP).
+
+Note: The High Definition Render Pipeline (HDRP) requires a separate, dedicated shader: *FluidFrenzy/HDRP/Sludge*. Lit Shader Graph would otherwise compile lightmap variants. Those are skipped. Unity fog stays enabled.
+
+![Sludge Shader](../../assets/images/sludge.png)
+
+##### Material Properties
+
+| Property | Description |
+| :--- | :--- |
+| Sludge | Grayscale sludge map. White is the raised surface. |
+| Bubbles | Grayscale bubble map. White is the bubble caps. |
+| Sludge Normal | Normal map texture used to add detailed lighting to the sludge. |
+| Bubble Normal | Normal map texture used to add detailed lighting to the bubble caps. |
+| Sludge Tiling | UV tiling of the sludge. This also scales flow UVs and velocity. |
+| Bubble Tiling | UV tiling of the bubbles. Independent of Sludge Tiling. Cap scatter scales with this. |
+| Bubble Normal Strength | How strongly the bubble normal blends over the sludge. |
+| Base Color | Tints the sludge grayscale through the sludge gradient. |
+| Bubble Color | Tints the bubble grayscale through the bubble gradient. |
+| Bubbles Emission | HDR color applied on the bubble mask. |
+| Caps Emission | HDR color on the scattered bubble caps. |
+| Metallic | Uniform metalness of the wet surface. |
+| Smoothness | Uniform smoothness of the wet surface, affecting its specular reflections. |
+| Layer | Selects which fluid this material draws. Layer1 through Layer4 match `settings.layerCount`. |
+| Fade Height | The world height at which the sludge will be fully faded out.<br/>Used to soften edges or blend with geometry above a certain height. |
+| Non-Tiled Sampling | Hides obvious tiling on sludge and bubble maps. Slight extra cost. |
+| Render Queue | Controls the draw order of this surface.<br/><br/>When this sludge sits under water, use a queue around 2400 so water at 2510 can refract it. 2000 is the terrain queue. The lowest fluid (closest to terrain) should have the lowest queue. See [Stacked Fluids](../setup#setup-stacked-fluids). |
 
 ___
 
