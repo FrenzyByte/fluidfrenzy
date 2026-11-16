@@ -10,6 +10,49 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.2] - 2026-11-16
+
+### Changed
+- Rendering: Lava and sludge **Fade Height** now goes up to 1, the same as water. 
+
+### Fixed
+- Rendering: Multi-layer shores went hard against terrain after four fluid layers. The fluid that owns the cell keeps the soft shore again.
+
+## [2.1.1] - 2026-11-12
+
+### Changed
+- Simulation: Flow simulations store velocity at half precision and skip absorb work when that edge has absorb off. Neighbour borders use fewer draws. Height and normals are packed once per frame, after the fixed steps.
+- Rendering: Ocean FFT is about 15% cheaper.
+- Rendering: **Shader Stripper** includes the current displacement grass and mesh graphs.
+
+### Fixed
+- Simulation: Adding a neighbour tile copied only part of the parent. The new tile now takes the parent's grid, heights, terrain source, layers, and surface, including detail waves, underwater, caustics, reflections, wet lens, and current particles.
+- Simulation: Neighbour seams were one cell off. Fluid now lines up across the shared edge.
+- Simulation: **Upsample** no longer turns a smooth heightmap into square steps.
+- Simulation: Simple Terrain heightmaps that never went through the offset upgrade shifted the water mesh. The water sits on the ground again.
+- Simulation: Wave foam treated steep ground as a breaking wave. Foam now follows the water surface, same as breaking-wave splashes.
+- Simulation: Turbulence foam read the upstream cell. It now uses the flow leaving the cell.
+- Editor: Scene View placement during Play Mode missed the ground in URP. The cursor hits the surface again.
+- General: Terrain shaders, fluid decals, and the sample sphere shaders compile on Unity 7.
+
+## [2.1.0] - 2026-11-01
+
+### Added
+- Simulation: **Four fluid layers**. One simulation can run up to four fluids. Set **Layer Count** from 1 to 4. Each fluid can have its own name, and modifiers can target any of them.
+- Simulation: **Fluid stacking**. Fluids sit side by side until you stack them. Drag one onto another on the Stack board so water can sit on lava or sludge. A fluid can sit on more than one fluid below it.
+- Simulation: **Mix pairs**. Every pair of fluids can mix on its own. Water and lava still turn into rock. Liquify and contact reactions work on every fluid.
+- Rendering: **Sludge** shader for slime and other thick fluids, with a green preset. Assign it to a fluid layer and draw it under water so the water can refract it.
+- Rendering: Current particles can be wisps, bubbles, or a mix of both. The mix is no longer tied to foam, and their speed follows the flow.
+
+### Changed
+- Simulation: The old Second Layer option is now **Layer Count**. Existing scenes stay on one or two fluids.
+- Rendering: Player builds compile fewer unused shader variants.
+
+### Fixed
+- Rendering: Fluid on Terraform Terrain clipped through the ground instead of softening at the shore.
+- Rendering: Water and lava in the same scene no longer overwrite each other's surface data.
+- Rendering: Shader compile errors and warnings on Vulkan, older Shader Graph, lava, sludge, fluid decals, and the simulation shaders.
+
 ## [2.0.10] - 2026-10-17
 
 ### Added
