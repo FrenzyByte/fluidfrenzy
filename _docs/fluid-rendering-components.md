@@ -587,9 +587,9 @@ ___
 #### Lava Surface
 [Lava Surface](#lava-surface) is an extension of the [Fluid Renderer](#fluid-renderer) component that specifically deals with rendering lava-related elements of the fluid simulation. It can draw a live [Fluid Simulation](../fluid_simulation_components#fluid-simulation) or a [Fluid Simulation Static](../fluid_simulation_components#fluid-simulation-static). Set **Mode** on the renderer. See [Baked Surface Playback](../setup#setup-baked-surface).
 
-This component adds specific lava rendering features, such as heat and emissive color gradients, by generating and applying a custom **Heat Look-Up Texture (LUT)**.  
+This component builds a **Heat Look-Up Texture (LUT)** from the Heat Gradient and assigns it to the lava material. Flow speed picks a point on that ramp. A [Heat Layer](../fluid_simulation_components#heat-layer) replaces speed with its heat map. The LUT sample is unchanged.
 
- The LUT is procedurally generated from the **Heat** gradient field and is assigned to the [Fluid Material](#fluid-material). This allows the lava's emissive color and heat visual effect to be determined dynamically by factors like the lava's velocity or age.
+When **Generate Heat LUT** is on, **Export Heat LUT** saves the gradient as a 128 by 1 PNG. Assign that texture to **Heat LUT** on the material and turn **Generate Heat LUT** off to use the file. While generation stays on, the gradient replaces the texture.
 
 ![Lava Surface](../../assets/images/lavasurface.png)
 
@@ -597,8 +597,22 @@ This component adds specific lava rendering features, such as heat and emissive 
 | :--- | :--- |
 | Under Lava Enabled | When enabled, the [Under Lava Effect](#under-lava-effect) applies a depth-based tint while the camera is inside this lava volume. |
 | [Under Lava Settings](#under-lava-settings) | Tunables for the under-lava volume tint (absorption only). |
-| Generate Heat Lut | If enabled, the `Heat` gradient will be used to procedurally generate a **Heat LUT** that overrides the existing LUT on the [Fluid Renderer](#fluid-renderer). |
-| Heat | The `Gradient` used to define the heat/color transition for the lava. The color samples are mapped from Cold Lava (Left side of the gradient) to Hot Lava (Right side of the gradient). |
+| Generate Heat Lut | If enabled, the Heat Gradient is used to build a **Heat LUT** that overrides the Heat LUT already on the material. |
+| Heat | Gradient from cold lava on the left to hot lava on the right. |
+
+Preset materials in `Runtime/Presets/Materials/Lava`:
+
+| Material | Look |
+| :--- | :--- |
+| `lava_classic` | Dark classic lava. Its Heat LUT stays dark until later in the ramp. |
+| `lava_hot` | Textured lava. The smooth ramp lights up earliest. |
+| `lava_medium` | Textured lava. The smooth ramp sits between hot and cool. |
+| `lava_cool` | Textured lava. The smooth ramp stays dark longer. |
+| `lava_hot_posterized` | Same as `lava_hot`, with hard color steps. |
+| `lava_medium_posterized` | Same as `lava_medium`, with hard color steps. |
+| `lava_cool_posterized` | Same as `lava_cool`, with hard color steps. |
+
+The matching textures are `LavaHeatLUT_Hot`, `LavaHeatLUT_Medium`, and `LavaHeatLUT_Cool` in `Runtime/Presets/Textures/Lava`, each with a `_Posterized` partner. Turn **Generate Heat LUT** off when using these materials, or the gradient replaces the preset ramp.
 
 <a name="under-lava-effect"></a>
 #### Under Lava Effect

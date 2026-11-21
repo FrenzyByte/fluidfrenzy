@@ -130,7 +130,7 @@ Serialized settings for one domain edge. The same fields appear under each bound
 
 | Property | Description |
 | :--- | :--- |
-| ***Extension Layers*** | A list of optional [Fluid Layer](#fluid-layer) extensions (e.g., `FoamLayer`, `WetnessLayer`, `FluidFlowMapping`) that should be executed and managed by this fluid simulation. |
+| ***Extension Layers*** | A list of optional [Fluid Layer](#fluid-layer) extensions (e.g., `FoamLayer`, `HeatLayer`, `WetnessLayer`, `FluidFlowMapping`) that should be executed and managed by this fluid simulation. |
 
 #### Create Collider
 
@@ -499,6 +499,69 @@ Using a settings asset allows for easy reuse and centralized modification of foa
 | Turbulence Foam Threshold | The minimum turbulence value required to begin generating foam. |
 | Wave Exponential Decay Rate | The rate at which wave-based foam decays exponentially per frame. |
 | Wave Linear Decay Rate | The constant amount of wave-based foam subtracted from the mask per frame (Linear Decay). |
+
+___
+
+<a name="heat-layer"></a>
+### Heat Layer
+
+[Heat Layer](#heat-layer) is an optional [Fluid Layer](#fluid-layer) for lava glow. It stores one heat map from 0 to 1. The hot fluid writes heat and carries the map with its velocity. Without this layer, [Lava](../fluid_rendering_components#lava) still glows from flow speed.
+
+Add it from **Add Layer > Heat Layer** on the [Fluid Simulation](#fluid-simulation). That creates the component and a [Heat Layer Settings](#heat-layer-settings) asset. The component must stay in the simulation's Layers list.
+
+URP and Built-in `FluidFrenzy/Lava` sample the map instead of speed. `FluidFrenzy/HDRP/Lava` still uses speed. The map is not packed into a [Water World Renderer](../fluid_rendering_components#water-world-renderer) atlas.
+
+| Property | Description |
+| :--- | :--- |
+| [Settings](#heat-layer-settings) | The [Heat Layer Settings](#heat-layer-settings) used to build the heat map. |
+
+<a name="heat-layer-settings"></a>
+### Heat Layer Settings
+
+A [Scriptable Object](#scriptable-object) asset containing configuration parameters for a [Heat Layer](#heat-layer).
+
+Using a settings asset allows the same heat behavior to be shared across simulations.
+
+To create a new settings asset, navigate to: `Assets > Create > FluidSimulation > Heat Settings`.
+
+#### Heat Map
+
+| Property | Description |
+| :--- | :--- |
+| Texture Size | Resolution of the heat map.<br/><br/>Match the simulation grid when you can. Changing this needs the simulation to rebuild. |
+| Hot Layer | Fluid that writes and carries heat.<br/><br/>None is treated as Layer 1. Set the lava material **Layer** to this same fluid. `_Layer` is 0-based, so Layer 2 is `_Layer` 1. |
+| Velocity Range | Velocity where heat starts, and the velocity where heat is full.<br/><br/>Slower fluid adds no heat. This does not move the fluid. |
+| Response | How quickly the heat follows the velocity.<br/><br/>Higher values catch up sooner. Per second. This is not the speed that carries the map. The map is always carried with the hot fluid. |
+
+#### Noise
+
+| Property | Description |
+| :--- | :--- |
+| Noise | Adds drifting patches to the heat while the hot fluid is present. |
+| Range | Weakest and strongest heat the patches can apply.<br/><br/>1 is full heat. Higher values are clamped to full heat. |
+| Scale | How many patches fit across the map.<br/><br/>Higher values make them smaller. |
+| Scroll | How fast the patches drift across the map. Per second. |
+
+#### Ambient Cooling
+
+| Property | Description |
+| :--- | :--- |
+| Exponential Rate | How quickly heat fades on every cell, including where the hot fluid is still present.<br/><br/>Per second. Cooling Layers replaces this rate. |
+| Linear Rate | Heat removed each second after Exponential Rate.<br/><br/>This still runs when a cooling layer is active. |
+
+#### Cooling Layers
+
+| Property | Description |
+| :--- | :--- |
+| Layers | Fluids that cool the map when they are deeper than Depth.<br/><br/>The hot fluid is ignored if it is ticked here too, so lava does not cool itself. |
+| Depth | A cooling fluid shallower than this keeps the Ambient Cooling exponential rate. |
+| Exponential Rate | Cooling used instead of Ambient Cooling where a cooling fluid is deeper than Depth.<br/><br/>Per second. This does not stack with Ambient Cooling. |
+
+#### Spread
+
+| Property | Description |
+| :--- | :--- |
+| Diffusion | How much each cell blends with its neighbors.<br/><br/>0 keeps sharp edges. |
 
 ___
 

@@ -315,9 +315,9 @@ ___
 <a name="lava-shader"></a>
 ### Lava Shader
 
-The *FluidFrenzy/Lava* shader is applied to the material used by the Lava Surface component. It creates realistic, flowing lava visuals where the 'heat' and resulting glow are dynamically driven by the **length of the fluid's velocity vector** in the simulation.
+The *FluidFrenzy/Lava* shader is applied to the material used by the Lava Surface component. Still lava can keep a base glow. Moving lava samples a **Heat LUT**. That sample is normally how fast the lava is moving. A [Heat Layer](../fluid_simulation_components#heat-layer) replaces speed with its heat map. HDRP lava (`FluidFrenzy/HDRP/Lava`) still uses speed.
 
-The shader uses textures for the base 'cold' lava surface (Albedo, Smoothness, Normal Map) and employs a specialized **Heat Look-Up Table (LUT)** alongside an **Emission Map** to control the vibrant colors and intensity of the glowing, 'hot' lava. A separate **Noise** texture is used to break up tiling patterns.
+The shader uses textures for the cooled crust (Albedo, Smoothness, Normal Map). The **Flow Emission Map** breaks up the molten color before it indexes the Heat LUT. Smoothness is read from the albedo alpha.
 
 **Compatibility:**
 The *FluidFrenzy/Lava* shader is for URP and BiRP. The High Definition Render Pipeline (HDRP) requires a separate, dedicated shader: *FluidFrenzy/HDRP/Lava*.
@@ -335,14 +335,17 @@ Properties controlling the illumination and shading effects.
 
 ##### Heat & Emission
 
-Properties controlling the lava's color and emission, driven by the fluid's 'heat' (usually fluid velocity/movement).
+Base glow for still lava, plus flow heat from the Heat LUT. The LUT is sampled with speed, or with the [Heat Layer](../fluid_simulation_components#heat-layer) map when that layer is active.
 
 | Property | Description |
 | :--- | :--- |
-| Heat LUT | Color ramp for flowing molten lava. Sampled from how fast the lava is moving. |
+| Base Emission Map | Regular emissive texture. Shows on still or slow lava. Leave empty/black if you only want flow heat. |
+| Base Emission | Brightness of the base emissive glow. |
+| Heat LUT | Color ramp for flowing molten lava. Sampled from speed, or from the heat map when a Heat Layer is active. |
 | Heat Scale | How quickly movement pushes the look through the Heat LUT. Higher reaches the hot end sooner. |
-| Emission Map | Texture used for the emission color of the lava. A sample of this texture is multiplied by the fluid's 'heat'. |
-| Emission | Scales the overall intensity of the emission determined by the Heat LUT and the Emission Map. |
+| Flow Emission Map | Greyscale pattern that breaks up the flow heat. Multiplied by speed, or by the heat map, before sampling the Heat LUT. |
+| Flow Emission | Brightness of the moving molten heat from the Heat LUT. |
+| Flow Contrast | Power curve on the Flow Emission Map before the Heat LUT. 1 = unchanged, higher = hotter cracks / darker crust, lower = softer. |
 
 ##### Material Properties
 

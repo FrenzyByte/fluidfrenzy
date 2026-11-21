@@ -269,6 +269,7 @@ Prefer these over raw `AddFluidLayer` when you need settings assigned in one cal
 
 ```c#
 sim.AddFoamLayer(existingFoamSettings);
+sim.AddHeatLayer(existingHeatSettings);
 sim.AddFlowMapping(configure: s => s.flowMappingMode = FluidFlowMapping.FlowMappingMode.Static);
 sim.AddWetnessLayer();
 sim.AddErosionLayer();

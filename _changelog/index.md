@@ -10,6 +10,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.3] - 2026-11-21
+
+### Added
+- Simulation: **Heat Layer**. An optional heat map for lava glow. Add it from **Add Layer** on the Fluid Simulation. The hot fluid writes heat and carries it with the flow. Heat follows how fast that fluid is moving, cools while the lava is still present, and can break up with drifting noise. Other fluids can cool it faster where they are deep enough.
+- Rendering: URP and Built-in lava shaders sample the heat map. HDRP lava keeps the flow-speed glow. Without a Heat Layer, lava glow still follows flow speed.
+- Rendering: Lava material presets. Classic is the dark ground-textured lava with a noise ground texture for emission. Hot, medium, and cool are textured ramps. Each of those also has a posterized version with hard color steps.
+- Editor: **Export Heat LUT** on Lava Surface. Saves the Heat Gradient as a 128 by 1 PNG.
+- Editor: **Export All...** in the Fluid Simulation debugger. Saves every available simulation buffer as an EXR.
+
+### Changed
+- Samples: Terraform Flow uses the Heat Layer. The lava material shows more of the heat.
+
+### Fixed
+- Simulation: **Conservative Rasterization** spiked thin obstacles above the mesh. A near-vertical bone stamped its top onto every texel it touched. The bake now keeps the highest point of the triangle that overlaps the texel.
+- Editor: Editing a script during Play Mode crashed the editor when Unity recompiled. Simulations and renderers now shut down before the reload and start again after it.
+- Samples: Mouse3D crashed when the domain reloaded during Play Mode. The sample cursor comes back after the reload.
+
 ## [2.1.2] - 2026-11-16
 
 ### Changed
